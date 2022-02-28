@@ -16,6 +16,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 builder.Services.AddIdentity<User, IdentityRole>(options => options.User.RequireUniqueEmail = true)
        .AddEntityFrameworkStores<ApplicationDbContext>()
        .AddDefaultTokenProviders();
+builder.Services.AddTransient<IAccountRepository, AccountRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
