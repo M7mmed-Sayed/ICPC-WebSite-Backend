@@ -30,7 +30,6 @@ namespace ICPC_WebSite_Backend.Repository
                 UserId = AppUser.Id,
                 Username = AppUser.UserName
             };
-            if (!result.Succeeded) return ret;
             return ret;
         }
     }
