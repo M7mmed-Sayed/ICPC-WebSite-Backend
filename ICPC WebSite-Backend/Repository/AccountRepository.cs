@@ -40,5 +40,10 @@ namespace ICPC_WebSite_Backend.Repository
             message += $"This is your confirmation <a href=\"{domain}/api/Account/confirm?id={AppUser.Id}&token={token}\">Link</a>";
             _emailSender.SendEmail(AppUser.Email, message);
         }
+        public async Task<IdentityResult> Confirm(string id, string token) {
+            var user = await _userManager.FindByIdAsync(id);
+
+            return await _userManager.ConfirmEmailAsync(user, token);
+        }
     }
 }

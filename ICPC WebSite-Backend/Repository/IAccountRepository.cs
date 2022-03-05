@@ -1,4 +1,5 @@
 ﻿using ICPC_WebSite_Backend.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace ICPC_WebSite_Backend.Repository
 {
@@ -6,5 +7,7 @@ namespace ICPC_WebSite_Backend.Repository
     {
         Task<SignUpResponse> SignUpAsync(SignUp user);
         void SendToken(User AppUser);
+        Task<IdentityResult> Confirm(string id, string token);
+
     }
 }
