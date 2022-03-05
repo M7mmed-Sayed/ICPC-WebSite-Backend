@@ -36,5 +36,15 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return BadRequest(res.Errors);
         }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] SignIn signInModel) {
+            var result = await _accountRepository.LoginAsync(signInModel);
+
+            if (result == null) {
+                return Unauthorized();
+            }
+
+            return Ok(result);
+        }
     }
 }

@@ -6,6 +6,8 @@ namespace ICPC_WebSite_Backend.Repository
     public interface IAccountRepository
     {
         Task<SignUpResponse> SignUpAsync(SignUp user);
+        Task<SignInRespones> LoginAsync(SignIn signInModel);
+
         Task<ValidateResponse> SendToken(User AppUser);
         Task<IdentityResult> Confirm(string id, string token);
 
