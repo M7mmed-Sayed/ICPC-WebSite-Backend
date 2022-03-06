@@ -20,12 +20,12 @@ builder.Services.AddIdentity<User, IdentityRole>(options => options.User.Require
 builder.Services.AddTransient<IAccountRepository, AccountRepository>();
 var myEmail = builder.Configuration["email"];
 var myPassword = builder.Configuration["emailpassword"];
-builder.Services.AddTransient<IEmailSender, EmailSender>(op => new EmailSender(myEmail, myPassword));
+var mailSubmissionPort = Convert.ToInt32(builder.Configuration["mailSubmissionPort"]);
+builder.Services.AddTransient<IEmailSender, EmailSender>(op => new EmailSender(myEmail, myPassword, mailSubmissionPort));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
