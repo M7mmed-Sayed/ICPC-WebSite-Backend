@@ -12,15 +12,15 @@ namespace ICPC_WebSite_Backend.Utility
             _email = email;
             _password = password;
         }
-        public ValidateResponse SendEmail(string emailTo, string token, bool isHTML = true) {
+        public ValidateResponse SendEmail(string emailTo, string MailSubject, string MailBody, bool isHTML = true) {
             var validate = ValidConfiguration();
             if (!validate.Succeeded) {
                 Console.WriteLine("Email Sender isn't configured");
                 return validate;
             }
             MailMessage mailMessage = new MailMessage(_email, emailTo);
-            mailMessage.Subject = "ICPC Communities | Confirmation Mail";
-            mailMessage.Body = token;
+            mailMessage.Subject = MailSubject;
+            mailMessage.Body = MailBody;
             mailMessage.IsBodyHtml = isHTML;
             SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587);
             smtpClient.Credentials = new System.Net.NetworkCredential() {
