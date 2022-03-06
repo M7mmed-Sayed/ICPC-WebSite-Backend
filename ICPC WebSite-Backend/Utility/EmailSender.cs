@@ -7,11 +7,13 @@ namespace ICPC_WebSite_Backend.Utility
     {
         private readonly string _email;
         private readonly string _password;
+        private readonly string _SMTPServerAddress;
         private readonly int _mailSubmissionPort;
 
-        public EmailSender(string email, string password, int mailSubmissionPort) {
+        public EmailSender(string email, string password, string SMTPServerAddress, int mailSubmissionPort) {
             _email = email;
             _password = password;
+            _SMTPServerAddress = SMTPServerAddress;
             _mailSubmissionPort = mailSubmissionPort;
         }
         public ValidateResponse SendEmail(string emailTo, string MailSubject, string MailBody, bool isHTML = true) {
@@ -24,7 +26,7 @@ namespace ICPC_WebSite_Backend.Utility
             mailMessage.Subject = MailSubject;
             mailMessage.Body = MailBody;
             mailMessage.IsBodyHtml = isHTML;
-            SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", _mailSubmissionPort);
+            SmtpClient smtpClient = new SmtpClient(_SMTPServerAddress, _mailSubmissionPort);
             smtpClient.Credentials = new System.Net.NetworkCredential() {
                 UserName = _email,
                 Password = _password
@@ -47,6 +49,10 @@ namespace ICPC_WebSite_Backend.Utility
             if (String.IsNullOrEmpty(_password)) {
                 result.Succeeded = false;
                 result.Errors.Add(ErrorsList.EmailSenderPasswordIsNotConfigured);
+            }
+            if (String.IsNullOrEmpty(_SMTPServerAddress)) {
+                result.Succeeded = false;
+                result.Errors.Add(ErrorsList.EmailSenderSMTPServerAddressIsNotConfigured);
             }
             if (_mailSubmissionPort == null || _mailSubmissionPort == 0) {
                 result.Succeeded = false;

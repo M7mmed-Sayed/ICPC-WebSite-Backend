@@ -20,8 +20,9 @@ builder.Services.AddIdentity<User, IdentityRole>(options => options.User.Require
 builder.Services.AddTransient<IAccountRepository, AccountRepository>();
 var myEmail = builder.Configuration["email"];
 var myPassword = builder.Configuration["emailpassword"];
+var SMTPServerAddress = builder.Configuration["SMTPServerAddress"];
 var mailSubmissionPort = Convert.ToInt32(builder.Configuration["mailSubmissionPort"]);
-builder.Services.AddTransient<IEmailSender, EmailSender>(op => new EmailSender(myEmail, myPassword, mailSubmissionPort));
+builder.Services.AddTransient<IEmailSender, EmailSender>(op => new EmailSender(myEmail, myPassword, SMTPServerAddress, mailSubmissionPort));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

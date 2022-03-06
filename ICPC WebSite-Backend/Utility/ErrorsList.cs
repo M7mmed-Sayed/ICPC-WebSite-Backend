@@ -31,5 +31,6 @@ namespace ICPC_WebSite_Backend.Utility
         public static Error EmailSenderEmailIsNotConfigured = new Error { Code = "EmailSenderEmailIsNotConfigured", Description = "Value cannot be null. (Parameter 'email')" };
         public static Error EmailSenderPasswordIsNotConfigured = new Error { Code = "EmailSenderPasswordIsNotConfigured", Description = "Value cannot be null. (Parameter 'password')" };
         public static Error EmailSenderMailSubmissionPortIsNotConfigured = new Error { Code = "EmailSenderMailSubmissionPortIsNotConfigured", Description = "Value cannot be null. (Parameter 'mailSubmissionPort')" };
+        public static Error EmailSenderSMTPServerAddressIsNotConfigured = new Error { Code = "EmailSenderSMTPServerAddressIsNotConfigured", Description = "Value cannot be null. (Parameter 'SMTPServerAddress')" };
     }
 }
