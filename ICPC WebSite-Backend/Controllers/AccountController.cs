@@ -27,5 +27,14 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+        [HttpGet("confirm")]
+        public async Task<IActionResult> Confirm([FromQuery] string id, [FromQuery] string token) {
+            var res = await _accountRepository.Confirm(id, token);
+            if (res.Succeeded) {
+                return Ok(res);
+                //return Redirect("\\");
+            }
+            return BadRequest(res.Errors);
+        }
     }
 }
