@@ -38,7 +38,8 @@ namespace ICPC_WebSite_Backend.Repository
             var message = $"Hello {AppUser.FirstName}<br>";
             var domain = "";
             message += $"This is your confirmation <a href=\"{domain}/api/Account/confirm?id={AppUser.Id}&token={token}\">Link</a>";
-            _emailSender.SendEmail(AppUser.Email, message);
+            var subject = "Competitve Programing Confirmaition";
+            _emailSender.SendEmail(AppUser.Email, subject, message);
         }
         public async Task<IdentityResult> Confirm(string id, string token) {
             var user = await _userManager.FindByIdAsync(id);
