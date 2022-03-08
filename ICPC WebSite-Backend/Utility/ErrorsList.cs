@@ -12,8 +12,8 @@ namespace ICPC_WebSite_Backend.Utility
         public static Error MissingPassword = new Error { Code = "MissingPassword", Description = "Password field is required" };
         public static Error MissingConfirmPassword = new Error { Code = "MissingConfirmPassword", Description = "Confirm Password field is required" };
         public static Error PasswordDonotMatch = new Error { Code = "PasswordDonotMatch", Description = "Confirm Password field is required" };
-        
-        
+
+
         public static Error InvalidFirstName = new Error { Code = "InvalidFirstName", Description = "Invalid email address" };
         public static Error InvalidLastName = new Error { Code = "InvalidLastName", Description = "Invalid email address" };
         public static Error InvalidUsername = new Error { Code = "InvalidUsername", Description = "Invalid email address" };
@@ -26,5 +26,11 @@ namespace ICPC_WebSite_Backend.Utility
         public static Error PasswordHasNoSympols = new Error { Code = "PasswordHasNoSympols", Description = "Password should contain at least one special case characters" };
         public static Error PasswordLengthIsTooShort = new Error { Code = "PasswordLengthIsTooShort", Description = "Password should not be less than 8 characters" };
 
+
+        //
+        public static Error EmailSenderEmailIsNotConfigured = new Error { Code = "EmailSenderEmailIsNotConfigured", Description = "Value cannot be null. (Parameter 'email')" };
+        public static Error EmailSenderPasswordIsNotConfigured = new Error { Code = "EmailSenderPasswordIsNotConfigured", Description = "Value cannot be null. (Parameter 'password')" };
+        public static Error EmailSenderMailSubmissionPortIsNotConfigured = new Error { Code = "EmailSenderMailSubmissionPortIsNotConfigured", Description = "Value cannot be null. (Parameter 'mailSubmissionPort')" };
+        public static Error EmailSenderSMTPServerAddressIsNotConfigured = new Error { Code = "EmailSenderSMTPServerAddressIsNotConfigured", Description = "Value cannot be null. (Parameter 'SMTPServerAddress')" };
     }
 }

@@ -1,6 +1,7 @@
 using ICPC_WebSite_Backend.Data;
 using ICPC_WebSite_Backend.Models;
 using ICPC_WebSite_Backend.Repository;
+using ICPC_WebSite_Backend.Utility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,11 +18,15 @@ builder.Services.AddIdentity<User, IdentityRole>(options => options.User.Require
        .AddEntityFrameworkStores<ApplicationDbContext>()
        .AddDefaultTokenProviders();
 builder.Services.AddTransient<IAccountRepository, AccountRepository>();
+var myEmail = builder.Configuration["email"];
+var myPassword = builder.Configuration["emailpassword"];
+var SMTPServerAddress = builder.Configuration["SMTPServerAddress"];
+var mailSubmissionPort = Convert.ToInt32(builder.Configuration["mailSubmissionPort"]);
+builder.Services.AddTransient<IEmailSender, EmailSender>(op => new EmailSender(myEmail, myPassword, SMTPServerAddress, mailSubmissionPort));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
