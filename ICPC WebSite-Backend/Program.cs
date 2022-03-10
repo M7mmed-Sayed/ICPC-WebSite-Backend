@@ -2,8 +2,11 @@ using ICPC_WebSite_Backend.Data;
 using ICPC_WebSite_Backend.Models;
 using ICPC_WebSite_Backend.Repository;
 using ICPC_WebSite_Backend.Utility;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +21,23 @@ builder.Services.AddIdentity<User, IdentityRole>(options => options.User.Require
        .AddEntityFrameworkStores<ApplicationDbContext>()
        .AddDefaultTokenProviders();
 builder.Services.AddTransient<IAccountRepository, AccountRepository>();
+
+builder.Services.AddAuthentication(option => {
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+                .AddJwtBearer(option => {
+                    option.SaveToken = true;
+                    option.RequireHttpsMetadata = false;
+                    option.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters() {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+                    };
+                });
 var myEmail = builder.Configuration["email"];
 var myPassword = builder.Configuration["emailpassword"];
 var SMTPServerAddress = builder.Configuration["SMTPServerAddress"];
@@ -32,6 +52,7 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 
 app.UseAuthorization();
 

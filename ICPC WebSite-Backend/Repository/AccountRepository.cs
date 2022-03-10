@@ -1,19 +1,27 @@
 ﻿using ICPC_WebSite_Backend.Models;
 using ICPC_WebSite_Backend.Utility;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace ICPC_WebSite_Backend.Repository
 {
     public class AccountRepository : IAccountRepository
     {
         private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
 
-
-        public AccountRepository(UserManager<User> userManager, IEmailSender emailSender) {
+        public AccountRepository(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration, IEmailSender emailSender) {
             _userManager = userManager;
             _emailSender = emailSender;
+            _signInManager = signInManager;
+            _configuration = configuration;
         }
+
         public async Task<SignUpResponse> SignUpAsync(SignUp user) {
             var AppUser = new User {
                 FirstName = user.FirstName,
@@ -57,6 +65,36 @@ namespace ICPC_WebSite_Backend.Repository
             var user = await _userManager.FindByIdAsync(id);
 
             return await _userManager.ConfirmEmailAsync(user, token);
+        }
+        public async Task<SignInRespones> LoginAsync(SignIn signInModel) {
+            var user = await _userManager.FindByEmailAsync(signInModel.Email);
+            if (user == null) return null;
+            var result = await _signInManager.PasswordSignInAsync(user, signInModel.Password, false, false);
+
+            if (!result.Succeeded)
+                return null;
+
+            var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, signInModel.Email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+            var authSigninKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]));
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JWT:ValidIssuer"],
+                audience: _configuration["JWT:ValidAudience"],
+                expires: DateTime.Now.AddDays(1),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigninKey, SecurityAlgorithms.HmacSha256Signature)
+                );
+
+            return new SignInRespones {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                UserId = user.Id,
+                Email = user.Email,
+                Username = user.UserName
+            };
         }
     }
 }
