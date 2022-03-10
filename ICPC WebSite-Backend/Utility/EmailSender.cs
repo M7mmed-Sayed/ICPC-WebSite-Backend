@@ -40,6 +40,7 @@ namespace ICPC_WebSite_Backend.Utility
             if (String.IsNullOrEmpty(_email)) {
                 result.Succeeded = false;
                 result.Errors.Add(ErrorsList.EmailSenderEmailIsNotConfigured);
+                return result;
             }
             if (!Validate.IsValidEmail(_email)) {
                 result.Succeeded = false;

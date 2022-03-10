@@ -23,23 +23,35 @@ namespace ICPC_WebSite_Backend.Repository
             };
             var result = await _userManager.CreateAsync(AppUser, user.Password);
             var ret = new SignUpResponse {
-                Errors = result.Errors,
                 Succeeded = result.Succeeded,
-                Email = AppUser.Email,
-                UserId = AppUser.Id,
-                Username = AppUser.UserName
             };
-            SendToken(AppUser);
+            foreach (var err in result.Errors) {
+                ret.Errors.Add(new Error() {
+                    Code = err.Code,
+                    Description = err.Description,
+                });
+            }
+            if (!result.Succeeded) {
+                return ret;
+            }
+            ret.Email = AppUser.Email;
+            ret.UserId = AppUser.Id;
+            ret.Username = AppUser.UserName;
+            var SendEmailResult = await SendToken(AppUser);
+            if (!SendEmailResult.Succeeded) {
+                ret.Succeeded = false;
+                ret.Errors.AddRange(SendEmailResult.Errors);
+            }
             return ret;
         }
-        public async void SendToken(User AppUser) {
+        public async Task<ValidateResponse> SendToken(User AppUser) {
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(AppUser);
             token = System.Web.HttpUtility.UrlEncode(token);
             var message = $"Hello {AppUser.FirstName}<br>";
             var domain = "";
             message += $"This is your confirmation <a href=\"{domain}/api/Account/confirm?id={AppUser.Id}&token={token}\">Link</a>";
             var subject = "Competitve Programing Confirmaition";
-            _emailSender.SendEmail(AppUser.Email, subject, message);
+            return _emailSender.SendEmail(AppUser.Email, subject, message);
         }
         public async Task<IdentityResult> Confirm(string id, string token) {
             var user = await _userManager.FindByIdAsync(id);
