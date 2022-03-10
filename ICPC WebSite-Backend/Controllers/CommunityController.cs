@@ -1,5 +1,6 @@
 ﻿using ICPC_WebSite_Backend.Models.DTO;
 using ICPC_WebSite_Backend.Repository;
+using ICPC_WebSite_Backend.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,9 @@ namespace ICPC_WebSite_Backend.Controllers
         }
         [HttpPost("registerCommunity")]
         public async Task<IActionResult> Register([FromBody] CommunityDTO community) {
+            var validate = Validate.IsValidCommunity(community);
+            if (!validate.Succeeded)
+                return BadRequest(validate.Errors);
 
             var result = await _communityRepository.RegisterCommunityAsync(community);
             if (!result.Succeeded) {
