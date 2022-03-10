@@ -14,6 +14,9 @@ namespace ICPC_WebSite_Backend.Data
         public DbSet<Community> communities { get; set; }
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
+            builder.Entity<Community>()
+           .HasAlternateKey(c => c.Name)
+           .HasName("AlternateKey_Name");
         }
     }
 }
