@@ -1,4 +1,5 @@
 ﻿using ICPC_WebSite_Backend.Models;
+using ICPC_WebSite_Backend.Models.DTO;
 using System.Text.RegularExpressions;
 
 namespace ICPC_WebSite_Backend.Utility
@@ -65,6 +66,14 @@ namespace ICPC_WebSite_Backend.Utility
             if (!validatePassword.Succeeded) {
                 result.Succeeded = false;
                 result.Errors.AddRange(validatePassword.Errors);
+            }
+            return result;
+        }
+        public static ValidateResponse IsValidCommunity(CommunityDTO community) {
+            var result = new ValidateResponse();
+            if (string.IsNullOrEmpty(community.Name)) {
+                result.Succeeded = false;
+                result.Errors.Add(ErrorsList.CommunityNameCanNotBeEmpty);
             }
             return result;
         }
