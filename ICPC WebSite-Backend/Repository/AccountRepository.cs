@@ -14,10 +14,12 @@ namespace ICPC_WebSite_Backend.Repository
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountRepository(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration, IEmailSender emailSender) {
+        public AccountRepository(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration, IEmailSender emailSender, RoleManager<IdentityRole> roleManager) {
             _userManager = userManager;
             _emailSender = emailSender;
+            _roleManager = roleManager;
             _signInManager = signInManager;
             _configuration = configuration;
         }
@@ -28,6 +30,7 @@ namespace ICPC_WebSite_Backend.Repository
                 LastName = user.LastName,
                 UserName = user.UserName,
                 Email = user.Email
+                
             };
             var result = await _userManager.CreateAsync(AppUser, user.Password);
             var ret = new SignUpResponse {
@@ -50,6 +53,7 @@ namespace ICPC_WebSite_Backend.Repository
                 ret.Succeeded = false;
                 ret.Errors.AddRange(SendEmailResult.Errors);
             }
+          //  await _userManager.AddToRoleAsync(AppUser, "CommunityLeader");
             return ret;
         }
         public async Task<ValidateResponse> SendToken(User AppUser) {
@@ -70,7 +74,10 @@ namespace ICPC_WebSite_Backend.Repository
             var user = await _userManager.FindByEmailAsync(signInModel.Email);
             if (user == null) return null;
             var result = await _signInManager.PasswordSignInAsync(user, signInModel.Password, false, false);
-
+            var userClaims= await _userManager.GetClaimsAsync(user);
+            var roles= await _userManager.GetRolesAsync(user);
+            var rolesClaims = new List<Claim>();
+            foreach (var role in roles) rolesClaims.Add(new Claim("roles", role));
             if (!result.Succeeded)
                 return null;
 
@@ -78,7 +85,7 @@ namespace ICPC_WebSite_Backend.Repository
             {
                 new Claim(ClaimTypes.Name, signInModel.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
+            }.Union(userClaims).Union(rolesClaims);
             var authSigninKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]));
 
             var token = new JwtSecurityToken(
@@ -95,6 +102,30 @@ namespace ICPC_WebSite_Backend.Repository
                 Email = user.Email,
                 Username = user.UserName
             };
+        }
+        public async Task<String> AddRoleAsync(UserRole userRole)
+        {
+            var user = await _userManager.FindByIdAsync(userRole.UserId);
+            if (user is null||!await _roleManager.RoleExistsAsync(userRole.Role)) return "invaled User or id";
+            if(await _userManager.IsInRoleAsync(user, userRole.Role))
+                return "User already has  this Role";
+            var result = await _userManager.AddToRoleAsync(user, userRole.Role);
+            if (result.Succeeded)
+                return String.Empty;
+            return "Error";
+
+        }
+        public async Task<String> RemoveRoleAsync(UserRole userRole)
+        {
+            var user = await _userManager.FindByIdAsync(userRole.UserId);
+            if (user is null || !await _roleManager.RoleExistsAsync(userRole.Role)) return "invaled User or id";
+            if (!await _userManager.IsInRoleAsync(user, userRole.Role))
+                return "User has'nt  this Role";
+            var result = await _userManager.RemoveFromRoleAsync(user, userRole.Role);
+            if (result.Succeeded)
+                return String.Empty;
+            return "Error";
+
         }
     }
 }
