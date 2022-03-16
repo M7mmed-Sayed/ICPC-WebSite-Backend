@@ -22,7 +22,10 @@ namespace ICPC_WebSite_Backend.Repository
             }
             catch (Exception ex) {
                 ret.Succeeded = false;
-                ret.Errors.Add(new Error() { Code = ex.Message, Description = ex.InnerException.Message });
+                var err = new Error() { Code = ex.Message };
+                if (ex.InnerException != null) err.Description = ex.InnerException.Message;
+
+                ret.Errors.Add(err);
             }
             return ret;
         }
