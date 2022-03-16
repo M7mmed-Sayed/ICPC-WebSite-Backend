@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace ICPC_WebSite_Backend.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
     [ApiController]
     public class CommunityController : ControllerBase
     {
@@ -17,6 +16,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public CommunityController(ICommunityRepository communityRepository) {
             _communityRepository = communityRepository;
         }
+        [Authorize]
         [HttpPost("registerCommunity")]
         public async Task<IActionResult> Register([FromBody] CommunityDTO community) {
             var validate = Validate.IsValidCommunity(community);
@@ -28,6 +28,14 @@ namespace ICPC_WebSite_Backend.Controllers
                 return Unauthorized(result.Errors);
             }
             return Ok(result);
+        }
+        [HttpGet("")]
+        public async Task<IActionResult> GetAllCommunities() {
+            var result = await _communityRepository.GetAllCommunities();
+            if (!result.Succeeded) {
+                return Unauthorized(result.Errors);
+            }
+            return Ok(result.Data);
         }
     }
 }
