@@ -2,14 +2,12 @@
 {
     public class RolesList
     {
-        public static List<string> UserRoles = new List<string>()
-         {
-             "CommunityLeader",
-            "HeadOfTraining",
-            "TrainingManager",
-            "Mentor",
-            "Trainee"
-         };
+        public static  string CommunityLeader = "CommunityLeader";
+        public static string HeadOfTraining = "HeadOfTraining";
+        public static string TrainingManager = "TrainingManager";
+        public static string Mentor = "Mentor";
+        public static string Trainee = "Trainee";
+        
          
     }
 }
