@@ -1,4 +1,5 @@
 ﻿using ICPC_WebSite_Backend.Repository;
+using ICPC_WebSite_Backend.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -52,10 +53,21 @@ namespace ICPC_WebSite_Backend.Controllers
                 return BadRequest(ModelState);
             var result = await _accountRepository.AddRoleAsync(userRole);
 
-            if (!string.IsNullOrEmpty(result))
-                return BadRequest(result);
+            
 
-            return Ok(userRole);
+            return Ok(result);
         }
+        [HttpPost("remove-Role")]
+        public async Task<IActionResult> RemoveRole(Models.UserRole userRole)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var result = await _accountRepository.RemoveRoleAsync(userRole);
+
+
+
+            return Ok(result);
+        }
+
     }
 }
