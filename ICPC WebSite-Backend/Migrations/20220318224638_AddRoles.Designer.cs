@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ICPC_WebSite_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220316140604_AddRoles")]
+    [Migration("20220318224638_AddRoles")]
     partial class AddRoles
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -159,36 +159,36 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5a3e5711-88dd-43a5-ad35-ab980d840f0d",
-                            ConcurrencyStamp = "8de8baa0-33d7-4f19-92ef-1823755da1f3",
+                            Id = "178e12a2-96ae-4c2b-b839-c1166fb43427",
+                            ConcurrencyStamp = "b595a9b3-1311-4cb0-9ecb-7afe84a4d5eb",
                             Name = "CommunityLeader",
                             NormalizedName = "COMMUNITYLEADER"
                         },
                         new
                         {
-                            Id = "7693d26b-0956-47c2-8297-11a2cb86f8b6",
-                            ConcurrencyStamp = "809dfd03-38d9-4d3d-acec-603a4e491f19",
+                            Id = "5788a0d8-f987-4937-928d-f75471b0426a",
+                            ConcurrencyStamp = "beabc0a6-781c-440f-b29c-31a5b6d5b607",
                             Name = "HeadOfTraining",
                             NormalizedName = "HEADOFTRAINING"
                         },
                         new
                         {
-                            Id = "7a2593b1-3483-4994-96ee-e824e8867e11",
-                            ConcurrencyStamp = "1609dafe-0476-4a0e-9587-f4f8b4c9e8be",
+                            Id = "2cf04b6f-8530-4f2b-b9c9-34b2e032e0f4",
+                            ConcurrencyStamp = "6ea661e4-34e6-4f97-bf1a-7eda6c838ea2",
                             Name = "TrainingManager",
                             NormalizedName = "TRAININGMANAGER"
                         },
                         new
                         {
-                            Id = "1523d97f-5c2d-40b8-ba9e-60859b645825",
-                            ConcurrencyStamp = "5e97147e-bfb5-4bdf-8344-e2560f2b55ff",
+                            Id = "bbea7e85-803c-4ec1-afc8-97518d2a8815",
+                            ConcurrencyStamp = "11802107-9eed-4535-9860-160e93352493",
                             Name = "Mentor",
                             NormalizedName = "MENTOR"
                         },
                         new
                         {
-                            Id = "a77b3f45-77f1-41f7-a67c-cadf8bb81049",
-                            ConcurrencyStamp = "1e26b0b5-7e6b-4979-90a8-8b275a9ca586",
+                            Id = "930c87d5-24b4-4774-8300-4cc7a658de5c",
+                            ConcurrencyStamp = "d061130d-3ca8-4cc9-a563-815a42c3cd1b",
                             Name = "Trainee",
                             NormalizedName = "TRAINEE"
                         });

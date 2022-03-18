@@ -22,7 +22,6 @@ builder.Services.AddIdentity<User, IdentityRole>(options => options.User.Require
        .AddDefaultTokenProviders();
 builder.Services.AddTransient<IAccountRepository, AccountRepository>();
 builder.Services.AddTransient<ICommunityRepository, CommunityRepository>();
-
 builder.Services.AddAuthentication(option => {
     option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
