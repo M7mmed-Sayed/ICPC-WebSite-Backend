@@ -24,6 +24,7 @@ namespace ICPC_WebSite_Backend.Repository
                 var community = new Community() {
                     Name = communityDTO.Name,
                     About = communityDTO.About,
+                    OfficialMail = communityDTO.OfficialMail
                 };
                 await _applicationDbContext.communities.AddAsync(community);
                 await _applicationDbContext.SaveChangesAsync();
