@@ -2,6 +2,8 @@ using ICPC_WebSite_Backend.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
+ConfigProvider.Configuration = builder.Configuration;
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -9,10 +11,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.ConfigureDatabase(builder.Configuration);
-builder.Services.RegisterRepos(builder.Configuration);
-builder.Services.RegisterAuth(builder.Configuration);
-
+builder.Services.ConfigureDatabase();
+builder.Services.RegisterRepos();
+builder.Services.RegisterAuth();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

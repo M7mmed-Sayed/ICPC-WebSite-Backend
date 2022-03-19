@@ -1,6 +1,7 @@
 ﻿using ICPC_WebSite_Backend.Data;
 using ICPC_WebSite_Backend.Models;
 using ICPC_WebSite_Backend.Repository;
+using ICPC_WebSite_Backend.Configurations;
 using ICPC_WebSite_Backend.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -13,17 +14,13 @@ namespace ICPC_WebSite_Backend.Configurations
     public static class ServiceExtensions
     {
         // public static void RegisterRepos(this IServiceCollection Services) {
-        public static void RegisterRepos(this IServiceCollection Services, IConfiguration Configuration) {
+        public static void RegisterRepos(this IServiceCollection Services) {
             Services.AddTransient<IAccountRepository, AccountRepository>();
             Services.AddTransient<ICommunityRepository, CommunityRepository>();
-            var myEmail = Configuration["email"];
-            var myPassword = Configuration["emailpassword"];
-            var SMTPServerAddress = Configuration["SMTPServerAddress"];
-            var mailSubmissionPort = Convert.ToInt32(Configuration["mailSubmissionPort"]);
-            Services.AddTransient<IEmailSender, EmailSender>(op => new EmailSender(myEmail, myPassword, SMTPServerAddress, mailSubmissionPort));
+            Services.AddTransient<IEmailSender, EmailSender>(op => new EmailSender(Config.myEmail, Config.myPassword, Config.SMTPServerAddress, Config.mailSubmissionPort));
 
         }
-        public static void RegisterAuth(this IServiceCollection Services, IConfiguration Configuration) {
+        public static void RegisterAuth(this IServiceCollection Services) {
             Services.AddAuthentication(option => {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -34,14 +31,14 @@ namespace ICPC_WebSite_Backend.Configurations
                 option.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters() {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidAudience = Configuration["JWT:ValidAudience"],
-                    ValidIssuer = Configuration["JWT:ValidIssuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                    ValidAudience = Config.JWTValidAudience,
+                    ValidIssuer = Config.JWTValidIssuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config.JWTSecret))
                 };
             });
         }
-        public static void ConfigureDatabase(this IServiceCollection Services, IConfiguration Configuration) {
-            Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default")));
+        public static void ConfigureDatabase(this IServiceCollection Services) {
+            Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Config.DefaultConnectionString));
             Services.AddIdentity<User, IdentityRole>(options => options.User.RequireUniqueEmail = true)
                    .AddEntityFrameworkStores<ApplicationDbContext>()
                    .AddDefaultTokenProviders();
