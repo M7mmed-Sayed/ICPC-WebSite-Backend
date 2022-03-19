@@ -1,3 +1,4 @@
+using ICPC_WebSite_Backend.Configurations;
 using ICPC_WebSite_Backend.Data;
 using ICPC_WebSite_Backend.Models;
 using ICPC_WebSite_Backend.Repository;
@@ -43,8 +44,12 @@ var myPassword = builder.Configuration["emailpassword"];
 var SMTPServerAddress = builder.Configuration["SMTPServerAddress"];
 var mailSubmissionPort = Convert.ToInt32(builder.Configuration["mailSubmissionPort"]);
 builder.Services.AddTransient<IEmailSender, EmailSender>(op => new EmailSender(myEmail, myPassword, SMTPServerAddress, mailSubmissionPort));
+
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope()) {
+    await scope.ServiceProvider.CreateRoles();
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
     app.UseSwagger();

@@ -46,7 +46,7 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.HasAlternateKey("Name")
                         .HasName("AlternateKey_Name");
 
-                    b.ToTable("communities");
+                    b.ToTable("communities", (string)null);
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Models.User", b =>
@@ -153,43 +153,6 @@ namespace ICPC_WebSite_Backend.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "178e12a2-96ae-4c2b-b839-c1166fb43427",
-                            ConcurrencyStamp = "b595a9b3-1311-4cb0-9ecb-7afe84a4d5eb",
-                            Name = "CommunityLeader",
-                            NormalizedName = "COMMUNITYLEADER"
-                        },
-                        new
-                        {
-                            Id = "5788a0d8-f987-4937-928d-f75471b0426a",
-                            ConcurrencyStamp = "beabc0a6-781c-440f-b29c-31a5b6d5b607",
-                            Name = "HeadOfTraining",
-                            NormalizedName = "HEADOFTRAINING"
-                        },
-                        new
-                        {
-                            Id = "2cf04b6f-8530-4f2b-b9c9-34b2e032e0f4",
-                            ConcurrencyStamp = "6ea661e4-34e6-4f97-bf1a-7eda6c838ea2",
-                            Name = "TrainingManager",
-                            NormalizedName = "TRAININGMANAGER"
-                        },
-                        new
-                        {
-                            Id = "bbea7e85-803c-4ec1-afc8-97518d2a8815",
-                            ConcurrencyStamp = "11802107-9eed-4535-9860-160e93352493",
-                            Name = "Mentor",
-                            NormalizedName = "MENTOR"
-                        },
-                        new
-                        {
-                            Id = "930c87d5-24b4-4774-8300-4cc7a658de5c",
-                            ConcurrencyStamp = "d061130d-3ca8-4cc9-a563-815a42c3cd1b",
-                            Name = "Trainee",
-                            NormalizedName = "TRAINEE"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
