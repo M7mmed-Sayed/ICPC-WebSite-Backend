@@ -22,17 +22,26 @@ namespace ICPC_WebSite_Backend.Utility
                 Console.WriteLine("Email Sender isn't configured");
                 return validate;
             }
-            MailMessage mailMessage = new MailMessage(_email, emailTo);
-            mailMessage.Subject = MailSubject;
-            mailMessage.Body = MailBody;
-            mailMessage.IsBodyHtml = isHTML;
-            SmtpClient smtpClient = new SmtpClient(_SMTPServerAddress, _mailSubmissionPort);
-            smtpClient.Credentials = new System.Net.NetworkCredential() {
-                UserName = _email,
-                Password = _password
-            };
-            smtpClient.EnableSsl = true;
-            smtpClient.Send(mailMessage);
+            try {
+                MailMessage mailMessage = new MailMessage(_email, emailTo);
+                mailMessage.Subject = MailSubject;
+                mailMessage.Body = MailBody;
+                mailMessage.IsBodyHtml = isHTML;
+                SmtpClient smtpClient = new SmtpClient(_SMTPServerAddress, _mailSubmissionPort);
+                smtpClient.Credentials = new System.Net.NetworkCredential() {
+                    UserName = _email,
+                    Password = _password
+                };
+                smtpClient.EnableSsl = true;
+
+                smtpClient.Send(mailMessage);
+            }
+            catch (Exception ex) {
+                validate.Succeeded = false;
+                var err = new Error() { Code = ex.Message };
+                if (ex.InnerException != null) err.Description = ex.InnerException.Message;
+                validate.Errors.Add(err);
+            }
             return validate;
         }
         public ValidateResponse ValidConfiguration() {
