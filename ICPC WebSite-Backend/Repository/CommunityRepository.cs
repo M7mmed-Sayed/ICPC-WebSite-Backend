@@ -1,13 +1,20 @@
 ﻿using ICPC_WebSite_Backend.Data;
 using ICPC_WebSite_Backend.Models;
 using ICPC_WebSite_Backend.Models.DTO;
+using ICPC_WebSite_Backend.Utility;
+using Microsoft.AspNetCore.Identity;
 
 namespace ICPC_WebSite_Backend.Repository
 {
     public class CommunityRepository : ICommunityRepository
     {
         private readonly ApplicationDbContext _applicationDbContext;
-        public CommunityRepository(ApplicationDbContext applicationDbContext) {
+        private readonly UserManager<User> _userManager;
+        private readonly IEmailSender _emailSender;
+        public CommunityRepository(ApplicationDbContext applicationDbContext,
+            UserManager<User> userManager, IEmailSender emailSender) {
+            _userManager = userManager;
+            _emailSender = emailSender;
             _applicationDbContext = applicationDbContext;
         }
 
@@ -38,5 +45,63 @@ namespace ICPC_WebSite_Backend.Repository
             }
             return ret;
         }
+        public async Task<ValidateResponse> AcceptCommunity(CommunityDTO communityDTO) {
+            var ret = new ValidateResponse();
+            var community = _applicationDbContext.communities.Where(C => C.Name == communityDTO.Name).FirstOrDefault();
+
+            var user = await _userManager.FindByEmailAsync(communityDTO.Email);
+            if (community != null) {
+                await _userManager.AddToRoleAsync(user, RolesList.CommunityLeader);
+                community.IsApproved = true;
+                await _applicationDbContext.SaveChangesAsync();
+
+                //Accepted Mail
+                var message = $"congratulations {user.FirstName} <br>";
+                message += $"Your request for Creating {community.Name} Community was Accepted" +
+                    $" <br> Welcome again for you and for {community.Name} community mempers's  <br>" +
+                    $"We assigned you to be {community.Name} Leader "
+                    ;
+                var subject = "Competitve Programing Registeration Community";
+                var emailSendResult = _emailSender.SendEmail(communityDTO.Email, subject, message);
+                if (emailSendResult.Succeeded == false) {
+                    ret.Succeeded = false;
+                    ret.Errors.AddRange(emailSendResult.Errors);
+                }
+            }
+            else {
+                ret.Errors.Add(ErrorsList.CommunityNotFound);
+            }
+            return ret;
+        }
+        public async Task<ValidateResponse> RejectCommunity(CommunityDTO communityDTO) {
+            var ret = new ValidateResponse();
+            var community = _applicationDbContext.communities.Where(C => C.Name == communityDTO.Name).FirstOrDefault();
+
+            var user = await _userManager.FindByEmailAsync(communityDTO.Email);
+            if (community != null) {
+
+                //Reject Mail
+                var message = $"Dear  {user.FirstName} <br>";
+                message += $"I’d like to thank about your request to create {community.Name}" +
+                    $" <br>Unfortunately, after careful consideration We decided to Rejec your request try again after 2 Weeks <br>" +
+                    $"Again, thank you for your interest in creating a Community " +
+                    $"for more inf send XYZ@gmail.com"
+                    ;
+                var subject = "Competitve Programing Registeration Community";
+                _applicationDbContext.communities.Remove(community);
+                await _applicationDbContext.SaveChangesAsync();
+                var emailSendResult = _emailSender.SendEmail(communityDTO.Email, subject, message);
+                if (emailSendResult.Succeeded == false) {
+                    ret.Succeeded = false;
+                    ret.Errors.AddRange(emailSendResult.Errors);
+                }
+            }
+            else {
+                ret.Errors.Add(ErrorsList.CommunityNotFound);
+            }
+            return ret;
+        }
+
+
     }
 }

@@ -7,5 +7,7 @@ namespace ICPC_WebSite_Backend.Repository
     {
         Task<ValidateResponse> RegisterCommunityAsync(CommunityDTO communityDTO);
         Task<ValidateResponse> GetAllCommunities();
+         Task<ValidateResponse> AcceptCommunity(CommunityDTO communityDTO);
+         Task<ValidateResponse> RejectCommunity(CommunityDTO communityDTO);
     }
 }
