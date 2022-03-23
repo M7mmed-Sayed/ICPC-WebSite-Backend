@@ -21,11 +21,11 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> Register([FromBody] CommunityDTO community) {
             var validate = Validate.IsValidCommunity(community);
             if (!validate.Succeeded)
-                return BadRequest(validate.Errors);
+                return BadRequest(validate);
 
             var result = await _communityRepository.RegisterCommunityAsync(community);
             if (!result.Succeeded) {
-                return Unauthorized(result.Errors);
+                return Unauthorized(result);
             }
             return Ok(result);
         }
@@ -33,16 +33,16 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> GetAllCommunities() {
             var result = await _communityRepository.GetAllCommunities();
             if (!result.Succeeded) {
-                return Unauthorized(result.Errors);
+                return Unauthorized(result);
             }
-            return Ok(result.Data);
+            return Ok(result);
         }
         [Authorize(Roles = RolesList.Administrator)]
         [HttpPut("Approve")]
         public async Task<IActionResult> ApproveCommunity([FromQuery] int id) {
             var result = await _communityRepository.AcceptCommunity(id);
             if (!result.Succeeded) {
-                return Unauthorized(result.Errors);
+                return Unauthorized(result);
             }
             return Ok(result);
         }
@@ -51,7 +51,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> RejectCommunity([FromQuery] int id) {
             var result = await _communityRepository.RejectCommunity(id);
             if (!result.Succeeded) {
-                return Unauthorized(result.Errors);
+                return Unauthorized(result);
             }
             return Ok(result);
         }
