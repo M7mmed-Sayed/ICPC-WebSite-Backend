@@ -6,5 +6,6 @@ namespace ICPC_WebSite_Backend.Repository
     public interface ICommunityRepository
     {
         Task<ValidateResponse> RegisterCommunityAsync(CommunityDTO communityDTO);
+        Task<ValidateResponse> GetAllCommunities();
     }
 }

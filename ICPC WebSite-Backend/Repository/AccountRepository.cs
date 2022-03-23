@@ -25,41 +25,41 @@ namespace ICPC_WebSite_Backend.Repository
             _configuration = configuration;
         }
 
-        public async Task<SignUpResponse> SignUpAsync(SignUp user)
-        {
-            var AppUser = new User
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                UserName = user.UserName,
-                Email = user.Email
-
-            };
-            var result = await _userManager.CreateAsync(AppUser, user.Password);
-            var ret = new SignUpResponse
-            {
-                Succeeded = result.Succeeded,
-            };
-            foreach (var err in result.Errors)
-            {
-                ret.Errors.Add(new Error()
-                {
-                    Code = err.Code,
-                    Description = err.Description,
-                });
+        public async Task<SignUpResponse> SignUpAsync(SignUp user) {
+            var ret = new SignUpResponse();
+            try {
+                var AppUser = new User {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    UserName = user.UserName,
+                    Email = user.Email
+                };
+                var result = await _userManager.CreateAsync(AppUser, user.Password);
+                ret.Succeeded = result.Succeeded;
+                foreach (var err in result.Errors) {
+                    ret.Errors.Add(new Error() {
+                        Code = err.Code,
+                        Description = err.Description,
+                    });
+                }
+                if (!result.Succeeded) {
+                    return ret;
+                }
+                ret.Email = AppUser.Email;
+                ret.UserId = AppUser.Id;
+                ret.Username = AppUser.UserName;
+                var SendEmailResult = await SendToken(AppUser);
+                if (!SendEmailResult.Succeeded) {
+                    ret.Succeeded = false;
+                    ret.Errors.AddRange(SendEmailResult.Errors);
+                }
             }
-            if (!result.Succeeded)
-            {
-                return ret;
-            }
-            ret.Email = AppUser.Email;
-            ret.UserId = AppUser.Id;
-            ret.Username = AppUser.UserName;
-            var SendEmailResult = await SendToken(AppUser);
-            if (!SendEmailResult.Succeeded)
-            {
+            catch (Exception ex) {
                 ret.Succeeded = false;
-                ret.Errors.AddRange(SendEmailResult.Errors);
+                var err = new Error() { Code = ex.Message };
+                if (ex.InnerException != null) err.Description = ex.InnerException.Message;
+
+                ret.Errors.Add(err);
             }
             return ret;
         }

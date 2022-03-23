@@ -75,6 +75,10 @@ namespace ICPC_WebSite_Backend.Utility
                 result.Succeeded = false;
                 result.Errors.Add(ErrorsList.CommunityNameCanNotBeEmpty);
             }
+            if (!IsValidEmail(community.OfficialMail)) {
+                result.Succeeded = false;
+                result.Errors.Add(ErrorsList.InvalidEmail);
+            }
             return result;
         }
         public static bool IsValidName(string name) {

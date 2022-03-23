@@ -4,6 +4,7 @@ using ICPC_WebSite_Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ICPC_WebSite_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220319221858_addMailToCommunity")]
+    partial class addMailToCommunity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,7 +52,7 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.HasAlternateKey("Name")
                         .HasName("AlternateKey_Name");
 
-                    b.ToTable("communities", (string)null);
+                    b.ToTable("communities");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Models.User", b =>
