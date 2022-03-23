@@ -61,7 +61,6 @@ namespace ICPC_WebSite_Backend.Repository
                 ret.Succeeded = false;
                 ret.Errors.AddRange(SendEmailResult.Errors);
             }
-            //  await _userManager.AddToRoleAsync(AppUser, "CommunityLeader");
             return ret;
         }
         public async Task<ValidateResponse> SendToken(User AppUser)
