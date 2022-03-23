@@ -50,7 +50,7 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.HasAlternateKey("Name")
                         .HasName("AlternateKey_Name");
 
-                    b.ToTable("communities");
+                    b.ToTable("communities", (string)null);
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Models.User", b =>

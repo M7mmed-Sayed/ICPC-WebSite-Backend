@@ -13,12 +13,10 @@ namespace ICPC_WebSite_Backend.Configurations
 {
     public static class ServiceExtensions
     {
-        // public static void RegisterRepos(this IServiceCollection Services) {
         public static void RegisterRepos(this IServiceCollection Services) {
             Services.AddTransient<IAccountRepository, AccountRepository>();
             Services.AddTransient<ICommunityRepository, CommunityRepository>();
             Services.AddTransient<IEmailSender, EmailSender>(op => new EmailSender(Config.myEmail, Config.myPassword, Config.SMTPServerAddress, Config.mailSubmissionPort));
-
         }
         public static void RegisterAuth(this IServiceCollection Services) {
             Services.AddAuthentication(option => {
@@ -43,6 +41,17 @@ namespace ICPC_WebSite_Backend.Configurations
                    .AddEntityFrameworkStores<ApplicationDbContext>()
                    .AddDefaultTokenProviders();
 
+        }
+        public static async Task CreateRoles(this IServiceProvider Services) {
+            //initializing custom roles 
+            var RoleManager = Services.GetRequiredService<RoleManager<IdentityRole>>();
+            var roleNames = RolesList.Roles;
+            foreach (var roleName in roleNames) {
+                var roleExist = await RoleManager.RoleExistsAsync(roleName);
+                if (!roleExist) {
+                    IdentityResult roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
         }
     }
 }

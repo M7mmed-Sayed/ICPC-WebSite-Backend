@@ -10,6 +10,7 @@ namespace ICPC_WebSite_Backend.Repository
 
         Task<ValidateResponse> SendToken(User AppUser);
         Task<IdentityResult> Confirm(string id, string token);
-
+        Task<UserRoleResponse> RemoveRoleAsync(UserRole userRole);
+        Task<UserRoleResponse> AddRoleAsync(UserRole userRole);
     }
 }

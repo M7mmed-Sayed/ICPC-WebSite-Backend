@@ -35,5 +35,13 @@ namespace ICPC_WebSite_Backend.Utility
 
         //Community
         public static Error CommunityNameCanNotBeEmpty = new Error { Code = "CommunityNameCanNotBeEmpty", Description = "Value cannot be null or empty. (Parameter 'Name')" };
+        
+        //Roles
+        public static Error InvalidRoleName = new Error { Code = "InvalidRoleName", Description = "Invalid Role Name . it's Not Exited." };
+        public static Error DuplicateRoleName = new Error { Code = "DuplicateRoleName", Description = "User already has this Role. " };
+        public static Error UserHasNotThisRole = new Error { Code = "UserHasNotThisRole", Description = "user is not assigned to this role." };
+
+
+
     }
 }
