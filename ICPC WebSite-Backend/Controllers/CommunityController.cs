@@ -16,7 +16,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public CommunityController(ICommunityRepository communityRepository) {
             _communityRepository = communityRepository;
         }
-        [Authorize]
+     //   [Authorize]
         [HttpPost("registerCommunity")]
         public async Task<IActionResult> Register([FromBody] CommunityDTO community) {
             var validate = Validate.IsValidCommunity(community);
@@ -36,6 +36,22 @@ namespace ICPC_WebSite_Backend.Controllers
                 return Unauthorized(result.Errors);
             }
             return Ok(result.Data);
+        }
+        [HttpPost("Approve")]
+        public async Task<IActionResult> ApproveCommunity([FromQuery] int id) {
+            var result = await _communityRepository.AcceptCommunity(id);
+            if (!result.Succeeded) {
+                return Unauthorized(result.Errors);
+            }
+            return Ok(result);
+        }
+        [HttpDelete("Reject")]
+        public async Task<IActionResult> RejectCommunity([FromQuery] int id) {
+            var result = await _communityRepository.RejectCommunity(id);
+            if (!result.Succeeded) {
+                return Unauthorized(result.Errors);
+            }
+            return Ok(result);
         }
     }
 }

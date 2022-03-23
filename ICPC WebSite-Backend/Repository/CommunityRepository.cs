@@ -45,12 +45,17 @@ namespace ICPC_WebSite_Backend.Repository
             }
             return ret;
         }
-        public async Task<ValidateResponse> AcceptCommunity(CommunityDTO communityDTO) {
+        public async Task<ValidateResponse> AcceptCommunity(int communityId) {
             var ret = new ValidateResponse();
-            var community = _applicationDbContext.communities.Where(C => C.Name == communityDTO.Name).FirstOrDefault();
+            var community = await _applicationDbContext.communities.FindAsync(communityId);
 
-            var user = await _userManager.FindByEmailAsync(communityDTO.OfficialMail);
             if (community != null) {
+                var user = await _userManager.FindByEmailAsync(community.OfficialMail);
+                if (user == null) {
+                    ret.Succeeded = false;
+                    ret.Errors.Add(ErrorsList.CannotFindUser);
+                    return ret;
+                }
                 await _userManager.AddToRoleAsync(user, RolesList.CommunityLeader);
                 community.IsApproved = true;
                 await _applicationDbContext.SaveChangesAsync();
@@ -62,7 +67,7 @@ namespace ICPC_WebSite_Backend.Repository
                     $"We assigned you to be {community.Name} Leader "
                     ;
                 var subject = "Competitve Programing Registeration Community";
-                var emailSendResult = _emailSender.SendEmail(communityDTO.OfficialMail, subject, message);
+                var emailSendResult = _emailSender.SendEmail(community.OfficialMail, subject, message);
                 if (emailSendResult.Succeeded == false) {
                     ret.Succeeded = false;
                     ret.Errors.AddRange(emailSendResult.Errors);
@@ -73,13 +78,17 @@ namespace ICPC_WebSite_Backend.Repository
             }
             return ret;
         }
-        public async Task<ValidateResponse> RejectCommunity(CommunityDTO communityDTO) {
+        public async Task<ValidateResponse> RejectCommunity(int communityId) {
             var ret = new ValidateResponse();
-            var community = _applicationDbContext.communities.Where(C => C.Name == communityDTO.Name).FirstOrDefault();
+            var community = await _applicationDbContext.communities.FindAsync(communityId);
 
-            var user = await _userManager.FindByEmailAsync(communityDTO.OfficialMail);
             if (community != null) {
-
+                var user = await _userManager.FindByEmailAsync(community.OfficialMail);
+                if (user == null) {
+                    ret.Succeeded = false;
+                    ret.Errors.Add(ErrorsList.CannotFindUser);
+                    return ret;
+                }
                 //Reject Mail
                 var message = $"Dear  {user.FirstName} <br>";
                 message += $"I’d like to thank about your request to create {community.Name}" +
@@ -90,7 +99,7 @@ namespace ICPC_WebSite_Backend.Repository
                 var subject = "Competitve Programing Registeration Community";
                 _applicationDbContext.communities.Remove(community);
                 await _applicationDbContext.SaveChangesAsync();
-                var emailSendResult = _emailSender.SendEmail(communityDTO.OfficialMail, subject, message);
+                var emailSendResult = _emailSender.SendEmail(community.OfficialMail, subject, message);
                 if (emailSendResult.Succeeded == false) {
                     ret.Succeeded = false;
                     ret.Errors.AddRange(emailSendResult.Errors);
