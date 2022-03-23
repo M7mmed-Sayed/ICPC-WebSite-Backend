@@ -16,7 +16,7 @@ namespace ICPC_WebSite_Backend.Utility
             _SMTPServerAddress = SMTPServerAddress;
             _mailSubmissionPort = mailSubmissionPort;
         }
-        public ValidateResponse SendEmail(string emailTo, string MailSubject, string MailBody, bool isHTML = true) {
+        public Response SendEmail(string emailTo, string MailSubject, string MailBody, bool isHTML = true) {
             var validate = ValidConfiguration();
             if (!validate.Succeeded) {
                 Console.WriteLine("Email Sender isn't configured");
@@ -44,8 +44,8 @@ namespace ICPC_WebSite_Backend.Utility
             }
             return validate;
         }
-        public ValidateResponse ValidConfiguration() {
-            var result = new ValidateResponse();
+        public Response ValidConfiguration() {
+            var result = new Response();
             if (String.IsNullOrEmpty(_email)) {
                 result.Succeeded = false;
                 result.Errors.Add(ErrorsList.EmailSenderEmailIsNotConfigured);

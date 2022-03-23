@@ -24,8 +24,8 @@ namespace ICPC_WebSite_Backend.Repository
             _configuration = configuration;
         }
 
-        public async Task<ValidateResponse> SignUpAsync(SignUp user) {
-            var ret = new ValidateResponse();
+        public async Task<Response> SignUpAsync(SignUp user) {
+            var ret = new Response();
             try {
                 var AppUser = new User {
                     FirstName = user.FirstName,
@@ -64,7 +64,7 @@ namespace ICPC_WebSite_Backend.Repository
             }
             return ret;
         }
-        public async Task<ValidateResponse> SendToken(User AppUser) {
+        public async Task<Response> SendToken(User AppUser) {
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(AppUser);
             token = System.Web.HttpUtility.UrlEncode(token);
             var message = $"Hello {AppUser.FirstName}<br>";
@@ -73,18 +73,18 @@ namespace ICPC_WebSite_Backend.Repository
             var subject = "Competitve Programing Confirmaition";
             return _emailSender.SendEmail(AppUser.Email, subject, message);
         }
-        public async Task<ValidateResponse> Confirm(string id, string token) {
+        public async Task<Response> Confirm(string id, string token) {
             var user = await _userManager.FindByIdAsync(id);
 
             var confirmResult = await _userManager.ConfirmEmailAsync(user, token);
-            var ret = new ValidateResponse() { Succeeded = confirmResult.Succeeded };
+            var ret = new Response() { Succeeded = confirmResult.Succeeded };
             foreach (var err in confirmResult.Errors) {
                 ret.Errors.Add(new Error() { Code = err.Code, Description = err.Description });
             }
             return ret;
         }
-        public async Task<ValidateResponse> LoginAsync(SignIn signInModel) {
-            var ret = new ValidateResponse();
+        public async Task<Response> LoginAsync(SignIn signInModel) {
+            var ret = new Response();
             var user = await _userManager.FindByEmailAsync(signInModel.Email);
             if (user == null) {
                 ret.Succeeded = false;
@@ -125,8 +125,8 @@ namespace ICPC_WebSite_Backend.Repository
             };
             return ret;
         }
-        public async Task<ValidateResponse> AddRoleAsync(UserRole userRole) {
-            var ret = new ValidateResponse();
+        public async Task<Response> AddRoleAsync(UserRole userRole) {
+            var ret = new Response();
             var user = await _userManager.FindByEmailAsync(userRole.UserEmail);
             if (user == null) { ret.Succeeded = false; ret.Errors.Add(ErrorsList.CannotFindUser); };
             if (!await _roleManager.RoleExistsAsync(userRole.Role)) { ret.Succeeded = false; ret.Errors.Add(ErrorsList.InvalidRoleName); }
@@ -136,8 +136,8 @@ namespace ICPC_WebSite_Backend.Repository
             }
             return ret;
         }
-        public async Task<ValidateResponse> RemoveRoleAsync(UserRole userRole) {
-            var ret = new ValidateResponse();
+        public async Task<Response> RemoveRoleAsync(UserRole userRole) {
+            var ret = new Response();
             var user = await _userManager.FindByEmailAsync(userRole.UserEmail);
             if (user == null) { ret.Succeeded = false; ret.Errors.Add(ErrorsList.CannotFindUser); };
             if (!await _roleManager.RoleExistsAsync(userRole.Role)) { ret.Succeeded = false; ret.Errors.Add(ErrorsList.InvalidRoleName); }
