@@ -49,7 +49,7 @@ namespace ICPC_WebSite_Backend.Repository
             var ret = new ValidateResponse();
             var community = _applicationDbContext.communities.Where(C => C.Name == communityDTO.Name).FirstOrDefault();
 
-            var user = await _userManager.FindByEmailAsync(communityDTO.Email);
+            var user = await _userManager.FindByEmailAsync(communityDTO.OfficialMail);
             if (community != null) {
                 await _userManager.AddToRoleAsync(user, RolesList.CommunityLeader);
                 community.IsApproved = true;
@@ -62,7 +62,7 @@ namespace ICPC_WebSite_Backend.Repository
                     $"We assigned you to be {community.Name} Leader "
                     ;
                 var subject = "Competitve Programing Registeration Community";
-                var emailSendResult = _emailSender.SendEmail(communityDTO.Email, subject, message);
+                var emailSendResult = _emailSender.SendEmail(communityDTO.OfficialMail, subject, message);
                 if (emailSendResult.Succeeded == false) {
                     ret.Succeeded = false;
                     ret.Errors.AddRange(emailSendResult.Errors);
@@ -77,7 +77,7 @@ namespace ICPC_WebSite_Backend.Repository
             var ret = new ValidateResponse();
             var community = _applicationDbContext.communities.Where(C => C.Name == communityDTO.Name).FirstOrDefault();
 
-            var user = await _userManager.FindByEmailAsync(communityDTO.Email);
+            var user = await _userManager.FindByEmailAsync(communityDTO.OfficialMail);
             if (community != null) {
 
                 //Reject Mail
@@ -90,7 +90,7 @@ namespace ICPC_WebSite_Backend.Repository
                 var subject = "Competitve Programing Registeration Community";
                 _applicationDbContext.communities.Remove(community);
                 await _applicationDbContext.SaveChangesAsync();
-                var emailSendResult = _emailSender.SendEmail(communityDTO.Email, subject, message);
+                var emailSendResult = _emailSender.SendEmail(communityDTO.OfficialMail, subject, message);
                 if (emailSendResult.Succeeded == false) {
                     ret.Succeeded = false;
                     ret.Errors.AddRange(emailSendResult.Errors);
