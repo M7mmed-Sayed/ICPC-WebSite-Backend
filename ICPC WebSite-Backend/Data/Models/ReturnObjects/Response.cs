@@ -1,4 +1,5 @@
-﻿namespace ICPC_WebSite_Backend.Models
+﻿using ICPC_WebSite_Backend.Utility;
+namespace ICPC_WebSite_Backend.Data.ReturnObjects.Models
 {
     public class Response
     {

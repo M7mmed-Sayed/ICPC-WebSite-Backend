@@ -1,13 +1,12 @@
 ﻿using ICPC_WebSite_Backend.Data;
-using ICPC_WebSite_Backend.Models;
 using ICPC_WebSite_Backend.Repository;
-using ICPC_WebSite_Backend.Configurations;
 using ICPC_WebSite_Backend.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ICPC_WebSite_Backend.Data.Models;
 
 namespace ICPC_WebSite_Backend.Configurations
 {

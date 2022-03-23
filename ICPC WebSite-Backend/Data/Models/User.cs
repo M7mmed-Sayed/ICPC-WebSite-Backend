@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-namespace ICPC_WebSite_Backend.Models
+namespace ICPC_WebSite_Backend.Data.Models
 {
     public class User:IdentityUser
     {
