@@ -37,7 +37,7 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result.Data);
         }
-        [HttpPost("Approve")]
+        [HttpPut("Approve")]
         public async Task<IActionResult> ApproveCommunity([FromQuery] int id) {
             var result = await _communityRepository.AcceptCommunity(id);
             if (!result.Succeeded) {

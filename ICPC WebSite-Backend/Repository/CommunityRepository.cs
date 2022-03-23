@@ -31,7 +31,8 @@ namespace ICPC_WebSite_Backend.Repository
                 var community = new Community() {
                     Name = communityDTO.Name,
                     About = communityDTO.About,
-                    OfficialMail = communityDTO.OfficialMail
+                    OfficialMail = communityDTO.OfficialMail,
+                    RequesterId = communityDTO.RequesterId
                 };
                 await _applicationDbContext.communities.AddAsync(community);
                 await _applicationDbContext.SaveChangesAsync();
@@ -50,7 +51,7 @@ namespace ICPC_WebSite_Backend.Repository
             var community = await _applicationDbContext.communities.FindAsync(communityId);
 
             if (community != null) {
-                var user = await _userManager.FindByEmailAsync(community.OfficialMail);
+                var user = await _userManager.FindByIdAsync(community.RequesterId);
                 if (user == null) {
                     ret.Succeeded = false;
                     ret.Errors.Add(ErrorsList.CannotFindUser);
@@ -67,7 +68,7 @@ namespace ICPC_WebSite_Backend.Repository
                     $"We assigned you to be {community.Name} Leader "
                     ;
                 var subject = "Competitve Programing Registeration Community";
-                var emailSendResult = _emailSender.SendEmail(community.OfficialMail, subject, message);
+                var emailSendResult = _emailSender.SendEmail(user.Email, subject, message);
                 if (emailSendResult.Succeeded == false) {
                     ret.Succeeded = false;
                     ret.Errors.AddRange(emailSendResult.Errors);
@@ -83,7 +84,7 @@ namespace ICPC_WebSite_Backend.Repository
             var community = await _applicationDbContext.communities.FindAsync(communityId);
 
             if (community != null) {
-                var user = await _userManager.FindByEmailAsync(community.OfficialMail);
+                var user = await _userManager.FindByIdAsync(community.RequesterId);
                 if (user == null) {
                     ret.Succeeded = false;
                     ret.Errors.Add(ErrorsList.CannotFindUser);
@@ -99,7 +100,7 @@ namespace ICPC_WebSite_Backend.Repository
                 var subject = "Competitve Programing Registeration Community";
                 _applicationDbContext.communities.Remove(community);
                 await _applicationDbContext.SaveChangesAsync();
-                var emailSendResult = _emailSender.SendEmail(community.OfficialMail, subject, message);
+                var emailSendResult = _emailSender.SendEmail(user.Email, subject, message);
                 if (emailSendResult.Succeeded == false) {
                     ret.Succeeded = false;
                     ret.Errors.AddRange(emailSendResult.Errors);
