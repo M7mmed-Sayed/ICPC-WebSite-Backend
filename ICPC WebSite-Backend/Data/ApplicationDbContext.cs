@@ -1,6 +1,4 @@
-﻿using ICPC_WebSite_Backend.Models;
-using ICPC_WebSite_Backend.Utility;
-using Microsoft.AspNetCore.Identity;
+﻿using ICPC_WebSite_Backend.Data.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

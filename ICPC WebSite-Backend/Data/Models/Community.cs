@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ICPC_WebSite_Backend.Models
+namespace ICPC_WebSite_Backend.Data.Models
 {
     public class Community
     {

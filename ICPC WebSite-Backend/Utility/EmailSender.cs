@@ -1,4 +1,5 @@
-﻿using ICPC_WebSite_Backend.Models;
+﻿using ICPC_WebSite_Backend.Data.ReturnObjects.Models;
+using ICPC_WebSite_Backend.Data.Models;
 using System.Net.Mail;
 
 namespace ICPC_WebSite_Backend.Utility

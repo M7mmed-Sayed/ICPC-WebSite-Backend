@@ -1,4 +1,4 @@
-﻿namespace ICPC_WebSite_Backend.Models
+﻿namespace ICPC_WebSite_Backend.Data.ReturnObjects.Models
 {
     public class SignInRespones
     {

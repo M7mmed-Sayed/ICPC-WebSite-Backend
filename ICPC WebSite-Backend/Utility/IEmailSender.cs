@@ -1,4 +1,4 @@
-﻿using ICPC_WebSite_Backend.Models;
+﻿using ICPC_WebSite_Backend.Data.ReturnObjects.Models;
 
 namespace ICPC_WebSite_Backend.Utility
 {
