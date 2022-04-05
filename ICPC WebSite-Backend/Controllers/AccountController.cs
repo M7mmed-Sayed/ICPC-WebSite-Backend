@@ -19,29 +19,29 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> SignUp([FromBody] SignUp signUpModel) {
             var validate = Validate.IsValidSignUp(signUpModel);
             if (!validate.Succeeded)
-                return BadRequest(validate.Errors);
+                return BadRequest(validate);
 
             var result = await _accountRepository.SignUpAsync(signUpModel);
             if (!result.Succeeded) {
-                return Unauthorized(result.Errors);
+                return Unauthorized(result);
             }
             return Ok(result);
         }
         [HttpGet("confirm")]
         public async Task<IActionResult> Confirm([FromQuery] string id, [FromQuery] string token) {
-            var res = await _accountRepository.Confirm(id, token);
-            if (res.Succeeded) {
-                return Ok(res);
-                //return Redirect("\\");
+            var result = await _accountRepository.Confirm(id, token);
+            if (!result.Succeeded) {
+                return BadRequest(result);
             }
-            return BadRequest(res.Errors);
+            return Ok(result);
+            //return Redirect("\\");
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] SignIn signInModel) {
             var result = await _accountRepository.LoginAsync(signInModel);
 
-            if (result == null) {
-                return Unauthorized();
+            if (!result.Succeeded) {
+                return Unauthorized(result);
             }
 
             return Ok(result);

@@ -6,8 +6,8 @@ namespace ICPC_WebSite_Backend.Utility
 {
     public static class Validate
     {
-        public static ValidateResponse IsValidSignUp(SignUp signUp) {
-            var result = new ValidateResponse();
+        public static Response IsValidSignUp(SignUp signUp) {
+            var result = new Response();
             if (signUp == null) {
                 result.Succeeded = false;
                 result.Errors.Add(ErrorsList.MissingSignUpObject);
@@ -69,8 +69,8 @@ namespace ICPC_WebSite_Backend.Utility
             }
             return result;
         }
-        public static ValidateResponse IsValidCommunity(CommunityDTO community) {
-            var result = new ValidateResponse();
+        public static Response IsValidCommunity(CommunityDTO community) {
+            var result = new Response();
             if (string.IsNullOrEmpty(community.Name)) {
                 result.Succeeded = false;
                 result.Errors.Add(ErrorsList.CommunityNameCanNotBeEmpty);
@@ -105,8 +105,8 @@ namespace ICPC_WebSite_Backend.Utility
                 return false;
             }
         }
-        public static ValidateResponse IsStrongPassword(string password, string confirmPassword = "") {
-            var result = new ValidateResponse();
+        public static Response IsStrongPassword(string password, string confirmPassword = "") {
+            var result = new Response();
             if (!RegexPattrens.HasNumber.IsMatch(password)) {
                 result.Succeeded = false;
                 result.Errors.Add(ErrorsList.PasswordHasNoNumber);

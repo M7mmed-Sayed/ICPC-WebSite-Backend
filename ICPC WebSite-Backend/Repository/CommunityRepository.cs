@@ -18,15 +18,15 @@ namespace ICPC_WebSite_Backend.Repository
             _applicationDbContext = applicationDbContext;
         }
 
-        public async Task<ValidateResponse> GetAllCommunities() {
-            var ret = new ValidateResponse();
+        public async Task<Response> GetAllCommunities() {
+            var ret = new Response();
             ret.Data = new List<Community>();
             ((List<Community>)ret.Data).AddRange(_applicationDbContext.communities.ToList());
             return ret;
         }
 
-        public async Task<ValidateResponse> RegisterCommunityAsync(CommunityDTO communityDTO) {
-            var ret = new ValidateResponse();
+        public async Task<Response> RegisterCommunityAsync(CommunityDTO communityDTO) {
+            var ret = new Response();
             try {
                 var community = new Community() {
                     Name = communityDTO.Name,
@@ -45,8 +45,8 @@ namespace ICPC_WebSite_Backend.Repository
             }
             return ret;
         }
-        public async Task<ValidateResponse> AcceptCommunity(int communityId) {
-            var ret = new ValidateResponse();
+        public async Task<Response> AcceptCommunity(int communityId) {
+            var ret = new Response();
             try {
                 var community = await _applicationDbContext.communities.FindAsync(communityId);
 
@@ -86,8 +86,8 @@ namespace ICPC_WebSite_Backend.Repository
             }
             return ret;
         }
-        public async Task<ValidateResponse> RejectCommunity(int communityId) {
-            var ret = new ValidateResponse();
+        public async Task<Response> RejectCommunity(int communityId) {
+            var ret = new Response();
             try {
                 var community = await _applicationDbContext.communities.FindAsync(communityId);
 
