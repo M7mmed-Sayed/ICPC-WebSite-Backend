@@ -8,6 +8,7 @@ namespace ICPC_WebSite_Backend.Models.DTO
         public string About { get; set; }
         [EmailAddress]
         public string OfficialMail { get; set; }
+        public string RequesterId { get; set; }
 
     }
 }

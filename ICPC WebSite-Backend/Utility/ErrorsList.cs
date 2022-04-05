@@ -43,6 +43,8 @@ namespace ICPC_WebSite_Backend.Utility
         public static Error UserHasNotThisRole = new Error { Code = "UserHasNotThisRole", Description = "user is not assigned to this role." };
 
 
-
+        //
+        public static Error CannotFindUser = new Error { Code = "CannotFindUser", Description = "user is not registered in the system" };
+        
     }
 }

@@ -37,5 +37,23 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result.Data);
         }
+        [Authorize(Roles = RolesList.Administrator)]
+        [HttpPut("Approve")]
+        public async Task<IActionResult> ApproveCommunity([FromQuery] int id) {
+            var result = await _communityRepository.AcceptCommunity(id);
+            if (!result.Succeeded) {
+                return Unauthorized(result.Errors);
+            }
+            return Ok(result);
+        }
+        [Authorize(Roles = RolesList.Administrator)]
+        [HttpDelete("Reject")]
+        public async Task<IActionResult> RejectCommunity([FromQuery] int id) {
+            var result = await _communityRepository.RejectCommunity(id);
+            if (!result.Succeeded) {
+                return Unauthorized(result.Errors);
+            }
+            return Ok(result);
+        }
     }
 }
