@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ICPC_WebSite_Backend.Data.Models;
+using CodeforcesLibrary;
 using Microsoft.OpenApi.Models;
 
 namespace ICPC_WebSite_Backend.Configurations
@@ -41,6 +42,8 @@ namespace ICPC_WebSite_Backend.Configurations
             Services.AddTransient<IAccountRepository, AccountRepository>();
             Services.AddTransient<ICommunityRepository, CommunityRepository>();
             Services.AddTransient<IEmailSender, EmailSender>(op => new EmailSender(Config.myEmail, Config.myPassword, Config.SMTPServerAddress, Config.mailSubmissionPort));
+            Services.AddTransient<ICodeforcesRepository, CodeforcesRepository>();
+            Services.AddTransient(op => new CodeforcesHelper(Config.CodeforcesAPIKey, Config.CodeforcesAPISecret));
         }
         public static void RegisterAuth(this IServiceCollection Services) {
             Services.AddAuthentication(option => {

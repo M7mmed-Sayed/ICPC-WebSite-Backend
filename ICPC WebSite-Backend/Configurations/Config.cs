@@ -10,6 +10,10 @@
         public static string JWTValidIssuer => Get("JWT:ValidIssuer");
         public static string JWTSecret => Get("JWT:Secret");
         public static string DefaultConnectionString => Get("ConnectionStrings:Default", "");
+       
+        
+        public static string CodeforcesAPIKey => Get("CodeforcesAPIKey", "");
+        public static string CodeforcesAPISecret => Get("CodeforcesAPISecret", "");
 
         private static string Get(string name) {
             return ConfigProvider.Configuration[name] ?? throw new Exception("Configuration for " + name + " not found");
