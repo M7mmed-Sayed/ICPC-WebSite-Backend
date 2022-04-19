@@ -68,8 +68,8 @@ namespace CodeforcesLibrary
         public string GenerateSixDigts()
         {
             var rnd = new Random();
-            string ret = rnd.Next(0,(int)1e6 - 1).ToString(); 
-            ret=ret.PadLeft(6-ret.Length, '0');
+            string ret = rnd.Next(0,(int)1e6 - 1).ToString();
+            ret = ret.PadLeft(6, '0');
             return ret;
         }
         string HashSHA512(string source)
