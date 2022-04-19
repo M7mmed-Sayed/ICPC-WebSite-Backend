@@ -14,10 +14,16 @@ namespace ICPC_WebSite_Backend.Controllers
         {
             _codeforcesRepository = codeforcesRepository;
         }
-        [HttpGet("contest/{contestId}")]
-        public async Task<IActionResult> getStanding([FromRoute]string contestId,string userCodeforcesHandle)
+        [HttpGet("contest/submissions/{contestId}")]
+        public async Task<IActionResult> getSubmissions([FromRoute]string contestId,string userCodeforcesHandle)
         {
             var result = await _codeforcesRepository.GetContestSubmissions(contestId, userCodeforcesHandle);
+            return Ok(result);
+        }
+        [HttpGet("contest/standing/{contestId}")]
+        public async Task<IActionResult> getStanding([FromRoute] string contestId)
+        {
+            var result = await _codeforcesRepository.GetContestStanding(contestId);
             return Ok(result);
         }
     }

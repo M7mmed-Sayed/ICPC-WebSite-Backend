@@ -4,6 +4,7 @@ namespace ICPC_WebSite_Backend.Repository
 {
     public interface ICodeforcesRepository
     {
-        Task<List<Submission>> GetContestSubmissions(string contestId,string userCodeforcesHandle);
+        Task<List<ContestSubmissionsResponse>> GetContestSubmissions(string contestId,string userCodeforcesHandle);
+        Task<ContestStandings> GetContestStanding(string contestId);
     }
 }

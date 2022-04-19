@@ -21,15 +21,16 @@ namespace CodeforcesLibrary
             baseUrl = "https://codeforces.com/api/";
             ApiHelper.InitializeClient();
         }
-        public async Task<List<Submission>> GetContestSubmissionsAsync(string contestId,string userCodeforcesHandle)
+        public async Task<ContestStandings> GetContestStandingAsync(string contestId)
         {
-            string url = ConstructApiUrl(contestId, userCodeforcesHandle);
+            string url = ConstructApiUrl("contest.standings",contestId);
+            Console.WriteLine(url);
             using (var response = await ApiHelper.ApiClient.GetAsync(url))
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    var responseContent = await response.Content.ReadAsAsync<ContestSubmissions>();
-                    return responseContent.Submission;
+                    var responseContent = await response.Content.ReadAsAsync<ContestStandings>();
+                    return responseContent;
                 }
                 else
                 {
@@ -37,10 +38,26 @@ namespace CodeforcesLibrary
                 }
             }
         }
-        public string ConstructApiUrl(string contestId,string userCodeforcesHandle)
+        public async Task<List<ContestSubmissionsResponse>> GetContestSubmissionsAsync(string contestId, string userCodeforcesHandle)
+        {
+            string url = ConstructApiUrl("contest.status",contestId, userCodeforcesHandle);
+            using (var response = await ApiHelper.ApiClient.GetAsync(url))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsAsync<ContestSubmissions>();
+                    return responseContent.response;
+                }
+                else
+                {
+                    throw new Exception($"CodeForces Failed with status code = {response.StatusCode}");
+                }
+            }
+        }
+        public string ConstructApiUrl(string methodName,string contestId,string userCodeforcesHandle="")
         {
             var dateTimeUnix = DateTimeOffset.Now.ToUnixTimeSeconds();
-            var methodApiURL = $"contest.status?apiKey={key}&contestId={contestId}&handle={userCodeforcesHandle}&time={dateTimeUnix}";
+            var methodApiURL = $"{methodName}?apiKey={key}&contestId={contestId}&handle={userCodeforcesHandle}&time={dateTimeUnix}";
             var url = baseUrl+methodApiURL;
             var randSixDigits = GenerateSixDigts();
             string apiSig = $"{randSixDigits}/{methodApiURL}#{secret}";

@@ -10,9 +10,15 @@ namespace ICPC_WebSite_Backend.Repository
         {
             this.codeforcesHelper = codeforcesHelper;
         }
-        public async Task<List<Submission>> GetContestSubmissions(string contestId,string userCodeforcesHandle)
+        public async Task<List<ContestSubmissionsResponse>> GetContestSubmissions(string contestId,string userCodeforcesHandle)
         {
             var result= await codeforcesHelper.GetContestSubmissionsAsync(contestId, userCodeforcesHandle); ;
+            return result;
+
+        }
+        public async Task<ContestStandings> GetContestStanding(string contestId)
+        {
+            var result = await codeforcesHelper.GetContestStandingAsync(contestId); ;
             return result;
 
         }

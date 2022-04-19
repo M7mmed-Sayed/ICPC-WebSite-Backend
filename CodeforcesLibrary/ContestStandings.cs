@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace CodeforcesLibrary
 {
-    public class ContestSubmissions
+    public class ContestStandings
     {
-        public string Status { get; set; }
+        public string status { get; set; }
         [JsonProperty("Result")]
-        public List<ContestSubmissionsResponse> response { get; set; }
+        public ContestStandingsResponse response { get; set; }
     }
 }
