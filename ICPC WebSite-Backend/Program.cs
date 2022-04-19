@@ -20,7 +20,7 @@ using (var scope = app.Services.CreateScope()) {
    // await scope.ServiceProvider.CreateRoles();
 }
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) {
+if (app.Environment.IsDevelopment()||true) {//true to work on any environment 
     app.UseSwagger();
     app.UseSwaggerUI();
 }
