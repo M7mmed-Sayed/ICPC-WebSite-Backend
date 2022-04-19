@@ -15,7 +15,7 @@ namespace ICPC_WebSite_Backend.Controllers
             _codeforcesRepository = codeforcesRepository;
         }
         [HttpGet("contest/submissions/{contestId}")]
-        public async Task<IActionResult> getSubmissions([FromRoute]string contestId,string userCodeforcesHandle)
+        public async Task<IActionResult> getSubmissions([FromRoute]string contestId,[FromQuery]string? userCodeforcesHandle)
         {
             var result = await _codeforcesRepository.GetContestSubmissions(contestId, userCodeforcesHandle);
             return Ok(result);
