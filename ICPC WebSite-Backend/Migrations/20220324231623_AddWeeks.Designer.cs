@@ -4,6 +4,7 @@ using ICPC_WebSite_Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ICPC_WebSite_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220324231623_AddWeeks")]
+    partial class AddWeeks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +24,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Community", b =>
+            modelBuilder.Entity("ICPC_WebSite_Backend.Models.Community", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,127 +47,15 @@ namespace ICPC_WebSite_Backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RequesterId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasAlternateKey("Name")
                         .HasName("AlternateKey_Name");
 
                     b.ToTable("communities");
-                    b.ToTable("communities");
                 });
 
-            modelBuilder.Entity("ICPC_WebSite_Backend.Models.Matirial", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("Created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("URL")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Updated_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("weekId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("weekId");
-
-                    b.ToTable("matirials");
-                });
-
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.CommunityMember", b =>
-                {
-                    b.Property<string>("MemberId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("CommunityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("MemberId", "CommunityId", "Role");
-
-                    b.HasIndex("CommunityId");
-
-                    b.ToTable("CommunityMember");
-                });
-
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.CommunityRequest", b =>
-                {
-                    b.Property<string>("MemberId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("CommunityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("MemberId", "CommunityId");
-
-                    b.HasIndex("CommunityId");
-
-                    b.ToTable("CommunityRequests");
-                });
-
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Training", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("CommunityId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Community_Id")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Created_At")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Level")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Upated_At")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommunityId");
-
-                    b.ToTable("Training");
-                });
-
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.User", b =>
+            modelBuilder.Entity("ICPC_WebSite_Backend.Models.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -185,9 +75,6 @@ namespace ICPC_WebSite_Backend.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FaceBookProfile")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Faculty")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
@@ -229,9 +116,6 @@ namespace ICPC_WebSite_Backend.Migrations
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
-
-                    b.Property<string>("University")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -413,66 +297,6 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.CommunityMember", b =>
-                {
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.Community", "Community")
-                        .WithMany("CommunityMembers")
-                        .HasForeignKey("CommunityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.User", "Member")
-                        .WithMany("CommunityRoles")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Community");
-
-                    b.Navigation("Member");
-                });
-
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.CommunityRequest", b =>
-                {
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.Community", "Community")
-                        .WithMany("CommunityRequests")
-                        .HasForeignKey("CommunityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.User", "Member")
-                        .WithMany("CommunityRequests")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Community");
-
-                    b.Navigation("Member");
-                });
-
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Training", b =>
-                {
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.Community", "Community")
-                        .WithMany("Trainings")
-                        .HasForeignKey("CommunityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Community");
-                });
-
-            modelBuilder.Entity("ICPC_WebSite_Backend.Models.Matirial", b =>
-                {
-                    b.HasOne("ICPC_WebSite_Backend.Models.Week", "weeks")
-                        .WithMany("matirials")
-                        .HasForeignKey("weekId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("weeks");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -484,7 +308,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.User", null)
+                    b.HasOne("ICPC_WebSite_Backend.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -493,7 +317,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.User", null)
+                    b.HasOne("ICPC_WebSite_Backend.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -508,7 +332,7 @@ namespace ICPC_WebSite_Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.User", null)
+                    b.HasOne("ICPC_WebSite_Backend.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -517,32 +341,11 @@ namespace ICPC_WebSite_Backend.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.User", null)
+                    b.HasOne("ICPC_WebSite_Backend.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Community", b =>
-                {
-                    b.Navigation("CommunityMembers");
-
-                    b.Navigation("CommunityRequests");
-
-                    b.Navigation("Trainings");
-                });
-
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.User", b =>
-                {
-                    b.Navigation("CommunityRequests");
-
-                    b.Navigation("CommunityRoles");
-                });
-
-            modelBuilder.Entity("ICPC_WebSite_Backend.Models.Week", b =>
-                {
-                    b.Navigation("matirials");
                 });
 #pragma warning restore 612, 618
         }
