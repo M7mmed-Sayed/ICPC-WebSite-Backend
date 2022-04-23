@@ -7,11 +7,36 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ICPC_WebSite_Backend.Data.Models;
+using Microsoft.OpenApi.Models;
 
 namespace ICPC_WebSite_Backend.Configurations
 {
     public static class ServiceExtensions
     {
+        public static void AddSwaggerGen(this IServiceCollection Services) {
+            Services.AddSwaggerGen(option => {
+                option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+                option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter a valid token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+                option.AddSecurityRequirement(new OpenApiSecurityRequirement{{
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type=ReferenceType.SecurityScheme,
+                            Id="Bearer"
+                        }
+                    },
+                    new string[]{}
+                 }});
+            });
+        }
         public static void RegisterRepos(this IServiceCollection Services) {
             Services.AddTransient<IAccountRepository, AccountRepository>();
             Services.AddTransient<ICommunityRepository, CommunityRepository>();
