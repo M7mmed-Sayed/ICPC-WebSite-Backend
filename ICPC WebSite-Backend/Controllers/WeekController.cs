@@ -18,6 +18,9 @@ namespace ICPC_WebSite_Backend.Controllers
         }
         [HttpPost("addweek")]
         public async Task<IActionResult> addWeek(WeekDTO weekDTO) {
+            if (string.IsNullOrEmpty(weekDTO.Name)) {
+                return BadRequest("Invalid Name");
+            }
             var result = await _weekRepository.AddWeek(weekDTO);
             if (!result.Succeeded) {
                 return Unauthorized(result.Errors);
@@ -26,6 +29,9 @@ namespace ICPC_WebSite_Backend.Controllers
         }
         [HttpPut("updateweek")]
         public async Task<IActionResult> updateWeek(int weekId,WeekDTO weekDTO) {
+            if (string.IsNullOrEmpty(weekDTO.Name)) {
+                return BadRequest("Invalid Name");
+            }
             var result = await _weekRepository.UpdateWeek(weekId,weekDTO);
             if (!result.Succeeded) {
                 return Unauthorized(result.Errors);

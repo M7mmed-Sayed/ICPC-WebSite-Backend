@@ -1,7 +1,6 @@
 ﻿using ICPC_WebSite_Backend.Data;
 using ICPC_WebSite_Backend.Data.Models;
 using ICPC_WebSite_Backend.Data.Models.DTO;
-using ICPC_WebSite_Backend.Data.Models.ReturnObjects;
 using ICPC_WebSite_Backend.Data.ReturnObjects.Models;
 using ICPC_WebSite_Backend.Utility;
 
@@ -52,7 +51,7 @@ namespace ICPC_WebSite_Backend.Repository
         public async Task<Response> getWeekMaterials(int weekId) {
             var ret = new Response();
             var _materials = (_applicationDbContext.matirials.Where(m => m.weekId == weekId)).
-                Select(material => new materialVM() {
+                Select(material => new Matirial {
                     Id = material.Id,
                     Description = material.Description,
                     URL = material.URL

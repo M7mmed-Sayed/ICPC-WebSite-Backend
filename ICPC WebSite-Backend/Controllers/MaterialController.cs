@@ -17,6 +17,9 @@ namespace ICPC_WebSite_Backend.Controllers
         }
         [HttpPost("addmatirial")]
         public async Task<IActionResult> addMaterial(MatirialDTO matirialDTO) {
+            if (string.IsNullOrEmpty(matirialDTO.URL)) {
+                return BadRequest("Invalid Name");
+            }
             var result = await _matirialRepository.addMatirial(matirialDTO );
             if (!result.Succeeded) {
                 return Unauthorized(result.Errors);
