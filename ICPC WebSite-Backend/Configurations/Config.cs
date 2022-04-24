@@ -12,6 +12,7 @@
         public static string DefaultConnectionString => Get("ConnectionStrings:Default", "");
        
         
+        public static string CodeforcesBaseUrl => Get("CodeforcesBaseUrl", "");
         public static string CodeforcesAPIKey => Get("CodeforcesAPIKey", "");
         public static string CodeforcesAPISecret => Get("CodeforcesAPISecret", "");
 

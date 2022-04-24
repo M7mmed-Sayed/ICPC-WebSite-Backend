@@ -14,11 +14,11 @@ namespace CodeforcesLibrary
         private readonly string secret;
         private readonly string baseUrl;
 
-        public CodeforcesHelper(string key, string secret)
+        public CodeforcesHelper(string baseUrl,string key, string secret)
         {
             this.key = key;
             this.secret = secret;
-            baseUrl = "https://codeforces.com/api/";
+            this.baseUrl = baseUrl;
             ApiHelper.InitializeClient();
         }
         public async Task<ContestStandings> GetContestStandingAsync(string contestId)
