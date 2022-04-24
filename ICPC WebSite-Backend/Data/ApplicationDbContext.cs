@@ -25,6 +25,9 @@ namespace ICPC_WebSite_Backend.Data
             builder.Entity<Matirial>().HasOne(b => b.weeks)
                 .WithMany(ba => ba.matirials)
                 .HasForeignKey(bi => bi.weekId);
+            builder.Entity<Week>(entity => {
+                entity.HasIndex(w=>w.Name).IsUnique();
+            });
 
 
 
