@@ -44,25 +44,13 @@ namespace ICPC_WebSite_Backend.Repository
         }
         public async Task<Response> GetAllTemplateWeeks() {
             var ret = new Response();
-            var weeks = _applicationDbContext.weeks.Where(W => W.IsTemplate == true)
-               .Select(week => new Week() {
-                   Id = week.Id,
-                   IsTemplate = week.IsTemplate,
-                   Description = week.Description,
-                   Name = week.Name
-               }).ToList();
+            var weeks = _applicationDbContext.weeks.Where(W => W.IsTemplate == true).ToList();
             ret.Data = weeks;
             return ret;
         }
         public async Task<Response> GetAllWeeks() {
             var ret = new Response();
-            var weeks = _applicationDbContext.weeks
-               .Select(week => new Week() {
-                   Id = week.Id,
-                   IsTemplate = week.IsTemplate,
-                   Description = week.Description,
-                   Name = week.Name
-               }).ToList();
+            var weeks = _applicationDbContext.weeks.ToList();
             ret.Data = weeks;
             return ret;
         }
@@ -74,16 +62,11 @@ namespace ICPC_WebSite_Backend.Repository
                 ret.Errors.Add(ErrorsList.WeekNotFound);
             }
             else {
-                ret.Data = new Week() {
-                    Id = week.Id,
-                    Name = week.Name,
-                    Description = week.Description,
-                    IsTemplate = week.IsTemplate
-                };
+                ret.Data = week;
             }
             return ret;
         }
-        public async Task<Response> createTemplateWeek(int weekId) {
+        public async Task<Response> createTemplateWeek(int weekId,WeekDTO weekDTO) {
             var ret = new Response();
             var week = await _applicationDbContext.weeks.FindAsync(weekId);
             if (week != null) {
@@ -92,7 +75,6 @@ namespace ICPC_WebSite_Backend.Repository
                     Description = week.Description,
                     Name = week.Name,
                     IsTemplate = false
-
                 };
                 await _applicationDbContext.weeks.AddAsync(newWeek);
                 await _applicationDbContext.SaveChangesAsync();

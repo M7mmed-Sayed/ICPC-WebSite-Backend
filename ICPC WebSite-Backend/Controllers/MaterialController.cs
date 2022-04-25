@@ -1,6 +1,7 @@
 ﻿using ICPC_WebSite_Backend.Data.Models.DTO;
 using ICPC_WebSite_Backend.Models.DTO;
 using ICPC_WebSite_Backend.Repository;
+using ICPC_WebSite_Backend.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,9 +18,9 @@ namespace ICPC_WebSite_Backend.Controllers
         }
         [HttpPost("addmatirial")]
         public async Task<IActionResult> addMaterial(MatirialDTO matirialDTO) {
-            if (string.IsNullOrEmpty(matirialDTO.URL)) {
-                return BadRequest("Invalid Name");
-            }
+            var validate = Validate.IsValidMaterinal(matirialDTO.Description);
+            if (!validate.Succeeded)
+                return BadRequest(validate);
             var result = await _matirialRepository.addMatirial(matirialDTO );
             if (!result.Succeeded) {
                 return Unauthorized(result.Errors);
