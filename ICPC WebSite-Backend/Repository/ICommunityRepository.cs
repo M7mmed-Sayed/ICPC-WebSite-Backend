@@ -10,5 +10,6 @@ namespace ICPC_WebSite_Backend.Repository
         Task<Response> GetCommunity(int id);
         Task<Response> AcceptCommunity(int communityId);
         Task<Response> RejectCommunity(int communityId);
+        Task<Response> AssignRole(string userId, int communityId, string roleName);
     }
 }

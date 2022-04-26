@@ -62,5 +62,15 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+
+        //[Authorize(Roles = RolesList.CommunityLeader)]
+        [HttpPost("AssignRole")]
+        public async Task<IActionResult> AssignRole([FromQuery] string userId, [FromQuery] int communityId, [FromQuery] string roleName) {
+            var result = await _communityRepository.AssignRole(userId, communityId, roleName);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
     }
 }

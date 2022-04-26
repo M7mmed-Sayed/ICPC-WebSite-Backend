@@ -11,12 +11,14 @@ namespace ICPC_WebSite_Backend.Repository
     {
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailSender _emailSender;
         public CommunityRepository(ApplicationDbContext applicationDbContext,
-            UserManager<User> userManager, IEmailSender emailSender) {
+            UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IEmailSender emailSender) {
             _userManager = userManager;
             _emailSender = emailSender;
             _applicationDbContext = applicationDbContext;
+            _roleManager = roleManager;
         }
 
         public async Task<Response> GetAllCommunities() {
@@ -133,6 +135,51 @@ namespace ICPC_WebSite_Backend.Repository
             return ret;
         }
 
-
+        public async Task<Response> AssignRole(string userId, int communityId, string roleName) {
+            var ret = new Response();
+            try {
+                var community = await _applicationDbContext.communities.FindAsync(communityId);
+                if (community == null) {
+                    ret.Succeeded = false;
+                    ret.Errors.Add(ErrorsList.CommunityNotFound);
+                }
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null) {
+                    ret.Succeeded = false;
+                    ret.Errors.Add(ErrorsList.CannotFindUser);
+                }
+                var roleExist = await _roleManager.RoleExistsAsync(roleName);
+                if (!roleExist) {
+                    ret.Succeeded = false;
+                    ret.Errors.Add(ErrorsList.InvalidRoleName);
+                }
+                if (!ret.Succeeded)
+                    return ret;
+                if (!await _userManager.IsInRoleAsync(user, roleName)) {
+                    var res = await _userManager.AddToRoleAsync(user, roleName);
+                    if (!res.Succeeded) {
+                        ret.Succeeded = false;
+                        ret.Errors.AddRange(res.Errors.Select(x => new Error {
+                            Code = x.Code,
+                            Description = x.Description
+                        }));
+                        return ret;
+                    }
+                }
+                await _applicationDbContext.CommunityMember.AddAsync(new CommunityMember {
+                    MemberId = userId,
+                    CommunityId = communityId,
+                    Role = roleName
+                });
+                await _applicationDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex) {
+                ret.Succeeded = false;
+                var err = new Error() { Code = ex.Message };
+                if (ex.InnerException != null) err.Description = ex.InnerException.Message;
+                ret.Errors.Add(err);
+            }
+            return ret;
+        }
     }
 }
