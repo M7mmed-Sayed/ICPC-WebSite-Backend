@@ -12,6 +12,7 @@ namespace ICPC_WebSite_Backend.Data
         }
         public DbSet<Community> communities { get; set; }
         public DbSet<CommunityMember> CommunityMember { get; set; }
+        public DbSet<CommunityRequest> CommunityRequests { get; set; }
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
             builder.Entity<Community>()
@@ -28,6 +29,17 @@ namespace ICPC_WebSite_Backend.Data
             builder.Entity<CommunityMember>()
                 .HasOne(cm => cm.Community)
                 .WithMany(c => c.CommunityMembers)
+                .HasForeignKey(cm => cm.CommunityId);
+
+            builder.Entity<CommunityRequest>().
+                HasKey(cm => new { cm.MemberId, cm.CommunityId });
+            builder.Entity<CommunityRequest>()
+                .HasOne(cm => cm.Member)
+                .WithMany(b => b.CommunityRequests)
+                .HasForeignKey(cm => cm.MemberId);
+            builder.Entity<CommunityRequest>()
+                .HasOne(cm => cm.Community)
+                .WithMany(c => c.CommunityRequests)
                 .HasForeignKey(cm => cm.CommunityId);
         }
     }

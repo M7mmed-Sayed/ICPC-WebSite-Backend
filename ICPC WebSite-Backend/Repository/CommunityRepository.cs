@@ -156,6 +156,12 @@ namespace ICPC_WebSite_Backend.Repository
                 }
                 if (!ret.Succeeded)
                     return ret;
+                var request = await _applicationDbContext.CommunityRequests.Where(x => x.MemberId == userId && x.CommunityId == communityId && x.Status == ConstVariable.AcceptedStatus).SingleOrDefaultAsync();
+                if (request == null) {
+                    ret.Succeeded = false;
+                    ret.Errors.Add(ErrorsList.RequestNotAcceptOrNotFound);
+                    return ret;
+                }
                 if (!await _userManager.IsInRoleAsync(user, roleName)) {
                     var res = await _userManager.AddToRoleAsync(user, roleName);
                     if (!res.Succeeded) {
@@ -218,6 +224,84 @@ namespace ICPC_WebSite_Backend.Repository
                     return ret;
                 }
                 ret.Data = community.CommunityMembers.GroupBy(x => x.MemberId).Count();
+            }
+            catch (Exception ex) {
+                ret.Succeeded = false;
+                var err = new Error() { Code = ex.Message };
+                if (ex.InnerException != null) err.Description = ex.InnerException.Message;
+                ret.Errors.Add(err);
+            }
+            return ret;
+        }
+
+        public async Task<Response> JoinRequest(string userId, int communityId) {
+            var ret = new Response();
+            try {
+                var community = await _applicationDbContext.communities.FindAsync(communityId);
+                if (community == null) {
+                    ret.Succeeded = false;
+                    ret.Errors.Add(ErrorsList.CommunityNotFound);
+                }
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null) {
+                    ret.Succeeded = false;
+                    ret.Errors.Add(ErrorsList.CannotFindUser);
+                }
+                if (!ret.Succeeded)
+                    return ret;
+
+                await _applicationDbContext.CommunityRequests.AddAsync(new CommunityRequest {
+                    MemberId = userId,
+                    CommunityId = communityId,
+                    Status = ConstVariable.PendingStatus
+                });
+                await _applicationDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex) {
+                ret.Succeeded = false;
+                var err = new Error() { Code = ex.Message };
+                if (ex.InnerException != null) err.Description = ex.InnerException.Message;
+                ret.Errors.Add(err);
+            }
+            return ret;
+        }
+        public async Task<Response> GetRequest(int communityId) {
+            var ret = new Response();
+            try {
+                ret.Data = await _applicationDbContext.CommunityRequests.Include(x => x.Member).Where(x => x.CommunityId == communityId && x.Status == ConstVariable.PendingStatus).Select(x=>new {
+                    x.MemberId,
+                    x.Member.FirstName,
+                    x.Member.LastName,
+                    x.Member.Email,
+                    x.Member.UserName
+                }).ToListAsync();
+            }
+            catch (Exception ex) {
+                ret.Succeeded = false;
+                var err = new Error() { Code = ex.Message };
+                if (ex.InnerException != null) err.Description = ex.InnerException.Message;
+                ret.Errors.Add(err);
+            }
+            return ret;
+        }
+        public async Task<Response> ResponseToRequest(string userId, int communityId, bool accept) {
+            var ret = new Response();
+            try {
+                var request = await _applicationDbContext.CommunityRequests.Where(x => x.MemberId == userId && x.CommunityId == communityId && x.Status == ConstVariable.PendingStatus).SingleOrDefaultAsync();
+                if (request == null) {
+                    ret.Succeeded = false;
+                    ret.Errors.Add(ErrorsList.JoinRequestNotFound);
+                    return ret;
+                }
+                if (accept) {
+                    request.Status = ConstVariable.AcceptedStatus;
+                    ret.Data = "User has been approved successfully";
+                }
+                else {
+                    request.Status = ConstVariable.RejectedStatus;
+                    ret.Data = "User has been Rejected successfully";
+                }
+                await _applicationDbContext.SaveChangesAsync();
             }
             catch (Exception ex) {
                 ret.Succeeded = false;

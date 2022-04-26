@@ -36,6 +36,8 @@ namespace ICPC_WebSite_Backend.Utility
         //Community
         public static Error CommunityNameCanNotBeEmpty = new Error { Code = "CommunityNameCanNotBeEmpty", Description = "Value cannot be null or empty. (Parameter 'Name')" };
         public static Error CommunityNotFound = new Error { Code = "CommunityNotFound", Description = "Community is not Found" };
+        public static Error JoinRequestNotFound = new Error { Code = "JoinRequestNotFound", Description = "there is no join request from this user to the community" };
+        public static Error RequestNotAcceptOrNotFound = new Error { Code = "RequestNotAcceptOrNotFound", Description = "there user should join the community before assigning role to him" };
 
         //Roles
         public static Error InvalidRoleName = new Error { Code = "InvalidRoleName", Description = "Invalid Role Name . it's Not Exited." };

@@ -72,10 +72,45 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
-
+        //[Authorize]
+        [HttpPost("Join/{communityId}")]
+        public async Task<IActionResult> JoinRequest([FromQuery] string userId, int communityId) {
+            var result = await _communityRepository.JoinRequest(userId, communityId);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
+        //[Authorize]
+        [HttpPost("Requests/{communityId}")]
+        public async Task<IActionResult> GetRequest(int communityId) {
+            var result = await _communityRepository.GetRequest(communityId);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
+        //[Authorize]
+        [HttpPost("Approve/{communityId}")]
+        public async Task<IActionResult> ApproveRequest([FromQuery] string userId, int communityId) {
+            var result = await _communityRepository.ResponseToRequest(userId, communityId, true);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
+        //[Authorize]
+        [HttpPost("Reject/{communityId}")]
+        public async Task<IActionResult> RejectRequest([FromQuery] string userId, int communityId) {
+            var result = await _communityRepository.ResponseToRequest(userId, communityId, false);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
         [HttpGet("Members/{communityId}")]
-        public async Task<IActionResult> GetMembers( int communityId) {
-            var result = await _communityRepository.GetMembers( communityId);
+        public async Task<IActionResult> GetMembers(int communityId) {
+            var result = await _communityRepository.GetMembers(communityId);
             if (!result.Succeeded) {
                 return Unauthorized(result);
             }

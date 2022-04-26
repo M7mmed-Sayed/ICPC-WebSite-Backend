@@ -12,5 +12,6 @@ namespace ICPC_WebSite_Backend.Data.Models
         public string RequesterId { get; set; }
         public bool IsApproved { get; set; } = false;
         public ICollection<CommunityMember> CommunityMembers { get; set; }
+        public ICollection<CommunityRequest> CommunityRequests { get; set; }
     }
 }
