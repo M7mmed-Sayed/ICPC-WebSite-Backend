@@ -91,18 +91,9 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
         //[Authorize]
-        [HttpPost("Approve/{communityId}")]
-        public async Task<IActionResult> ApproveRequest([FromQuery] string userId, int communityId) {
-            var result = await _communityRepository.ResponseToRequest(userId, communityId, true);
-            if (!result.Succeeded) {
-                return Unauthorized(result);
-            }
-            return Ok(result);
-        }
-        //[Authorize]
-        [HttpPost("Reject/{communityId}")]
-        public async Task<IActionResult> RejectRequest([FromQuery] string userId, int communityId) {
-            var result = await _communityRepository.ResponseToRequest(userId, communityId, false);
+        [HttpPost("RequestRespond/{communityId}")]
+        public async Task<IActionResult> ApproveRequest([FromQuery] string userId, int communityId, [FromQuery] bool Approve) {
+            var result = await _communityRepository.ResponseToRequest(userId, communityId, Approve);
             if (!result.Succeeded) {
                 return Unauthorized(result);
             }
