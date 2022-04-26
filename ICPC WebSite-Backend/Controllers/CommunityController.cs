@@ -81,5 +81,13 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+        [HttpGet("CountMembers/{communityId}")]
+        public async Task<IActionResult> CountMembers(int communityId) {
+            var result = await _communityRepository.CountMembers(communityId);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
     }
 }

@@ -208,5 +208,24 @@ namespace ICPC_WebSite_Backend.Repository
             }
             return ret;
         }
+        public async Task<Response> CountMembers(int communityId) {
+            var ret = new Response();
+            try {
+                var community = await _applicationDbContext.communities.Include(x => x.CommunityMembers).ThenInclude(m => m.Member).Where(x => x.Id == communityId).SingleOrDefaultAsync();
+                if (community == null) {
+                    ret.Succeeded = false;
+                    ret.Errors.Add(ErrorsList.CommunityNotFound);
+                    return ret;
+                }
+                ret.Data = community.CommunityMembers.GroupBy(x => x.MemberId).Count();
+            }
+            catch (Exception ex) {
+                ret.Succeeded = false;
+                var err = new Error() { Code = ex.Message };
+                if (ex.InnerException != null) err.Description = ex.InnerException.Message;
+                ret.Errors.Add(err);
+            }
+            return ret;
+        }
     }
 }
