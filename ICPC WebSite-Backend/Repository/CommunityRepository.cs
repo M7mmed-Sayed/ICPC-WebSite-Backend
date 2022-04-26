@@ -4,6 +4,7 @@ using ICPC_WebSite_Backend.Data.Models.DTO;
 using ICPC_WebSite_Backend.Data.ReturnObjects.Models;
 using ICPC_WebSite_Backend.Utility;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ICPC_WebSite_Backend.Repository
 {
@@ -172,6 +173,32 @@ namespace ICPC_WebSite_Backend.Repository
                     Role = roleName
                 });
                 await _applicationDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex) {
+                ret.Succeeded = false;
+                var err = new Error() { Code = ex.Message };
+                if (ex.InnerException != null) err.Description = ex.InnerException.Message;
+                ret.Errors.Add(err);
+            }
+            return ret;
+        }
+        public async Task<Response> GetMembers(int communityId) {
+            var ret = new Response();
+            try {
+                var community = await _applicationDbContext.communities.Include(x => x.CommunityMembers).ThenInclude(m => m.Member).Where(x => x.Id == communityId).SingleOrDefaultAsync();
+                if (community == null) {
+                    ret.Succeeded = false;
+                    ret.Errors.Add(ErrorsList.CommunityNotFound);
+                    return ret;
+                }
+                ret.Data = community.CommunityMembers.GroupBy(x => new { x.MemberId, x.Member.FirstName, x.Member.LastName, x.Member.Email, x.Member.UserName }, (key, val) => new {
+                    Id = key.MemberId,
+                    FirstName = key.FirstName,
+                    LastName = key.LastName,
+                    Email = key.Email,
+                    UserName = key.UserName,
+                    Roles = val.Select(x => x.Role).ToList()
+                });
             }
             catch (Exception ex) {
                 ret.Succeeded = false;

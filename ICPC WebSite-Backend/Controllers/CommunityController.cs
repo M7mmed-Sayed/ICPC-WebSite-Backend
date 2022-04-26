@@ -72,5 +72,14 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+
+        [HttpGet("Members/{communityId}")]
+        public async Task<IActionResult> GetMembers( int communityId) {
+            var result = await _communityRepository.GetMembers( communityId);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
     }
 }
