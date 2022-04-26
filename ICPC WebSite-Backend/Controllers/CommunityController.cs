@@ -36,6 +36,14 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCommunities(int id) {
+            var result = await _communityRepository.GetCommunity(id);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
         [Authorize(Roles = RolesList.Administrator)]
         [HttpPut("Approve")]
         public async Task<IActionResult> ApproveCommunity([FromQuery] int id) {

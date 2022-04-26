@@ -25,6 +25,11 @@ namespace ICPC_WebSite_Backend.Repository
             ((List<Community>)ret.Data).AddRange(_applicationDbContext.communities.ToList());
             return ret;
         }
+        public async Task<Response> GetCommunity(int id) {
+            var ret = new Response();
+            ret.Data = await _applicationDbContext.communities.FindAsync(id);
+            return ret;
+        }
 
         public async Task<Response> RegisterCommunityAsync(CommunityDTO communityDTO) {
             var ret = new Response();
