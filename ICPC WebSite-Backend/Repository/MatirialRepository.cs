@@ -50,7 +50,7 @@ namespace ICPC_WebSite_Backend.Repository
         }
         public async Task<Response> getWeekMaterials(int weekId) {
             var ret = new Response();
-            var _materials = (_applicationDbContext.matirials.Where(m => m.weekId == weekId));
+            var _materials = (_applicationDbContext.matirials.Where(m => m.weekId == weekId)).ToList();
                 
             ret.Data = _materials;
             return ret;

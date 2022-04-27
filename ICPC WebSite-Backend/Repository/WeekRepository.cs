@@ -66,7 +66,7 @@ namespace ICPC_WebSite_Backend.Repository
             }
             return ret;
         }
-        public async Task<Response> createTemplateWeek(int weekId,WeekDTO weekDTO) {
+        public async Task<Response> createTemplateWeek(int weekId) {
             var ret = new Response();
             var week = await _applicationDbContext.weeks.FindAsync(weekId);
             if (week != null) {
