@@ -2,6 +2,7 @@
 {
     public static class Config
     {
+        public static string PathBase => Get("PathBase", "");
         public static string myEmail => Get("email","");
         public static string myPassword => Get("emailpassword","");
         public static string SMTPServerAddress => Get("SMTPServerAddress", "smtp.gmail.com");

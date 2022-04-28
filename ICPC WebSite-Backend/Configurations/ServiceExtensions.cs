@@ -9,6 +9,7 @@ using System.Text;
 using ICPC_WebSite_Backend.Data.Models;
 using CodeforcesLibrary;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ICPC_WebSite_Backend.Configurations
 {
@@ -39,6 +40,7 @@ namespace ICPC_WebSite_Backend.Configurations
             });
         }
         public static void RegisterRepos(this IServiceCollection Services) {
+            Services.AddScoped(sp => sp.GetService<IHttpContextAccessor>().HttpContext);
             Services.AddTransient<IAccountRepository, AccountRepository>();
             Services.AddTransient<ICommunityRepository, CommunityRepository>();
             Services.AddTransient<IEmailSender, EmailSender>(op => new EmailSender(Config.myEmail, Config.myPassword, Config.SMTPServerAddress, Config.mailSubmissionPort));

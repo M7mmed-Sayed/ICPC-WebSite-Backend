@@ -1,4 +1,5 @@
-﻿using ICPC_WebSite_Backend.Data.Models;
+﻿using ICPC_WebSite_Backend.Configurations;
+using ICPC_WebSite_Backend.Data.Models;
 using ICPC_WebSite_Backend.Data.ReturnObjects.Models;
 using ICPC_WebSite_Backend.Models.DTO;
 using ICPC_WebSite_Backend.Utility;
@@ -51,7 +52,7 @@ namespace ICPC_WebSite_Backend.Repository
                     UserId = AppUser.Id,
                     Username = AppUser.UserName
                 };
-                var SendEmailResult = await SendToken(AppUser);
+                var SendEmailResult = await SendToken(AppUser.Id);
                 if (!SendEmailResult.Succeeded) {
                     ret.Succeeded = false;
                     ret.Errors.AddRange(SendEmailResult.Errors);
@@ -66,14 +67,29 @@ namespace ICPC_WebSite_Backend.Repository
             }
             return ret;
         }
-        public async Task<Response> SendToken(User AppUser) {
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(AppUser);
+        public async Task<Response> SendToken(string userId) {
+            var ret = new Response();
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) {
+                ret.Succeeded = false;
+                ret.Errors.Add(ErrorsList.CannotFindUser);
+                return ret;
+            }
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             token = System.Web.HttpUtility.UrlEncode(token);
-            var message = $"Hello {AppUser.FirstName}<br>";
-            var domain = "";
-            message += $"This is your confirmation <a href=\"{domain}/api/Account/confirm?id={AppUser.Id}&token={token}\">Link</a>";
-            var subject = "Competitve Programing Confirmaition";
-            return _emailSender.SendEmail(AppUser.Email, subject, message);
+
+            var domain = Config.PathBase;
+            UriBuilder confirmationLink = new UriBuilder(domain);
+            //confirmationLink.Path = _httpContext.Request.Path;
+            confirmationLink.Path = "api/Account/Confirm";
+            confirmationLink.Query = $"id={user.Id}";
+            confirmationLink.Query += $"&token={token}";
+
+            var subject = "Competitve Programing Email Confirmaition";
+            var message = $"Hello {user.FirstName}<br>";
+            message += $"This is your confirmation <a href=\"{confirmationLink}\">Link</a>";
+            ret = _emailSender.SendEmail(user.Email, subject, message);
+            return ret;
         }
         public async Task<Response> Confirm(string id, string token) {
             var user = await _userManager.FindByIdAsync(id);

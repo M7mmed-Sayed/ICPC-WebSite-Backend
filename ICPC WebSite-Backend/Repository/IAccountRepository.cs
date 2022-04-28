@@ -9,7 +9,7 @@ namespace ICPC_WebSite_Backend.Repository
         Task<Response> SignUpAsync(SignUp user);
         Task<Response> LoginAsync(SignIn signInModel);
 
-        Task<Response> SendToken(User AppUser);
+        Task<Response> SendToken(string userId);
         Task<Response> Confirm(string id, string token);
         Task<Response> RemoveRoleAsync(UserRole userRole);
         Task<Response> AddRoleAsync(UserRole userRole);

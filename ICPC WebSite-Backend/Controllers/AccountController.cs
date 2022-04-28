@@ -45,5 +45,15 @@ namespace ICPC_WebSite_Backend.Controllers
 
             return Ok(result);
         }
+        [HttpPost("SendConfirmationMail")]
+        public async Task<IActionResult> SendConfirmationMail([FromQuery] string userId) {
+            var result = await _accountRepository.SendToken(userId);
+
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+
+            return Ok(result);
+        }
     }
 }
