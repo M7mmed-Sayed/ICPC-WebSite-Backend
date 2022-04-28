@@ -1,4 +1,6 @@
-﻿using ICPC_WebSite_Backend.Data.Models;
+﻿using ICPC_WebSite_Backend.Data;
+using ICPC_WebSite_Backend.Data.Models;
+using ICPC_WebSite_Backend.Data.Models.DTO;
 using ICPC_WebSite_Backend.Data.ReturnObjects.Models;
 using ICPC_WebSite_Backend.Models.DTO;
 using ICPC_WebSite_Backend.Utility;
@@ -12,13 +14,15 @@ namespace ICPC_WebSite_Backend.Repository
 {
     public class AccountRepository : IAccountRepository
     {
+        private readonly ApplicationDbContext _applicationDbContext;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountRepository(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration, IEmailSender emailSender, RoleManager<IdentityRole> roleManager) {
+        public AccountRepository(ApplicationDbContext applicationDbContext, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration, IEmailSender emailSender, RoleManager<IdentityRole> roleManager) {
+            _applicationDbContext = applicationDbContext;
             _userManager = userManager;
             _emailSender = emailSender;
             _roleManager = roleManager;
@@ -119,11 +123,14 @@ namespace ICPC_WebSite_Backend.Repository
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigninKey, SecurityAlgorithms.HmacSha256Signature)
                 );
-            ret.Data = new SignInRespones {
+            ret.Data = new {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
                 UserId = user.Id,
                 Email = user.Email,
-                Username = user.UserName
+                Username = user.UserName,
+                University = user.University,
+                Faculty = user.Faculty,
+                Role = _userManager.GetRolesAsync(user).Result
             };
             return ret;
         }
@@ -149,6 +156,66 @@ namespace ICPC_WebSite_Backend.Repository
             }
             return ret;
 
+        }
+        public async Task<Response> GetUserData(string userId)
+        {
+            var ret = new Response();
+            try {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null) { 
+                    ret.Succeeded = false;
+                    ret.Errors.Add(ErrorsList.CannotFindUser);
+                    return ret;
+                };
+                ret.Data = new UserDTO {
+                    UserId = userId,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    UserName = user.UserName,
+                    PhoneNumber = user.PhoneNumber,
+                    FaceBookProfile = user.FaceBookProfile,
+                    Faculty = user.Faculty,
+                    University = user.University,
+                    Email = user.Email,
+                    SecondaryEmail = user.SecondaryEmail
+                };
+            }
+            catch (Exception ex) {
+                ret.Succeeded = false;
+                var err = new Error() { Code = ex.Message };
+                if (ex.InnerException != null) err.Description = ex.InnerException.Message;
+                ret.Errors.Add(err);
+            }
+            return ret;
+        }
+        public async Task<Response> UpdateUserData(string userId, UserDTO userDto) {
+            var ret = new Response();
+            try {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null) {
+                    ret.Succeeded = false;
+                    ret.Errors.Add(ErrorsList.CannotFindUser);
+                    return ret;
+                };
+                user.FirstName = userDto.FirstName;
+                user.LastName = userDto.LastName;
+                user.UserName = userDto.UserName;
+                user.PhoneNumber = userDto.PhoneNumber;
+                user.FaceBookProfile = userDto.FaceBookProfile;
+                user.Faculty = userDto.Faculty;
+                user.University = userDto.University;
+                user.Email = userDto.Email;
+                user.SecondaryEmail = userDto.SecondaryEmail;
+                await _applicationDbContext.SaveChangesAsync();
+                ret.Data = "Succssefully Edited";
+            }
+            catch (Exception ex) {
+                ret.Succeeded = false;
+                var err = new Error() { Code = ex.Message };
+                if (ex.InnerException != null) err.Description = ex.InnerException.Message;
+                ret.Errors.Add(err);
+            }
+            return ret;
         }
     }
 }
