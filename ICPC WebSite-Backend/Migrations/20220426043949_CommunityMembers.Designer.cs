@@ -4,6 +4,7 @@ using ICPC_WebSite_Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ICPC_WebSite_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220426043949_CommunityMembers")]
+    partial class CommunityMembers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,25 +75,6 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.HasIndex("CommunityId");
 
                     b.ToTable("CommunityMember");
-                });
-
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.CommunityRequest", b =>
-                {
-                    b.Property<string>("MemberId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("CommunityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("MemberId", "CommunityId");
-
-                    b.HasIndex("CommunityId");
-
-                    b.ToTable("CommunityRequests");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.User", b =>
@@ -315,26 +298,7 @@ namespace ICPC_WebSite_Backend.Migrations
                         .IsRequired();
 
                     b.HasOne("ICPC_WebSite_Backend.Data.Models.User", "Member")
-                        .WithMany("CommunityRoles")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Community");
-
-                    b.Navigation("Member");
-                });
-
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.CommunityRequest", b =>
-                {
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.Community", "Community")
-                        .WithMany("CommunityRequests")
-                        .HasForeignKey("CommunityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.User", "Member")
-                        .WithMany("CommunityRequests")
+                        .WithMany("CommunityMembers")
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -398,15 +362,11 @@ namespace ICPC_WebSite_Backend.Migrations
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Community", b =>
                 {
                     b.Navigation("CommunityMembers");
-
-                    b.Navigation("CommunityRequests");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.User", b =>
                 {
-                    b.Navigation("CommunityRequests");
-
-                    b.Navigation("CommunityRoles");
+                    b.Navigation("CommunityMembers");
                 });
 #pragma warning restore 612, 618
         }

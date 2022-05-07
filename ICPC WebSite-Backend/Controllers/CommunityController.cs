@@ -36,6 +36,14 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCommunities(int id) {
+            var result = await _communityRepository.GetCommunity(id);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
         [Authorize(Roles = RolesList.Administrator)]
         [HttpPut("Approve")]
         public async Task<IActionResult> ApproveCommunity([FromQuery] int id) {
@@ -49,6 +57,59 @@ namespace ICPC_WebSite_Backend.Controllers
         [HttpDelete("Reject")]
         public async Task<IActionResult> RejectCommunity([FromQuery] int id) {
             var result = await _communityRepository.RejectCommunity(id);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
+
+        //[Authorize(Roles = RolesList.CommunityLeader)]
+        [HttpPost("AssignRole")]
+        public async Task<IActionResult> AssignRole([FromQuery] string userId, [FromQuery] int communityId, [FromQuery] string roleName) {
+            var result = await _communityRepository.AssignRole(userId, communityId, roleName);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
+        //[Authorize]
+        [HttpPost("Join/{communityId}")]
+        public async Task<IActionResult> JoinRequest([FromQuery] string userId, int communityId) {
+            var result = await _communityRepository.JoinRequest(userId, communityId);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
+        //[Authorize]
+        [HttpPost("Requests/{communityId}")]
+        public async Task<IActionResult> GetRequest(int communityId) {
+            var result = await _communityRepository.GetRequest(communityId);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
+        //[Authorize]
+        [HttpPost("RequestRespond/{communityId}")]
+        public async Task<IActionResult> ApproveRequest([FromQuery] string userId, int communityId, [FromQuery] bool Approve) {
+            var result = await _communityRepository.ResponseToRequest(userId, communityId, Approve);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
+        [HttpGet("Members/{communityId}")]
+        public async Task<IActionResult> GetMembers(int communityId) {
+            var result = await _communityRepository.GetMembers(communityId);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
+        [HttpGet("CountMembers/{communityId}")]
+        public async Task<IActionResult> CountMembers(int communityId) {
+            var result = await _communityRepository.CountMembers(communityId);
             if (!result.Succeeded) {
                 return Unauthorized(result);
             }

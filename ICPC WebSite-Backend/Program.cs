@@ -1,4 +1,5 @@
 using ICPC_WebSite_Backend.Configurations;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,7 +7,8 @@ ConfigProvider.Configuration = builder.Configuration;
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+                .AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -17,10 +19,10 @@ builder.Services.RegisterAuth();
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope()) {
-   // await scope.ServiceProvider.CreateRoles();
+    // await scope.ServiceProvider.CreateRoles();
 }
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()||true) {//true to work on any environment 
+if (app.Environment.IsDevelopment() || true) {//true to work on any environment 
     app.UseSwagger();
     app.UseSwaggerUI();
 }
