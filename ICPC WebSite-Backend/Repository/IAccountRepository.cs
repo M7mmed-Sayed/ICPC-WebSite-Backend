@@ -1,4 +1,5 @@
 ﻿using ICPC_WebSite_Backend.Data.Models;
+using ICPC_WebSite_Backend.Data.Models.DTO;
 using ICPC_WebSite_Backend.Data.ReturnObjects.Models;
 using ICPC_WebSite_Backend.Models.DTO;
 
@@ -13,5 +14,7 @@ namespace ICPC_WebSite_Backend.Repository
         Task<Response> Confirm(string id, string token);
         Task<Response> RemoveRoleAsync(UserRole userRole);
         Task<Response> AddRoleAsync(UserRole userRole);
+        Task<Response> GetUserData(string userId);
+        Task<Response> UpdateUserData(string userId, UserDTO userDto);
     }
 }
