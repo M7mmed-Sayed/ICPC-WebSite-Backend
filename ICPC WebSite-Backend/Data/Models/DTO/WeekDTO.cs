@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 namespace ICPC_WebSite_Backend.Data.Models.DTO
 {
-    public class WeekDTO
+    public class WeekDto
     {
         [Required]
         public string Name { get; set; }

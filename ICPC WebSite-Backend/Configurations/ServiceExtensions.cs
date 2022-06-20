@@ -14,8 +14,8 @@ namespace ICPC_WebSite_Backend.Configurations
 {
     public static class ServiceExtensions
     {
-        public static void AddSwaggerGen(this IServiceCollection Services) {
-            Services.AddSwaggerGen(option => {
+        public static void AddSwaggerGen(this IServiceCollection services) {
+            services.AddSwaggerGen(option => {
                 option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
                 option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
                     In = ParameterLocation.Header,
@@ -38,15 +38,15 @@ namespace ICPC_WebSite_Backend.Configurations
                  }});
             });
         }
-        public static void RegisterRepos(this IServiceCollection Services) {
-            Services.AddTransient<IAccountRepository, AccountRepository>();
-            Services.AddTransient<ICommunityRepository, CommunityRepository>();
-            Services.AddTransient<IEmailSender, EmailSender>(op => new EmailSender(Config.myEmail, Config.myPassword, Config.SMTPServerAddress, Config.mailSubmissionPort));
-            Services.AddTransient<ICodeforcesRepository, CodeforcesRepository>();
-            Services.AddTransient(op => new CodeforcesHelper(Config.CodeforcesBaseUrl, Config.CodeforcesAPIKey, Config.CodeforcesAPISecret));
+        public static void RegisterRepos(this IServiceCollection services) {
+            services.AddTransient<IAccountRepository, AccountRepository>();
+            services.AddTransient<ICommunityRepository, CommunityRepository>();
+            services.AddTransient<IEmailSender, EmailSender>(op => new EmailSender(Config.MyEmail, Config.MyPassword, Config.SmtpServerAddress, Config.MailSubmissionPort));
+            services.AddTransient<ICodeforcesRepository, CodeforcesRepository>();
+            services.AddTransient(op => new CodeforcesHelper(Config.CodeforcesBaseUrl, Config.CodeforcesApiKey, Config.CodeforcesApiSecret));
         }
-        public static void RegisterAuth(this IServiceCollection Services) {
-            Services.AddAuthentication(option => {
+        public static void RegisterAuth(this IServiceCollection services) {
+            services.AddAuthentication(option => {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -56,27 +56,27 @@ namespace ICPC_WebSite_Backend.Configurations
                 option.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters() {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidAudience = Config.JWTValidAudience,
-                    ValidIssuer = Config.JWTValidIssuer,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config.JWTSecret))
+                    ValidAudience = Config.JwtValidAudience,
+                    ValidIssuer = Config.JwtValidIssuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config.JwtSecret))
                 };
             });
         }
-        public static void ConfigureDatabase(this IServiceCollection Services) {
-            Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Config.DefaultConnectionString));
-            Services.AddIdentity<User, IdentityRole>(options => options.User.RequireUniqueEmail = true)
+        public static void ConfigureDatabase(this IServiceCollection services) {
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Config.DefaultConnectionString));
+            services.AddIdentity<User, IdentityRole>(options => options.User.RequireUniqueEmail = true)
                    .AddEntityFrameworkStores<ApplicationDbContext>()
                    .AddDefaultTokenProviders();
 
         }
-        public static async Task CreateRoles(this IServiceProvider Services) {
+        public static async Task CreateRoles(this IServiceProvider services) {
             //initializing custom roles 
-            var RoleManager = Services.GetRequiredService<RoleManager<IdentityRole>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
             var roleNames = RolesList.Roles;
             foreach (var roleName in roleNames) {
-                var roleExist = await RoleManager.RoleExistsAsync(roleName);
+                var roleExist = await roleManager.RoleExistsAsync(roleName);
                 if (!roleExist) {
-                    IdentityResult roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName));
+                    IdentityResult roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
         }

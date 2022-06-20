@@ -38,22 +38,22 @@ public class AccountRepository : IAccountRepository
     {
         try
         {
-            var AppUser = new User
+            var appUser = new User
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 UserName = user.UserName,
                 Email = user.Email
             };
-            var result = await _userManager.CreateAsync(AppUser, user.Password);
+            var result = await _userManager.CreateAsync(appUser, user.Password);
             if (result.Succeeded == false) return result.ToApplicationResponse<SignUpResponse>();
             var data = new SignUpResponse
             {
-                Email = AppUser.Email,
-                UserId = AppUser.Id,
-                Username = AppUser.UserName
+                Email = appUser.Email,
+                UserId = appUser.Id,
+                Username = appUser.UserName
             };
-            var sendEmailResult = await SendToken(AppUser);
+            var sendEmailResult = await SendToken(appUser);
 
             return !sendEmailResult.Succeeded
                 ? ResponseFactory.Fail(sendEmailResult.Errors!, data)
@@ -65,16 +65,16 @@ public class AccountRepository : IAccountRepository
         }
     }
 
-    public async Task<Response> SendToken(User AppUser)
+    public async Task<Response> SendToken(User appUser)
     {
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(AppUser);
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
         token = HttpUtility.UrlEncode(token);
-        var message = $"Hello {AppUser.FirstName}<br>";
+        var message = $"Hello {appUser.FirstName}<br>";
         var domain = "";
         message +=
-            $"This is your confirmation <a href=\"{domain}/api/Account/confirm?id={AppUser.Id}&token={token}\">Link</a>";
+            $"This is your confirmation <a href=\"{domain}/api/Account/confirm?id={appUser.Id}&token={token}\">Link</a>";
         var subject = "Competitve Programing Confirmaition";
-        return _emailSender.SendEmail(AppUser.Email, subject, message);
+        return _emailSender.SendEmail(appUser.Email, subject, message);
     }
 
     public async Task<Response> Confirm(string id, string token)
@@ -155,14 +155,14 @@ public class AccountRepository : IAccountRepository
         return result.ToApplicationResponse();
     }
 
-    public async Task<Response<UserDTO>> GetUserData(string userId)
+    public async Task<Response<UserDto>> GetUserData(string userId)
     {
         try
         {
             var user = await _userManager.FindByIdAsync(userId);
 
-            if (user == null) return ResponseFactory.Fail<UserDTO>(ErrorsList.CannotFindUser);
-            var data = new UserDTO
+            if (user == null) return ResponseFactory.Fail<UserDto>(ErrorsList.CannotFindUser);
+            var data = new UserDto
             {
                 UserId = userId,
                 FirstName = user.FirstName,
@@ -179,11 +179,11 @@ public class AccountRepository : IAccountRepository
         }
         catch (Exception ex)
         {
-            return ResponseFactory.FailFromException<UserDTO>(ex);
+            return ResponseFactory.FailFromException<UserDto>(ex);
         }
     }
 
-    public async Task<Response> UpdateUserData(string userId, UserDTO userDto)
+    public async Task<Response> UpdateUserData(string userId, UserDto userDto)
     {
         try
         {

@@ -9,17 +9,17 @@ public class EmailSender : IEmailSender
     private readonly string _email;
     private readonly int _mailSubmissionPort;
     private readonly string _password;
-    private readonly string _SMTPServerAddress;
+    private readonly string _smtpServerAddress;
 
-    public EmailSender(string email, string password, string SMTPServerAddress, int mailSubmissionPort)
+    public EmailSender(string email, string password, string smtpServerAddress, int mailSubmissionPort)
     {
         _email = email;
         _password = password;
-        _SMTPServerAddress = SMTPServerAddress;
+        _smtpServerAddress = smtpServerAddress;
         _mailSubmissionPort = mailSubmissionPort;
     }
 
-    public Response SendEmail(string emailTo, string MailSubject, string MailBody, bool isHTML = true)
+    public Response SendEmail(string emailTo, string mailSubject, string mailBody, bool isHtml = true)
     {
         var validate = ValidConfiguration();
 
@@ -32,10 +32,10 @@ public class EmailSender : IEmailSender
         try
         {
             var mailMessage = new MailMessage(_email, emailTo);
-            mailMessage.Subject = MailSubject;
-            mailMessage.Body = MailBody;
-            mailMessage.IsBodyHtml = isHTML;
-            var smtpClient = new SmtpClient(_SMTPServerAddress, _mailSubmissionPort);
+            mailMessage.Subject = mailSubject;
+            mailMessage.Body = mailBody;
+            mailMessage.IsBodyHtml = isHtml;
+            var smtpClient = new SmtpClient(_smtpServerAddress, _mailSubmissionPort);
             smtpClient.Credentials = new NetworkCredential
             {
                 UserName = _email,
@@ -63,8 +63,8 @@ public class EmailSender : IEmailSender
 
         if (string.IsNullOrEmpty(_password)) errorsLists.Add(ErrorsList.EmailSenderPasswordIsNotConfigured);
 
-        if (string.IsNullOrEmpty(_SMTPServerAddress))
-            errorsLists.Add(ErrorsList.EmailSenderSMTPServerAddressIsNotConfigured);
+        if (string.IsNullOrEmpty(_smtpServerAddress))
+            errorsLists.Add(ErrorsList.EmailSenderSmtpServerAddressIsNotConfigured);
 
         if (_mailSubmissionPort == 0)
             errorsLists.Add(ErrorsList.EmailSenderMailSubmissionPortIsNotConfigured);

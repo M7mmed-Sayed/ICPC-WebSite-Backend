@@ -10,10 +10,10 @@ public interface IAccountRepository
     Task<Response<SignUpResponse>> SignUpAsync(SignUp user);
     Task<Response<LoginResponse>> LoginAsync(SignIn signInModel);
 
-    Task<Response> SendToken(User AppUser);
+    Task<Response> SendToken(User appUser);
     Task<Response> Confirm(string id, string token);
     Task<Response> RemoveRoleAsync(UserRole userRole);
     Task<Response> AddRoleAsync(UserRole userRole);
-    Task<Response<UserDTO>> GetUserData(string userId);
-    Task<Response> UpdateUserData(string userId, UserDTO userDto);
+    Task<Response<UserDto>> GetUserData(string userId);
+    Task<Response> UpdateUserData(string userId, UserDto userDto);
 }

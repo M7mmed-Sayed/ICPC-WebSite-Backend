@@ -6,8 +6,8 @@ namespace ICPC_WebSite_Backend.Repository;
 
 public interface IMaterialRepository
 {
-    Task<Response> addMaterial(MaterialDTO MaterialDTO);
-    Task<Response> deleteMaterial(int materialId);
-    Task<Response<IEnumerable<Material>>> getWeekMaterials(int weekId);
-    Task<Response> updateMaterial(int materialId, MaterialDTO MaterialDTO);
+    Task<Response> AddMaterial(MaterialDto materialDto);
+    Task<Response> DeleteMaterial(int materialId);
+    Task<Response<IEnumerable<Material>>> GetWeekMaterials(int weekId);
+    Task<Response> UpdateMaterial(int materialId, MaterialDto materialDto);
 }

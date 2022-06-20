@@ -17,7 +17,7 @@ namespace ICPC_WebSite_Backend.Controllers
         }
         [Authorize]
         [HttpPost("registerCommunity")]
-        public async Task<IActionResult> Register([FromBody] CommunityDTO community) {
+        public async Task<IActionResult> Register([FromBody] CommunityDto community) {
             var validate = Validate.IsValidCommunity(community);
             if (!validate.Succeeded)
                 return BadRequest(validate);
@@ -92,8 +92,8 @@ namespace ICPC_WebSite_Backend.Controllers
         }
         //[Authorize]
         [HttpPost("RequestRespond/{communityId}")]
-        public async Task<IActionResult> ApproveRequest([FromQuery] string userId, int communityId, [FromQuery] bool Approve) {
-            var result = await _communityRepository.ResponseToRequest(userId, communityId, Approve);
+        public async Task<IActionResult> ApproveRequest([FromQuery] string userId, int communityId, [FromQuery] bool approve) {
+            var result = await _communityRepository.ResponseToRequest(userId, communityId, approve);
             if (!result.Succeeded) {
                 return Unauthorized(result);
             }

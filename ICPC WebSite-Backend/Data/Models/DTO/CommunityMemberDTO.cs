@@ -1,6 +1,6 @@
 namespace ICPC_WebSite_Backend.Data.Models.DTO;
 
-public class CommunityMemberDTO
+public class CommunityMemberDto
 {
     public string Id { get; set; }
     public string FirstName { get; set; }

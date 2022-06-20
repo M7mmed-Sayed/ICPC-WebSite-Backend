@@ -6,10 +6,10 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public bool IsTemplate { get; set; }=false;
-        public  DateTime Created_at { get; set; }
-        public DateTime Updated_at { get; set; }
+        public  DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
         public List<Material> Materials { get; set; }
-        public int Training_Id { get; set; }
+        public int TrainingId { get; set; }
         public Training Training { get; set; }
     }
 }

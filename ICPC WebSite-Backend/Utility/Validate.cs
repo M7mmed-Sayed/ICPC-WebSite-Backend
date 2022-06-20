@@ -50,7 +50,7 @@ public static class Validate
         return ResponseFactory.ResponseFromErrors(errorList);
     }
 
-    public static Response IsValidCommunity(CommunityDTO community)
+    public static Response IsValidCommunity(CommunityDto community)
     {
         var errorList = new List<Error>();
 

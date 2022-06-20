@@ -26,28 +26,28 @@ public class CommunityRepository : ICommunityRepository
     }
 
     public async Task<Response<IEnumerable<Community>>> GetAllCommunities() =>
-        ResponseFactory.Ok<IEnumerable<Community>>(await _applicationDbContext.communities.ToListAsync());
+        ResponseFactory.Ok<IEnumerable<Community>>(await _applicationDbContext.Communities.ToListAsync());
 
     public async Task<Response<Community>> GetCommunity(int id)
     {
-        var data = await _applicationDbContext.communities.FindAsync(id);
+        var data = await _applicationDbContext.Communities.FindAsync(id);
         return data is null
             ? ResponseFactory.Fail<Community>(ErrorsList.CommunityNotFound)
             : ResponseFactory.Ok(data);
     }
 
-    public async Task<Response> RegisterCommunityAsync(CommunityDTO communityDTO)
+    public async Task<Response> RegisterCommunityAsync(CommunityDto communityDto)
     {
         try
         {
             var community = new Community
             {
-                Name = communityDTO.Name,
-                About = communityDTO.About,
-                OfficialMail = communityDTO.OfficialMail,
-                RequesterId = communityDTO.RequesterId
+                Name = communityDto.Name,
+                About = communityDto.About,
+                OfficialMail = communityDto.OfficialMail,
+                RequesterId = communityDto.RequesterId
             };
-            await _applicationDbContext.communities.AddAsync(community);
+            await _applicationDbContext.Communities.AddAsync(community);
             var result = await _applicationDbContext.SaveChangesAsync();
             return result != 0 ? ResponseFactory.Ok() : ResponseFactory.Fail();
         }
@@ -61,7 +61,7 @@ public class CommunityRepository : ICommunityRepository
     {
         try
         {
-            var community = await _applicationDbContext.communities.FindAsync(communityId);
+            var community = await _applicationDbContext.Communities.FindAsync(communityId);
 
             if (community == null) return ResponseFactory.Fail(ErrorsList.CommunityNotFound);
 
@@ -96,7 +96,7 @@ public class CommunityRepository : ICommunityRepository
     {
         try
         {
-            var community = await _applicationDbContext.communities.FindAsync(communityId);
+            var community = await _applicationDbContext.Communities.FindAsync(communityId);
 
             if (community == null) return ResponseFactory.Fail(ErrorsList.CommunityNotFound);
 
@@ -112,7 +112,7 @@ public class CommunityRepository : ICommunityRepository
                        "for more inf send XYZ@gmail.com"
                 ;
             var subject = "Competitve Programing Registeration Community";
-            _applicationDbContext.communities.Remove(community);
+            _applicationDbContext.Communities.Remove(community);
             await _applicationDbContext.SaveChangesAsync();
             var emailSendResult = _emailSender.SendEmail(user.Email, subject, message);
 
@@ -129,7 +129,7 @@ public class CommunityRepository : ICommunityRepository
         try
         {
             var errorsList = new List<Error>();
-            var community = await _applicationDbContext.communities.FindAsync(communityId);
+            var community = await _applicationDbContext.Communities.FindAsync(communityId);
 
             if (community == null) errorsList.Add(ErrorsList.CommunityNotFound);
 
@@ -172,19 +172,19 @@ public class CommunityRepository : ICommunityRepository
         }
     }
 
-    public async Task<Response<IEnumerable<CommunityMemberDTO>>> GetMembers(int communityId)
+    public async Task<Response<IEnumerable<CommunityMemberDto>>> GetMembers(int communityId)
     {
         try
         {
-            var community = await _applicationDbContext.communities.Include(x => x.CommunityMembers)
+            var community = await _applicationDbContext.Communities.Include(x => x.CommunityMembers)
                 .ThenInclude(m => m.Member).Where(x => x.Id == communityId).SingleOrDefaultAsync();
 
             if (community == null)
-                return ResponseFactory.Fail<IEnumerable<CommunityMemberDTO>>(ErrorsList.CommunityNotFound);
+                return ResponseFactory.Fail<IEnumerable<CommunityMemberDto>>(ErrorsList.CommunityNotFound);
 
             var data = community.CommunityMembers.GroupBy(
                 x => new {x.MemberId, x.Member.FirstName, x.Member.LastName, x.Member.Email, x.Member.UserName},
-                (key, val) => new CommunityMemberDTO
+                (key, val) => new CommunityMemberDto
                 {
                     Id = key.MemberId,
                     FirstName = key.FirstName,
@@ -197,7 +197,7 @@ public class CommunityRepository : ICommunityRepository
         }
         catch (Exception ex)
         {
-            return ResponseFactory.FailFromException<IEnumerable<CommunityMemberDTO>>(ex);
+            return ResponseFactory.FailFromException<IEnumerable<CommunityMemberDto>>(ex);
         }
     }
 
@@ -205,7 +205,7 @@ public class CommunityRepository : ICommunityRepository
     {
         try
         {
-            var community = await _applicationDbContext.communities.Include(x => x.CommunityMembers)
+            var community = await _applicationDbContext.Communities.Include(x => x.CommunityMembers)
                 .ThenInclude(m => m.Member).Where(x => x.Id == communityId).SingleOrDefaultAsync();
 
             if (community == null) return ResponseFactory.Fail<int>(ErrorsList.CommunityNotFound);
@@ -224,7 +224,7 @@ public class CommunityRepository : ICommunityRepository
         try
         {
             var errorsList = new List<Error>();
-            var community = await _applicationDbContext.communities.FindAsync(communityId);
+            var community = await _applicationDbContext.Communities.FindAsync(communityId);
 
             if (community == null) errorsList.Add(ErrorsList.CommunityNotFound);
 
@@ -250,13 +250,13 @@ public class CommunityRepository : ICommunityRepository
         }
     }
 
-    public async Task<Response<IEnumerable<CommunityMemberDTO>>> GetRequest(int communityId)
+    public async Task<Response<IEnumerable<CommunityMemberDto>>> GetRequest(int communityId)
     {
         try
         {
             var data = await _applicationDbContext.CommunityRequests.Include(x => x.Member)
                 .Where(x => x.CommunityId == communityId && x.Status == ConstVariable.PendingStatus)
-                .Select(x => new CommunityMemberDTO
+                .Select(x => new CommunityMemberDto
                 {
                     Id = x.MemberId,
                     FirstName = x.Member.FirstName,
@@ -264,11 +264,11 @@ public class CommunityRepository : ICommunityRepository
                     Email = x.Member.Email,
                     UserName = x.Member.UserName
                 }).ToListAsync();
-            return ResponseFactory.Ok<IEnumerable<CommunityMemberDTO>>(data);
+            return ResponseFactory.Ok<IEnumerable<CommunityMemberDto>>(data);
         }
         catch (Exception ex)
         {
-            return ResponseFactory.FailFromException<IEnumerable<CommunityMemberDTO>>(ex);
+            return ResponseFactory.FailFromException<IEnumerable<CommunityMemberDto>>(ex);
         }
     }
 

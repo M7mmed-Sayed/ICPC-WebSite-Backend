@@ -3,11 +3,11 @@
     public class Material
     {
         public int Id { get; set; }
-        public string URL { get; set; }
+        public string Url { get; set; }
         public string Description { get; set; }
-        public DateTime Created_at { get; set; }
-        public DateTime Updated_at { get; set; }
-        public int weekId { get; set; }
-        public Week weeks { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public int WeekId { get; set; }
+        public Week Weeks { get; set; }
     }
 }

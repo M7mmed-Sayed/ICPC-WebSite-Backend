@@ -16,26 +16,26 @@ public class MaterialRepository : IMaterialRepository
         _applicationDbContext = applicationDbContext;
     }
 
-    public async Task<Response> addMaterial(MaterialDTO MaterialDTO)
+    public async Task<Response> AddMaterial(MaterialDto materialDto)
     {
-        var week = await _applicationDbContext.weeks.FindAsync(MaterialDTO.weekId);
+        var week = await _applicationDbContext.Weeks.FindAsync(materialDto.WeekId);
 
         if (week == null) return ResponseFactory.Fail(ErrorsList.WeekNotFound);
 
         await _applicationDbContext.SaveChangesAsync();
-        var Material = new Material
+        var material = new Material
         {
-            Created_at = DateTime.Now,
-            URL = MaterialDTO.URL,
-            Description = MaterialDTO.Description,
-            weekId = MaterialDTO.weekId
+            CreatedAt = DateTime.Now,
+            Url = materialDto.Url,
+            Description = materialDto.Description,
+            WeekId = materialDto.WeekId
         };
-        await _applicationDbContext.Materials.AddAsync(Material);
+        await _applicationDbContext.Materials.AddAsync(material);
         await _applicationDbContext.SaveChangesAsync();
         return ResponseFactory.Ok();
     }
 
-    public async Task<Response> deleteMaterial(int materialId)
+    public async Task<Response> DeleteMaterial(int materialId)
     {
         var material = await _applicationDbContext.Materials.FindAsync(materialId);
 
@@ -46,20 +46,20 @@ public class MaterialRepository : IMaterialRepository
         return ResponseFactory.Ok();
     }
 
-    public async Task<Response<IEnumerable<Material>>> getWeekMaterials(int weekId)
+    public async Task<Response<IEnumerable<Material>>> GetWeekMaterials(int weekId)
     {
-        var _materials = await _applicationDbContext.Materials.Where(m => m.weekId == weekId).ToListAsync();
-        return ResponseFactory.Ok<IEnumerable<Material>>(_materials);
+        var materials = await _applicationDbContext.Materials.Where(m => m.WeekId == weekId).ToListAsync();
+        return ResponseFactory.Ok<IEnumerable<Material>>(materials);
     }
 
-    public async Task<Response> updateMaterial(int materialId, MaterialDTO MaterialDTO)
+    public async Task<Response> UpdateMaterial(int materialId, MaterialDto materialDto)
     {
         var material = await _applicationDbContext.Materials.FindAsync(materialId);
 
         if (material == null) return ResponseFactory.Fail(ErrorsList.MaterailNotFound);
         
-        material.Description = MaterialDTO.Description;
-        material.URL = MaterialDTO.URL;
+        material.Description = materialDto.Description;
+        material.Url = materialDto.Url;
         await _applicationDbContext.SaveChangesAsync();
         return ResponseFactory.Ok();
     }

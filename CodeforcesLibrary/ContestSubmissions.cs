@@ -6,6 +6,6 @@ namespace CodeforcesLibrary
     {
         public string Status { get; set; }
         [JsonProperty("Result")]
-        public List<ContestSubmissionsResponse> response { get; set; }
+        public List<ContestSubmissionsResponse> Response { get; set; }
     }
 }

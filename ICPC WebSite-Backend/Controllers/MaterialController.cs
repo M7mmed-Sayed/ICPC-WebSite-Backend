@@ -15,27 +15,27 @@ namespace ICPC_WebSite_Backend.Controllers
             _materialRepository = materialRepository;
         }
         [HttpPost("addMaterial")]
-        public async Task<IActionResult> addMaterial(MaterialDTO MaterialDTO) {
-            var validate = Validate.IsValidMaterial(MaterialDTO.Description);
+        public async Task<IActionResult> AddMaterial(MaterialDto materialDto) {
+            var validate = Validate.IsValidMaterial(materialDto.Description);
             if (!validate.Succeeded)
                 return BadRequest(validate);
-            var result = await _materialRepository.addMaterial(MaterialDTO );
+            var result = await _materialRepository.AddMaterial(materialDto );
             if (!result.Succeeded) {
                 return Unauthorized(result.Errors);
             }
             return Ok(result);
         }
         [HttpDelete("deleteMaterial")]
-        public async Task<IActionResult> deleteMaterial(int  MaterialId) {
-            var result = await _materialRepository.deleteMaterial(MaterialId);
+        public async Task<IActionResult> DeleteMaterial(int  materialId) {
+            var result = await _materialRepository.DeleteMaterial(materialId);
             if (!result.Succeeded) {
                 return NotFound(result.Errors);
             }
             return Ok(result);
         }
         [HttpGet("getweekmaterials")]
-        public async Task<IActionResult> getWeekMaterials(int weekId) {
-            var result = await _materialRepository.getWeekMaterials(weekId);
+        public async Task<IActionResult> GetWeekMaterials(int weekId) {
+            var result = await _materialRepository.GetWeekMaterials(weekId);
             if (!result.Succeeded) {
                 return NotFound(result.Errors);
             }

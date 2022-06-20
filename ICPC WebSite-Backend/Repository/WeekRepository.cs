@@ -16,75 +16,75 @@ public class WeekRepository : IWeekRepository
         _applicationDbContext = applicationDbContext;
     }
 
-    public async Task<Response> AddWeek(WeekDTO weekDTO)
+    public async Task<Response> AddWeek(WeekDto weekDto)
     {
         var week = new Week
         {
-            Name = weekDTO.Name,
-            Description = weekDTO.Description,
-            IsTemplate = weekDTO.IsTemplate,
-            Created_at = DateTime.Now
+            Name = weekDto.Name,
+            Description = weekDto.Description,
+            IsTemplate = weekDto.IsTemplate,
+            CreatedAt = DateTime.Now
         };
-        await _applicationDbContext.weeks.AddAsync(week);
+        await _applicationDbContext.Weeks.AddAsync(week);
         await _applicationDbContext.SaveChangesAsync();
         return ResponseFactory.Ok();
     }
 
-    public async Task<Response> UpdateWeek(int weekId, WeekDTO weekDTO)
+    public async Task<Response> UpdateWeek(int weekId, WeekDto weekDto)
     {
-        var week = await _applicationDbContext.weeks.FindAsync(weekId);
+        var week = await _applicationDbContext.Weeks.FindAsync(weekId);
 
         if (week == null) return ResponseFactory.Fail(ErrorsList.WeekNotFound);
-        week.Description = weekDTO.Description;
-        week.IsTemplate = weekDTO.IsTemplate;
-        week.Name = weekDTO.Name;
-        week.Updated_at = DateTime.Now;
+        week.Description = weekDto.Description;
+        week.IsTemplate = weekDto.IsTemplate;
+        week.Name = weekDto.Name;
+        week.UpdatedAt = DateTime.Now;
         await _applicationDbContext.SaveChangesAsync();
         return ResponseFactory.Ok();
     }
 
     public async Task<Response<IEnumerable<Week>>> GetAllTemplateWeeks()
     {
-        var weeks = await _applicationDbContext.weeks.Where(W => W.IsTemplate == true).ToListAsync();
+        var weeks = await _applicationDbContext.Weeks.Where(w => w.IsTemplate == true).ToListAsync();
         return ResponseFactory.Ok<IEnumerable<Week>>(weeks);
     }
 
     public async Task<Response<IEnumerable<Week>>> GetAllWeeks()
     {
-        var weeks = await _applicationDbContext.weeks.ToListAsync();
+        var weeks = await _applicationDbContext.Weeks.ToListAsync();
         return ResponseFactory.Ok<IEnumerable<Week>>(weeks);
     }
 
     public async Task<Response<Week>> GetTheWeek(int weekId)
     {
-        var week = await _applicationDbContext.weeks.FindAsync(weekId);
+        var week = await _applicationDbContext.Weeks.FindAsync(weekId);
 
         return week == null ? ResponseFactory.Fail<Week>(ErrorsList.WeekNotFound) : ResponseFactory.Ok(week);
     }
 
-    public async Task<Response> createTemplateWeek(int weekId)
+    public async Task<Response> CreateTemplateWeek(int weekId)
     {
-        var week = await _applicationDbContext.weeks.FindAsync(weekId);
+        var week = await _applicationDbContext.Weeks.FindAsync(weekId);
 
         if (week == null) return ResponseFactory.Fail(ErrorsList.WeekNotFound);
 
         var newWeek = new Week
         {
-            Created_at = DateTime.Now,
+            CreatedAt = DateTime.Now,
             Description = week.Description,
             Name = week.Name,
             IsTemplate = false
         };
-        await _applicationDbContext.weeks.AddAsync(newWeek);
-        var weekMaterials = _applicationDbContext.Materials.Where(m => m.weekId == weekId).ToList();
+        await _applicationDbContext.Weeks.AddAsync(newWeek);
+        var weekMaterials = _applicationDbContext.Materials.Where(m => m.WeekId == weekId).ToList();
 
         foreach (var material in weekMaterials)
             await _applicationDbContext.Materials.AddAsync(new Material
             {
-                Created_at = DateTime.Now,
+                CreatedAt = DateTime.Now,
                 Description = material.Description,
-                weekId = newWeek.Id,
-                URL = material.URL
+                WeekId = newWeek.Id,
+                Url = material.Url
             });
         await _applicationDbContext.SaveChangesAsync();
 

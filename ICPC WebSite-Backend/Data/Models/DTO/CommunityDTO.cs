@@ -2,7 +2,7 @@
 
 namespace ICPC_WebSite_Backend.Data.Models.DTO
 {
-    public class CommunityDTO
+    public class CommunityDto
     {
         public string Name { get; set; }
         public string About { get; set; }
