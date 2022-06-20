@@ -268,7 +268,7 @@ namespace ICPC_WebSite_Backend.Repository
         public async Task<Response> GetRequest(int communityId) {
             var ret = new Response();
             try {
-                ret.Data = await _applicationDbContext.CommunityRequests.Include(x => x.Member).Where(x => x.CommunityId == communityId && x.Status == ConstVariable.PendingStatus).Select(x=>new {
+                ret.Data = await _applicationDbContext.CommunityRequests.Include(x => x.Member).Where(x => x.CommunityId == communityId && x.Status == ConstVariable.PendingStatus).Select(x => new {
                     x.MemberId,
                     x.Member.FirstName,
                     x.Member.LastName,

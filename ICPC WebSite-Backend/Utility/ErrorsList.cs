@@ -44,10 +44,21 @@ namespace ICPC_WebSite_Backend.Utility
         public static Error DuplicateRoleName = new Error { Code = "DuplicateRoleName", Description = "User already has this Role. " };
         public static Error UserHasNotThisRole = new Error { Code = "UserHasNotThisRole", Description = "user is not assigned to this role." };
 
+        // weeks
+        public static Error WeekNotFound = new Error { Code = "WeekNotFound", Description = "Week is not Found" };
+        public static Error NoTemplateWeeks = new Error { Code = "NoTemplateWeeks", Description = "the  is no Week assigned as template " };
+        public static Error NoWeekAvaliable = new Error { Code = "NoWeekAvaliable", Description = "no Week Is avaliable " };
+        public static Error MissingWeekName = new Error { Code = "MissingWeekName", Description = " Week Is empty " };
+        public static Error InvalidWeekName = new Error { Code = "InvalidWeekName", Description = "invalid name for this Week" };
+
+        //matiarial
+        public static Error MaterailNotFound = new Error { Code = "MaterailNotFound", Description = "the material is not exist" };
+        public static Error InvalidMaterialName = new Error { Code = "MaterailNotFound", Description = "invalid name for this Material" };
+
 
         //
         public static Error CannotFindUser = new Error { Code = "CannotFindUser", Description = "user is not registered in the system" };
         public static Error IncorrectEmailOrPassword = new Error { Code = "IncorrectEmailOrPassword", Description = "can't find a user with this email and password" };
-        
+
     }
 }
