@@ -8,7 +8,7 @@
         public bool IsTemplate { get; set; }=false;
         public  DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
-        public List<Matirial> matirials { get; set; }
+        public List<Material> Materials { get; set; }
         public int Training_Id { get; set; }
         public Training Training { get; set; }
     }

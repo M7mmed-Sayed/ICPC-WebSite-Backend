@@ -1,5 +1,4 @@
 ﻿using ICPC_WebSite_Backend.Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ICPC_WebSite_Backend.Controllers

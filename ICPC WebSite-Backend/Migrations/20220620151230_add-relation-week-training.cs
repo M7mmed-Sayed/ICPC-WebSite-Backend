@@ -35,7 +35,7 @@ namespace ICPC_WebSite_Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "matirials",
+                name: "Materials",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -48,9 +48,9 @@ namespace ICPC_WebSite_Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_matirials", x => x.Id);
+                    table.PrimaryKey("PK_Materials", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_matirials_weeks_weekId",
+                        name: "FK_Materials_weeks_weekId",
                         column: x => x.weekId,
                         principalTable: "weeks",
                         principalColumn: "Id",
@@ -58,8 +58,8 @@ namespace ICPC_WebSite_Backend.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_matirials_weekId",
-                table: "matirials",
+                name: "IX_Materials_weekId",
+                table: "Materials",
                 column: "weekId");
 
             migrationBuilder.CreateIndex(
@@ -77,7 +77,7 @@ namespace ICPC_WebSite_Backend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "matirials");
+                name: "Materials");
 
             migrationBuilder.DropTable(
                 name: "weeks");

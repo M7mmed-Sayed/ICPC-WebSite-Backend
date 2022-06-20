@@ -1,6 +1,6 @@
 ﻿namespace ICPC_WebSite_Backend.Data.Models.DTO
 {
-    public class MatirialDTO
+    public class MaterialDTO
     {
         public string URL { get; set; }
         public string Description { get; set; }

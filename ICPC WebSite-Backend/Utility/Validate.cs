@@ -1,154 +1,107 @@
-﻿using ICPC_WebSite_Backend.Data.Models.DTO;
-using ICPC_WebSite_Backend.Data.ReturnObjects.Models;
-using ICPC_WebSite_Backend.Models.DTO;
+﻿using System.Net.Mail;
+using ICPC_WebSite_Backend.Data.Models.DTO;
+using ICPC_WebSite_Backend.Data.Response;
 
-namespace ICPC_WebSite_Backend.Utility
+namespace ICPC_WebSite_Backend.Utility;
+
+public static class Validate
 {
-    public static class Validate
+    public static Response IsValidSignUp(SignUp? signUp)
     {
-        public static Response IsValidSignUp(SignUp signUp) {
-            var result = new Response();
-            if (signUp == null) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.MissingSignUpObject);
-                return result;
-            }
-            if (string.IsNullOrEmpty(signUp.FirstName)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.MissingFirstName);
-            }
-            if (string.IsNullOrEmpty(signUp.LastName)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.MissingLastName);
-            }
-            if (string.IsNullOrEmpty(signUp.UserName)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.MissingUsername);
-            }
-            if (string.IsNullOrEmpty(signUp.Email)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.MissingEmail);
-            }
-            if (string.IsNullOrEmpty(signUp.Password)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.MissingPassword);
-            }
-            if (string.IsNullOrEmpty(signUp.ConfirmPassword)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.MissingConfirmPassword);
-            }
-            if (!result.Succeeded)
-                return result;
-            signUp.FirstName = signUp.FirstName.Trim();
-            signUp.LastName = signUp.LastName.Trim();
-            signUp.UserName = signUp.UserName.Trim();
-            signUp.Email = signUp.Email.Trim();
-            signUp.Password = signUp.Password.Trim();
-            signUp.ConfirmPassword = signUp.ConfirmPassword.Trim();
+        if (signUp == null)
+            return ResponseFactory.Fail(ErrorsList.MissingSignUpObject);
 
-            if (!IsValidName(signUp.FirstName)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.InvalidFirstName);
-            }
-            if (!IsValidName(signUp.LastName)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.InvalidLastName);
-            }
-            if (!IsValidUserName(signUp.UserName)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.InvalidUsername);
-            }
-            if (!IsValidEmail(signUp.Email)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.InvalidEmail);
-            }
-            var validatePassword = IsStrongPassword(signUp.Password, signUp.ConfirmPassword);
-            if (!validatePassword.Succeeded) {
-                result.Succeeded = false;
-                result.Errors.AddRange(validatePassword.Errors);
-            }
-            return result;
-        }
-        public static Response IsValidCommunity(CommunityDTO community) {
-            var result = new Response();
-            if (string.IsNullOrEmpty(community.Name)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.CommunityNameCanNotBeEmpty);
-            }
-            if (!IsValidEmail(community.OfficialMail)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.InvalidEmail);
-            }
-            return result;
-        }
-        public static bool IsValidName(string name) {
-            if (!RegexPattrens.Name.IsMatch(name)) {
-                return false;
-            }
-            return true;
-        }
-        public static bool IsValidUserName(string username) {
-            if (!RegexPattrens.Username.IsMatch(username)) {
-                return false;
-            }
-            return true;
-        }
-        public static bool IsValidEmail(string email) {
-            try {
-                if (email.EndsWith(".")) {
-                    return false;
-                }
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
-            }
-            catch {
-                return false;
-            }
-        }
-        public static Response IsStrongPassword(string password, string confirmPassword = "") {
-            var result = new Response();
-            if (!RegexPattrens.HasNumber.IsMatch(password)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.PasswordHasNoNumber);
-            }
-            if (!RegexPattrens.HasLowerChar.IsMatch(password)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.PasswordHasNoLowerCaseCharacter);
-            }
-            if (!RegexPattrens.HasUpperChar.IsMatch(password)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.PasswordHasNoUpperCaseCharacter);
-            }
-            if (!RegexPattrens.HasSymbols.IsMatch(password)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.PasswordHasNoSympols);
-            }
-            if (!RegexPattrens.HasMinimum8Chars.IsMatch(password)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.PasswordLengthIsTooShort);
-            }
-            if (!password.Equals(confirmPassword)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.PasswordDonotMatch);
-            }
-            return result;
+        var errorList = new List<Error>();
 
+        if (string.IsNullOrEmpty(signUp.FirstName)) errorList.Add(ErrorsList.MissingFirstName);
+
+        if (string.IsNullOrEmpty(signUp.LastName)) errorList.Add(ErrorsList.MissingLastName);
+
+        if (string.IsNullOrEmpty(signUp.UserName)) errorList.Add(ErrorsList.MissingUsername);
+
+        if (string.IsNullOrEmpty(signUp.Email)) errorList.Add(ErrorsList.MissingEmail);
+
+        if (string.IsNullOrEmpty(signUp.Password)) errorList.Add(ErrorsList.MissingPassword);
+
+        if (string.IsNullOrEmpty(signUp.ConfirmPassword)) errorList.Add(ErrorsList.MissingConfirmPassword);
+
+        if (errorList.Any())
+            return ResponseFactory.Fail(errorList);
+
+        signUp.FirstName = signUp.FirstName.Trim();
+        signUp.LastName = signUp.LastName.Trim();
+        signUp.UserName = signUp.UserName.Trim();
+        signUp.Email = signUp.Email.Trim();
+        signUp.Password = signUp.Password.Trim();
+        signUp.ConfirmPassword = signUp.ConfirmPassword.Trim();
+
+        if (!IsValidName(signUp.FirstName)) errorList.Add(ErrorsList.InvalidFirstName);
+
+        if (!IsValidName(signUp.LastName)) errorList.Add(ErrorsList.InvalidLastName);
+
+        if (!IsValidUserName(signUp.UserName)) errorList.Add(ErrorsList.InvalidUsername);
+
+        if (!IsValidEmail(signUp.Email)) errorList.Add(ErrorsList.InvalidEmail);
+
+        var validatePassword = IsStrongPassword(signUp.Password, signUp.ConfirmPassword);
+
+        if (!validatePassword.Succeeded) errorList.AddRange(validatePassword.Errors);
+
+        return ResponseFactory.ResponseFromErrors(errorList);
+    }
+
+    public static Response IsValidCommunity(CommunityDTO community)
+    {
+        var errorList = new List<Error>();
+
+        if (string.IsNullOrEmpty(community.Name)) errorList.Add(ErrorsList.CommunityNameCanNotBeEmpty);
+
+        if (!IsValidEmail(community.OfficialMail)) errorList.Add(ErrorsList.InvalidEmail);
+
+        return ResponseFactory.ResponseFromErrors(errorList);
+    }
+
+    private static bool IsValidName(string name) => RegexPattrens.Name.IsMatch(name);
+
+    private static bool IsValidUserName(string username) => RegexPattrens.Username.IsMatch(username);
+
+    public static bool IsValidEmail(string email)
+    {
+        try
+        {
+            if (email.EndsWith(".")) return false;
+            var addr = new MailAddress(email);
+            return addr.Address == email;
         }
-        public static Response IsValidMaterinal(string material) {
-            var res = new Response();
-            if (!RegexPattrens.Username.IsMatch(material)) {
-                res.Succeeded = false;
-                res.Errors.Add(ErrorsList.InvalidMaterialName);
-            }
-            return res;
-        }
-        public static Response IsValidWeek(string week) {
-            var res = new Response();
-            if (!RegexPattrens.Username.IsMatch(week)) {
-                res.Succeeded = false;
-                res.Errors.Add(ErrorsList.InvalidWeekName);
-            }
-            return res;
+        catch
+        {
+            return false;
         }
     }
+
+    private static Response IsStrongPassword(string password, string confirmPassword = "")
+    {
+        var errorList = new List<Error>();
+        if (!RegexPattrens.HasNumber.IsMatch(password)) errorList.Add(ErrorsList.PasswordHasNoNumber);
+
+        if (!RegexPattrens.HasLowerChar.IsMatch(password)) errorList.Add(ErrorsList.PasswordHasNoLowerCaseCharacter);
+
+        if (!RegexPattrens.HasUpperChar.IsMatch(password)) errorList.Add(ErrorsList.PasswordHasNoUpperCaseCharacter);
+
+        if (!RegexPattrens.HasSymbols.IsMatch(password)) errorList.Add(ErrorsList.PasswordHasNoSympols);
+
+        if (!RegexPattrens.HasMinimum8Chars.IsMatch(password)) errorList.Add(ErrorsList.PasswordLengthIsTooShort);
+
+        if (!password.Equals(confirmPassword)) errorList.Add(ErrorsList.PasswordDonotMatch);
+
+        return ResponseFactory.ResponseFromErrors(errorList);
+    }
+
+    public static Response IsValidMaterial(string material) => !RegexPattrens.Username.IsMatch(material)
+        ? ResponseFactory.Fail(ErrorsList.InvalidMaterialName)
+        : ResponseFactory.Ok();
+
+    public static Response IsValidWeek(string week) => !RegexPattrens.Username.IsMatch(week)
+        ? ResponseFactory.Fail(ErrorsList.InvalidWeekName)
+        : ResponseFactory.Ok();
 }

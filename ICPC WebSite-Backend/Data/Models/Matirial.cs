@@ -1,6 +1,6 @@
 ﻿namespace ICPC_WebSite_Backend.Data.Models
 {
-    public class Matirial
+    public class Material
     {
         public int Id { get; set; }
         public string URL { get; set; }
