@@ -134,5 +134,21 @@ namespace ICPC_WebSite_Backend.Utility
             return result;
 
         }
+        public static Response IsValidMaterinal(string material) {
+            var res = new Response();
+            if (!RegexPattrens.Username.IsMatch(material)) {
+                res.Succeeded = false;
+                res.Errors.Add(ErrorsList.InvalidMaterialName);
+            }
+            return res;
+        }
+        public static Response IsValidWeek(string week) {
+            var res = new Response();
+            if (!RegexPattrens.Username.IsMatch(week)) {
+                res.Succeeded = false;
+                res.Errors.Add(ErrorsList.InvalidWeekName);
+            }
+            return res;
+        }
     }
 }

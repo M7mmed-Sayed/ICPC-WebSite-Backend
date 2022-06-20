@@ -157,12 +157,11 @@ namespace ICPC_WebSite_Backend.Repository
             return ret;
 
         }
-        public async Task<Response> GetUserData(string userId)
-        {
+        public async Task<Response> GetUserData(string userId) {
             var ret = new Response();
             try {
                 var user = await _userManager.FindByIdAsync(userId);
-                if (user == null) { 
+                if (user == null) {
                     ret.Succeeded = false;
                     ret.Errors.Add(ErrorsList.CannotFindUser);
                     return ret;

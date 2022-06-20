@@ -9,7 +9,9 @@
         public string Level { get; set; }
         public bool IsPublic { get; set; }
         public int Community_Id { get; set; }
-        public Community Community{ get; set; }
+        public Community Community { get; set; }
+        public ICollection<Week> weeks { get; set; }
+
 
     }
 }
