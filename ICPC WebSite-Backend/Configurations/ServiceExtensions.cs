@@ -43,6 +43,9 @@ namespace ICPC_WebSite_Backend.Configurations
             services.AddTransient<ICommunityRepository, CommunityRepository>();
             services.AddTransient<IEmailSender, EmailSender>(op => new EmailSender(Config.MyEmail, Config.MyPassword, Config.SmtpServerAddress, Config.MailSubmissionPort));
             services.AddTransient<ICodeforcesRepository, CodeforcesRepository>();
+            services.AddTransient<ITrainingRepository, TrainingRepository>();
+            services.AddTransient<IWeekRepository, WeekRepository>();
+            services.AddTransient<IMaterialRepository, MaterialRepository>();
             services.AddTransient(op => new CodeforcesHelper(Config.CodeforcesBaseUrl, Config.CodeforcesApiKey, Config.CodeforcesApiSecret));
         }
         public static void RegisterAuth(this IServiceCollection services) {
