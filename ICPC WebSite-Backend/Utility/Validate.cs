@@ -101,7 +101,20 @@ public static class Validate
         ? ResponseFactory.Fail(ErrorsList.InvalidMaterialName)
         : ResponseFactory.Ok();
 
-    public static Response IsValidWeek(string week) => !RegexPattrens.Username.IsMatch(week)
-        ? ResponseFactory.Fail(ErrorsList.InvalidWeekName)
-        : ResponseFactory.Ok();
+    public static Response IsValidWeek(WeekDTO weekDTO) {
+        var res = new Response();
+        if (String.IsNullOrEmpty(weekDTO.Name)) {
+            res.Succeeded = false;
+            res.Errors.Add(ErrorsList.InvalidWeekName);
+        }
+        return res;
+    }
+    public static Response IsValidTraining(TrainingDTO trainingDTO) {
+        var res = new Response();
+        if (String.IsNullOrEmpty(trainingDTO.Title)) {
+            res.Succeeded = false;
+            res.Errors.Add(ErrorsList.InvalidTrainingTitle);
+        }
+        return res;
+    }
 }
