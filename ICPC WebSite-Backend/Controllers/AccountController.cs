@@ -1,5 +1,4 @@
 ﻿using ICPC_WebSite_Backend.Data.Models.DTO;
-using ICPC_WebSite_Backend.Models.DTO;
 using ICPC_WebSite_Backend.Repository;
 using ICPC_WebSite_Backend.Utility;
 using Microsoft.AspNetCore.Mvc;
@@ -57,8 +56,8 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
         [HttpPut("")]
-        public async Task<IActionResult> UpdateUserData([FromQuery] string userId, [FromBody] UserDTO userDTO) {
-            var result = await _accountRepository.UpdateUserData(userId, userDTO);
+        public async Task<IActionResult> UpdateUserData([FromQuery] string userId, [FromBody] UserDto userDto) {
+            var result = await _accountRepository.UpdateUserData(userId, userDto);
 
             if (!result.Succeeded) {
                 return Unauthorized(result);

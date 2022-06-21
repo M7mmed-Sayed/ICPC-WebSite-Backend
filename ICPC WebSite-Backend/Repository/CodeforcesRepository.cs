@@ -4,21 +4,21 @@ namespace ICPC_WebSite_Backend.Repository
 {
     public class CodeforcesRepository : ICodeforcesRepository
     {
-        private readonly CodeforcesHelper codeforcesHelper;
+        private readonly CodeforcesHelper _codeforcesHelper;
 
         public CodeforcesRepository(CodeforcesHelper codeforcesHelper)
         {
-            this.codeforcesHelper = codeforcesHelper;
+            this._codeforcesHelper = codeforcesHelper;
         }
         public async Task<List<ContestSubmissionsResponse>> GetContestSubmissions(string contestId,string userCodeforcesHandle)
         {
-            var result= await codeforcesHelper.GetContestSubmissionsAsync(contestId, userCodeforcesHandle); ;
+            var result= await _codeforcesHelper.GetContestSubmissionsAsync(contestId, userCodeforcesHandle); ;
             return result;
 
         }
         public async Task<ContestStandings> GetContestStanding(string contestId)
         {
-            var result = await codeforcesHelper.GetContestStandingAsync(contestId); ;
+            var result = await _codeforcesHelper.GetContestStandingAsync(contestId); ;
             return result;
 
         }

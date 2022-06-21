@@ -1,8 +1,6 @@
 ﻿using ICPC_WebSite_Backend.Data.Models.DTO;
-using ICPC_WebSite_Backend.Models.DTO;
 using ICPC_WebSite_Backend.Repository;
 using ICPC_WebSite_Backend.Utility;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ICPC_WebSite_Backend.Controllers
@@ -17,29 +15,29 @@ namespace ICPC_WebSite_Backend.Controllers
             _weekRepository = weekRepository;
         }
         [HttpPost("addweek")]
-        public async Task<IActionResult> addWeek(WeekDTO weekDTO) {
-            var validate = Validate.IsValidWeek(weekDTO.Name);
+        public async Task<IActionResult> AddWeek(WeekDto weekDto) {
+            var validate = Validate.IsValidWeek(weekDto.Name);
             if (!validate.Succeeded)
                 return BadRequest(validate);
-            var result = await _weekRepository.AddWeek(weekDTO);
+            var result = await _weekRepository.AddWeek(weekDto);
             if (!result.Succeeded) {
                 return Unauthorized(result.Errors);
             }
             return Ok(result);
         }
         [HttpPut("updateweek")]
-        public async Task<IActionResult> updateWeek(int weekId,WeekDTO weekDTO) {
-            var validate = Validate.IsValidWeek(weekDTO.Name);
+        public async Task<IActionResult> UpdateWeek(int weekId,WeekDto weekDto) {
+            var validate = Validate.IsValidWeek(weekDto.Name);
             if (!validate.Succeeded)
                 return BadRequest(validate);
-            var result = await _weekRepository.UpdateWeek(weekId,weekDTO);
+            var result = await _weekRepository.UpdateWeek(weekId,weekDto);
             if (!result.Succeeded) {
                 return Unauthorized(result.Errors);
             }
             return Ok(result);
         }
         [HttpGet("templateweeks")]
-        public async Task<IActionResult> templateWeeks() {
+        public async Task<IActionResult> TemplateWeeks() {
             var result = await _weekRepository.GetAllTemplateWeeks();
             if (!result.Succeeded) {
                 return Unauthorized(result.Errors);
@@ -47,7 +45,7 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
         [HttpGet("allweeks")]
-        public async Task<IActionResult> getAllWeeks() {
+        public async Task<IActionResult> GetAllWeeks() {
             var result = await _weekRepository.GetAllWeeks();
             if (!result.Succeeded) {
                 return Unauthorized(result.Errors);
@@ -55,7 +53,7 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
         [HttpGet("getweek")]
-        public async Task<IActionResult> getWeek(int weekId) {
+        public async Task<IActionResult> GetWeek(int weekId) {
             var result = await _weekRepository.GetTheWeek(weekId);
             if (!result.Succeeded) {
                 return Unauthorized(result.Errors);
@@ -63,8 +61,8 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
         [HttpPost("createemplateweek")]
-        public async Task<IActionResult> creaTemplateWeek(int weekId) {
-            var result = await _weekRepository.createTemplateWeek(weekId);
+        public async Task<IActionResult> CreaTemplateWeek(int weekId) {
+            var result = await _weekRepository.CreateTemplateWeek(weekId);
             if (!result.Succeeded) {
                 return Unauthorized(result.Errors);
             }

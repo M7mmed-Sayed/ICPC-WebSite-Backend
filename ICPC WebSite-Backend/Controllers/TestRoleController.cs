@@ -1,4 +1,5 @@
-﻿using ICPC_WebSite_Backend.Repository;
+﻿using ICPC_WebSite_Backend.Data.Models.DTO;
+using ICPC_WebSite_Backend.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace ICPC_WebSite_Backend.Controllers
@@ -44,7 +45,7 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok("Trainee ");
         }
         [HttpPost("Create-Role")]
-        public async Task<IActionResult> CreateRole(Models.DTO.UserRole userRole)
+        public async Task<IActionResult> CreateRole(UserRole userRole)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -55,7 +56,7 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
         [HttpPost("remove-Role")]
-        public async Task<IActionResult> RemoveRole(Models.DTO.UserRole userRole)
+        public async Task<IActionResult> RemoveRole(UserRole userRole)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

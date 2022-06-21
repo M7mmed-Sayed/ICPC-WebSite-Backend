@@ -96,7 +96,7 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.ToTable("CommunityRequests");
                 });
 
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Matirial", b =>
+            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Material", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -125,7 +125,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
                     b.HasIndex("weekId");
 
-                    b.ToTable("matirials");
+                    b.ToTable("Materials");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Training", b =>
@@ -463,10 +463,10 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.Navigation("Member");
                 });
 
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Matirial", b =>
+            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Material", b =>
                 {
                     b.HasOne("ICPC_WebSite_Backend.Data.Models.Week", "weeks")
-                        .WithMany("matirials")
+                        .WithMany("Materials")
                         .HasForeignKey("weekId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -570,7 +570,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Week", b =>
                 {
-                    b.Navigation("matirials");
+                    b.Navigation("Materials");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,14 +5,14 @@ namespace CodeforcesLibrary
 {
     public class CodeforcesHelper
     {
-        private readonly string key;
-        private readonly string secret;
-        private readonly string baseUrl;
+        private readonly string _key;
+        private readonly string _secret;
+        private readonly string _baseUrl;
 
         public CodeforcesHelper(string baseUrl, string key, string secret) {
-            this.key = key;
-            this.secret = secret;
-            this.baseUrl = baseUrl;
+            this._key = key;
+            this._secret = secret;
+            this._baseUrl = baseUrl;
             ApiHelper.InitializeClient();
         }
         public async Task<ContestStandings> GetContestStandingAsync(string contestId) {
@@ -33,7 +33,7 @@ namespace CodeforcesLibrary
             using (var response = await ApiHelper.ApiClient.GetAsync(url)) {
                 if (response.IsSuccessStatusCode) {
                     var responseContent = await response.Content.ReadAsAsync<ContestSubmissions>();
-                    return responseContent.response;
+                    return responseContent.Response;
                 }
                 else {
                     throw new Exception($"CodeForces Failed with status code = {response.StatusCode}");
@@ -42,16 +42,16 @@ namespace CodeforcesLibrary
         }
         public string ConstructApiUrl(string methodName, string contestId, string userCodeforcesHandle = "") {
             var dateTimeUnix = DateTimeOffset.Now.ToUnixTimeSeconds();
-            var methodApiURL = $"{methodName}?apiKey={key}&contestId={contestId}&handle={userCodeforcesHandle}&time={dateTimeUnix}";
-            var url = baseUrl + methodApiURL;
+            var methodApiUrl = $"{methodName}?apiKey={_key}&contestId={contestId}&handle={userCodeforcesHandle}&time={dateTimeUnix}";
+            var url = _baseUrl + methodApiUrl;
             var randSixDigits = Utilities.GenerateSixDigts();
-            string apiSig = $"{randSixDigits}/{methodApiURL}#{secret}";
-            string apiHash = HashSHA512(apiSig).ToLower();
+            string apiSig = $"{randSixDigits}/{methodApiUrl}#{_secret}";
+            string apiHash = HashSha512(apiSig).ToLower();
             url += $"&apiSig={randSixDigits}" + apiHash;
             return url;
         }
 
-        string HashSHA512(string source) {
+        string HashSha512(string source) {
             using (SHA512 sha512Hash = SHA512.Create()) {
                 //From String to byte array
                 byte[] sourceBytes = Encoding.UTF8.GetBytes(source);

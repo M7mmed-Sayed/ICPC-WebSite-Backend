@@ -2,15 +2,15 @@
 {
     public class Training
     {
-        public DateTime Created_At { get; set; }
-        public DateTime Upated_At { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpatedAt { get; set; }
         public int Id { get; set; }
         public string Title { get; set; }
         public string Level { get; set; }
         public bool IsPublic { get; set; }
-        public int Community_Id { get; set; }
+        public int CommunityId { get; set; }
         public Community Community { get; set; }
-        public ICollection<Week> weeks { get; set; }
+        public ICollection<Week> Weeks { get; set; }
 
 
     }

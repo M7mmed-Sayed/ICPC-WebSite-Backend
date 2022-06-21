@@ -1,5 +1,4 @@
 ﻿using ICPC_WebSite_Backend.Data.Models;
-using ICPC_WebSite_Backend.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,20 +10,20 @@ namespace ICPC_WebSite_Backend.Data
 
 
         }
-        public DbSet<Community> communities { get; set; }
+        public DbSet<Community> Communities { get; set; }
         public DbSet<CommunityMember> CommunityMember { get; set; }
         public DbSet<CommunityRequest> CommunityRequests { get; set; }
-        public DbSet<Week> weeks { get; set; }
-        public DbSet<Matirial> matirials { get; set; }
+        public DbSet<Week> Weeks { get; set; }
+        public DbSet<Material> Materials { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
             builder.Entity<Community>()
            .HasAlternateKey(c => c.Name)
            .HasName("AlternateKey_Name");
-            builder.Entity<Matirial>().HasOne(b => b.weeks)
-                .WithMany(ba => ba.matirials)
-                .HasForeignKey(bi => bi.weekId);
+            builder.Entity<Material>().HasOne(b => b.Weeks)
+                .WithMany(ba => ba.Materials)
+                .HasForeignKey(bi => bi.WeekId);
             builder.Entity<Week>(entity => {
                 entity.HasIndex(w => w.Name).IsUnique();
             });

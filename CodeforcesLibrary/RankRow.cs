@@ -1,9 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CodeforcesLibrary
 {
@@ -11,9 +6,9 @@ namespace CodeforcesLibrary
     {
         [JsonProperty("party")]
         public Author Members { get; set; }
-        public string rank { get; set; }
-        public string points { get; set; }
-        public string penalty { get; set; }
+        public string Rank { get; set; }
+        public string Points { get; set; }
+        public string Penalty { get; set; }
        
  
     }

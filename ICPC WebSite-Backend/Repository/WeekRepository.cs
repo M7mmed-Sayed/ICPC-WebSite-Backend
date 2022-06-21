@@ -1,100 +1,93 @@
 ﻿using ICPC_WebSite_Backend.Data;
 using ICPC_WebSite_Backend.Data.Models;
 using ICPC_WebSite_Backend.Data.Models.DTO;
-using ICPC_WebSite_Backend.Data.ReturnObjects.Models;
+using ICPC_WebSite_Backend.Data.Response;
 using ICPC_WebSite_Backend.Utility;
+using Microsoft.EntityFrameworkCore;
 
-namespace ICPC_WebSite_Backend.Repository
+namespace ICPC_WebSite_Backend.Repository;
+
+public class WeekRepository : IWeekRepository
 {
-    public class WeekRepository : IWeekRepository
+    private readonly ApplicationDbContext _applicationDbContext;
+
+    public WeekRepository(ApplicationDbContext applicationDbContext)
     {
-        private readonly ApplicationDbContext _applicationDbContext;
-        public WeekRepository(ApplicationDbContext applicationDbContext) {
-            _applicationDbContext = applicationDbContext;
-        }
-        public async Task<Response> AddWeek(WeekDTO weekDTO) {
-            var ret = new Response();
+        _applicationDbContext = applicationDbContext;
+    }
 
-            var week = new Week() {
-                Name = weekDTO.Name,
-                Description = weekDTO.Description,
-                IsTemplate = weekDTO.IsTemplate,
-                Created_at = DateTime.Now
-            };
-            await _applicationDbContext.weeks.AddAsync(week);
-            await _applicationDbContext.SaveChangesAsync();
-            return ret;
-        }
-        public async Task<Response> UpdateWeek(int weekId, WeekDTO weekDTO) {
-            var ret = new Response();
-            var week = await _applicationDbContext.weeks.FindAsync(weekId);
-            
-            if (week != null) {
-                week.Description = weekDTO.Description;
-                week.IsTemplate = weekDTO.IsTemplate;
-                week.Name = weekDTO.Name;
-                week.Updated_at = DateTime.Now;
-                await _applicationDbContext.SaveChangesAsync();
-            }
-            else {
-                ret.Succeeded = false;
-                ret.Errors.Add(ErrorsList.WeekNotFound);
-            }
-            return ret;
-        }
-        public async Task<Response> GetAllTemplateWeeks() {
-            var ret = new Response();
-            var weeks = _applicationDbContext.weeks.Where(W => W.IsTemplate == true).ToList();
-            ret.Data = weeks;
-            return ret;
-        }
-        public async Task<Response> GetAllWeeks() {
-            var ret = new Response();
-            var weeks = _applicationDbContext.weeks.ToList();
-            ret.Data = weeks;
-            return ret;
-        }
-        public async Task<Response> GetTheWeek(int weekId) {
-            var ret = new Response();
-            var week = await _applicationDbContext.weeks.FindAsync(weekId);
-            if (week == null) {
-                ret.Succeeded = false;
-                ret.Errors.Add(ErrorsList.WeekNotFound);
-            }
-            else {
-                ret.Data = week;
-            }
-            return ret;
-        }
-        public async Task<Response> createTemplateWeek(int weekId) {
-            var ret = new Response();
-            var week = await _applicationDbContext.weeks.FindAsync(weekId);
-            if (week != null) {
-                var newWeek = new Week() {
-                    Created_at = DateTime.Now,
-                    Description = week.Description,
-                    Name = week.Name,
-                    IsTemplate = false
-                };
-                await _applicationDbContext.weeks.AddAsync(newWeek);
-                await _applicationDbContext.SaveChangesAsync();
-                var weekMateriales = (_applicationDbContext.matirials.Where(m => m.weekId == weekId)).ToList();
-                foreach (var material in weekMateriales) {
-                    await _applicationDbContext.matirials.AddAsync(new Matirial() {
-                        Created_at = DateTime.Now,
-                        Description = material.Description,
-                        weekId = newWeek.Id,
-                        URL = material.URL
-                    });
-                    await _applicationDbContext.SaveChangesAsync();
-                }
-            }
-            else {
-                ret.Succeeded = false;
-                ret.Errors.Add(ErrorsList.WeekNotFound);
-            }
-            return ret;
-        }
+    public async Task<Response> AddWeek(WeekDto weekDto)
+    {
+        var week = new Week
+        {
+            Name = weekDto.Name,
+            Description = weekDto.Description,
+            IsTemplate = weekDto.IsTemplate,
+            CreatedAt = DateTime.Now
+        };
+        await _applicationDbContext.Weeks.AddAsync(week);
+        await _applicationDbContext.SaveChangesAsync();
+        return ResponseFactory.Ok();
+    }
 
+    public async Task<Response> UpdateWeek(int weekId, WeekDto weekDto)
+    {
+        var week = await _applicationDbContext.Weeks.FindAsync(weekId);
+
+        if (week == null) return ResponseFactory.Fail(ErrorsList.WeekNotFound);
+        week.Description = weekDto.Description;
+        week.IsTemplate = weekDto.IsTemplate;
+        week.Name = weekDto.Name;
+        week.UpdatedAt = DateTime.Now;
+        await _applicationDbContext.SaveChangesAsync();
+        return ResponseFactory.Ok();
+    }
+
+    public async Task<Response<IEnumerable<Week>>> GetAllTemplateWeeks()
+    {
+        var weeks = await _applicationDbContext.Weeks.Where(w => w.IsTemplate == true).ToListAsync();
+        return ResponseFactory.Ok<IEnumerable<Week>>(weeks);
+    }
+
+    public async Task<Response<IEnumerable<Week>>> GetAllWeeks()
+    {
+        var weeks = await _applicationDbContext.Weeks.ToListAsync();
+        return ResponseFactory.Ok<IEnumerable<Week>>(weeks);
+    }
+
+    public async Task<Response<Week>> GetTheWeek(int weekId)
+    {
+        var week = await _applicationDbContext.Weeks.FindAsync(weekId);
+
+        return week == null ? ResponseFactory.Fail<Week>(ErrorsList.WeekNotFound) : ResponseFactory.Ok(week);
+    }
+
+    public async Task<Response> CreateTemplateWeek(int weekId)
+    {
+        var week = await _applicationDbContext.Weeks.FindAsync(weekId);
+
+        if (week == null) return ResponseFactory.Fail(ErrorsList.WeekNotFound);
+
+        var newWeek = new Week
+        {
+            CreatedAt = DateTime.Now,
+            Description = week.Description,
+            Name = week.Name,
+            IsTemplate = false
+        };
+        await _applicationDbContext.Weeks.AddAsync(newWeek);
+        var weekMaterials = _applicationDbContext.Materials.Where(m => m.WeekId == weekId).ToList();
+
+        foreach (var material in weekMaterials)
+            await _applicationDbContext.Materials.AddAsync(new Material
+            {
+                CreatedAt = DateTime.Now,
+                Description = material.Description,
+                WeekId = newWeek.Id,
+                Url = material.Url
+            });
+        await _applicationDbContext.SaveChangesAsync();
+
+        return ResponseFactory.Ok();
     }
 }

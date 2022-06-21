@@ -1,9 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CodeforcesLibrary
 {
@@ -11,6 +6,6 @@ namespace CodeforcesLibrary
     {
         public string Status { get; set; }
         [JsonProperty("Result")]
-        public List<ContestSubmissionsResponse> response { get; set; }
+        public List<ContestSubmissionsResponse> Response { get; set; }
     }
 }

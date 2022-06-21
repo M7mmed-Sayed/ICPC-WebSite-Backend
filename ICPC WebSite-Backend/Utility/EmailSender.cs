@@ -1,75 +1,74 @@
-﻿using ICPC_WebSite_Backend.Data.ReturnObjects.Models;
-using ICPC_WebSite_Backend.Data.Models;
+﻿using System.Net;
 using System.Net.Mail;
+using ICPC_WebSite_Backend.Data.Response;
 
-namespace ICPC_WebSite_Backend.Utility
+namespace ICPC_WebSite_Backend.Utility;
+
+public class EmailSender : IEmailSender
 {
-    public class EmailSender : IEmailSender
+    private readonly string _email;
+    private readonly int _mailSubmissionPort;
+    private readonly string _password;
+    private readonly string _smtpServerAddress;
+
+    public EmailSender(string email, string password, string smtpServerAddress, int mailSubmissionPort)
     {
-        private readonly string _email;
-        private readonly string _password;
-        private readonly string _SMTPServerAddress;
-        private readonly int _mailSubmissionPort;
+        _email = email;
+        _password = password;
+        _smtpServerAddress = smtpServerAddress;
+        _mailSubmissionPort = mailSubmissionPort;
+    }
 
-        public EmailSender(string email, string password, string SMTPServerAddress, int mailSubmissionPort) {
-            _email = email;
-            _password = password;
-            _SMTPServerAddress = SMTPServerAddress;
-            _mailSubmissionPort = mailSubmissionPort;
-        }
-        public Response SendEmail(string emailTo, string MailSubject, string MailBody, bool isHTML = true) {
-            var validate = ValidConfiguration();
-            if (!validate.Succeeded) {
-                Console.WriteLine("Email Sender isn't configured");
-                return validate;
-            }
-            try {
-                MailMessage mailMessage = new MailMessage(_email, emailTo);
-                mailMessage.Subject = MailSubject;
-                mailMessage.Body = MailBody;
-                mailMessage.IsBodyHtml = isHTML;
-                SmtpClient smtpClient = new SmtpClient(_SMTPServerAddress, _mailSubmissionPort);
-                smtpClient.Credentials = new System.Net.NetworkCredential() {
-                    UserName = _email,
-                    Password = _password
-                };
-                smtpClient.EnableSsl = true;
+    public Response SendEmail(string emailTo, string mailSubject, string mailBody, bool isHtml = true)
+    {
+        var validate = ValidConfiguration();
 
-                smtpClient.Send(mailMessage);
-            }
-            catch (Exception ex) {
-                validate.Succeeded = false;
-                var err = new Error() { Code = ex.Message };
-                if (ex.InnerException != null) err.Description = ex.InnerException.Message;
-                validate.Errors.Add(err);
-            }
+        if (!validate.Succeeded)
+        {
+            Console.WriteLine("Email Sender isn't configured");
             return validate;
         }
-        public Response ValidConfiguration() {
-            var result = new Response();
-            if (String.IsNullOrEmpty(_email)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.EmailSenderEmailIsNotConfigured);
-                return result;
-            }
-            if (!Validate.IsValidEmail(_email)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.InvalidEmail);
-                return result;
-            }
-            if (String.IsNullOrEmpty(_password)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.EmailSenderPasswordIsNotConfigured);
-            }
-            if (String.IsNullOrEmpty(_SMTPServerAddress)) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.EmailSenderSMTPServerAddressIsNotConfigured);
-            }
-            if (_mailSubmissionPort == null || _mailSubmissionPort == 0) {
-                result.Succeeded = false;
-                result.Errors.Add(ErrorsList.EmailSenderMailSubmissionPortIsNotConfigured);
-            }
-            return result;
+
+        try
+        {
+            var mailMessage = new MailMessage(_email, emailTo);
+            mailMessage.Subject = mailSubject;
+            mailMessage.Body = mailBody;
+            mailMessage.IsBodyHtml = isHtml;
+            var smtpClient = new SmtpClient(_smtpServerAddress, _mailSubmissionPort);
+            smtpClient.Credentials = new NetworkCredential
+            {
+                UserName = _email,
+                Password = _password
+            };
+            smtpClient.EnableSsl = true;
+
+            smtpClient.Send(mailMessage);
+            return ResponseFactory.Ok();
         }
+        catch (Exception ex)
+        {
+            var err = new Error {Code = ex.Message, Description = ex.InnerException?.Message ?? ""};
+            return ResponseFactory.Fail(err);
+        }
+    }
+
+    private Response ValidConfiguration()
+    {
+        var errorsLists = new List<Error>();
+        if (string.IsNullOrEmpty(_email))
+            errorsLists.Add(ErrorsList.EmailSenderEmailIsNotConfigured);
+        else if (!Validate.IsValidEmail(_email))
+            errorsLists.Add(ErrorsList.InvalidEmail);
+
+        if (string.IsNullOrEmpty(_password)) errorsLists.Add(ErrorsList.EmailSenderPasswordIsNotConfigured);
+
+        if (string.IsNullOrEmpty(_smtpServerAddress))
+            errorsLists.Add(ErrorsList.EmailSenderSmtpServerAddressIsNotConfigured);
+
+        if (_mailSubmissionPort == 0)
+            errorsLists.Add(ErrorsList.EmailSenderMailSubmissionPortIsNotConfigured);
+
+        return errorsLists.Any() ? ResponseFactory.Fail(errorsLists) : ResponseFactory.Ok();
     }
 }
