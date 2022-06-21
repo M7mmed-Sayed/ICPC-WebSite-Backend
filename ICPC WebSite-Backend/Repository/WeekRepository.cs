@@ -23,7 +23,8 @@ public class WeekRepository : IWeekRepository
             Name = weekDto.Name,
             Description = weekDto.Description,
             IsTemplate = weekDto.IsTemplate,
-            CreatedAt = DateTime.Now
+            CreatedAt = DateTime.Now,
+            Training_Id = weekDTO.TrainingId
         };
         await _applicationDbContext.Weeks.AddAsync(week);
         await _applicationDbContext.SaveChangesAsync();
@@ -89,5 +90,19 @@ public class WeekRepository : IWeekRepository
         await _applicationDbContext.SaveChangesAsync();
 
         return ResponseFactory.Ok();
+    }
+    public async Task<Response> deleteWeek(int weekId) {
+        var ret = new Response();
+        var week = await _applicationDbContext.weeks.FindAsync(weekId);
+        if (week != null) {
+            _applicationDbContext.weeks.Remove(week);
+            await _applicationDbContext.SaveChangesAsync();
+        }
+        else {
+            ret.Succeeded = false;
+            ret.Errors.Add(ErrorsList.WeekNotFound);
+        }
+        return ret;
+
     }
 }
