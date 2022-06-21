@@ -101,20 +101,23 @@ public static class Validate
         ? ResponseFactory.Fail(ErrorsList.InvalidMaterialName)
         : ResponseFactory.Ok();
 
-    public static Response IsValidWeek(WeekDTO weekDTO) {
-        var res = new Response();
-        if (String.IsNullOrEmpty(weekDTO.Name)) {
-            res.Succeeded = false;
-            res.Errors.Add(ErrorsList.InvalidWeekName);
+    public static Response IsValidWeek(WeekDto weekDTO)
+    {
+        if (String.IsNullOrEmpty(weekDTO.Name))
+        {
+            return ResponseFactory.Fail(ErrorsList.InvalidWeekName);
         }
-        return res;
+
+        return ResponseFactory.Ok();
     }
-    public static Response IsValidTraining(TrainingDTO trainingDTO) {
-        var res = new Response();
-        if (String.IsNullOrEmpty(trainingDTO.Title)) {
-            res.Succeeded = false;
-            res.Errors.Add(ErrorsList.InvalidTrainingTitle);
+
+    public static Response IsValidTraining(TrainingDTO trainingDTO)
+    {
+        if (String.IsNullOrEmpty(trainingDTO.Title))
+        {
+            return ResponseFactory.Fail(ErrorsList.InvalidTrainingTitle);
         }
-        return res;
+
+        return ResponseFactory.Ok();
     }
 }
