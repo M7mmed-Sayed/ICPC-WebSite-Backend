@@ -4,6 +4,7 @@ using ICPC_WebSite_Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ICPC_WebSite_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220621090227_AddTrainigDataTable")]
+    partial class AddTrainigDataTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,7 +96,7 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.ToTable("CommunityRequests");
                 });
 
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Material", b =>
+            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Matirial", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -123,7 +125,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
                     b.HasIndex("weekId");
 
-                    b.ToTable("Materials");
+                    b.ToTable("matirials");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Training", b =>
@@ -154,7 +156,7 @@ namespace ICPC_WebSite_Backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Updated_At")
+                    b.Property<DateTime>("Upated_At")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -461,10 +463,10 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.Navigation("Member");
                 });
 
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Material", b =>
+            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Matirial", b =>
                 {
                     b.HasOne("ICPC_WebSite_Backend.Data.Models.Week", "weeks")
-                        .WithMany("Materials")
+                        .WithMany("matirials")
                         .HasForeignKey("weekId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -568,7 +570,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Week", b =>
                 {
-                    b.Navigation("Materials");
+                    b.Navigation("matirials");
                 });
 #pragma warning restore 612, 618
         }
