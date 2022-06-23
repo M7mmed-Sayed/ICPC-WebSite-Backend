@@ -16,6 +16,9 @@ namespace ICPC_WebSite_Backend.Data
         public DbSet<Week> Weeks { get; set; }
         public DbSet<Material> Materials { get; set; }
         public DbSet<Training> Trainings { get; set; }
+        public DbSet<WeekSheet> WeeksSheets { get; set; }
+        public DbSet<WeekTraining> WeeksTrainings { get; set; }
+        public DbSet<Sheet> Sheets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
