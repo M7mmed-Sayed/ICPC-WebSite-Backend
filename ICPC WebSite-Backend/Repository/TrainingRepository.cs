@@ -68,5 +68,27 @@ namespace ICPC_WebSite_Backend.Repository
             await _applicationDbContext.SaveChangesAsync();
             return ResponseFactory.Ok();
         }
+
+        public async Task<Response> LinkWeek(int trainingId, int weekId)
+        {
+            var training = await _applicationDbContext.Trainings.FindAsync(trainingId);
+            var errors = new List<Error>();
+            if (training == null)
+                errors.Add(ErrorsList.TrainingNotFound);
+
+            var week = await _applicationDbContext.Weeks.FindAsync(weekId);
+            if (week == null)
+                errors.Add(ErrorsList.WeekNotFound);
+            if (errors.Count() != 0)
+                return ResponseFactory.Fail(errors);
+            var weekTraining =
+                _applicationDbContext.WeeksTrainings.Where(w => w.TrainingId == trainingId && w.WeekId == weekId).FirstOrDefault();
+            if (weekTraining != null)
+                return ResponseFactory.Fail(ErrorsList.DublicateWeekAtTraining);
+            weekTraining = new WeekTraining {WeekId = weekId, TrainingId = trainingId};
+            await _applicationDbContext.WeeksTrainings.AddAsync(weekTraining);
+            await _applicationDbContext.SaveChangesAsync();
+            return ResponseFactory.Ok();
+        }
     }
 }
