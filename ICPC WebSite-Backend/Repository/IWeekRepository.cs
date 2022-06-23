@@ -14,5 +14,6 @@ namespace ICPC_WebSite_Backend.Repository
         Task<Response<Week>> GetTheWeek(int weekId);
         Task<Response> CreateTemplateWeek(int weekId);
         Task<Response> deleteWeek(int weekId);
+        Task<Response> LinkSheet(int weekId, int sheetId);
     }
 }

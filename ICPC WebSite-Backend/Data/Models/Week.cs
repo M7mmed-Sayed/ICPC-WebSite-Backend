@@ -9,7 +9,9 @@
         public  DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public List<Material> Materials { get; set; }
-        public int TrainingId { get; set; }
-        public Training Training { get; set; }
+        public ICollection<WeekTraining> WeekTraining { get; set; }
+        public ICollection<WeekSheet> WeekSheets { get; set; }
+        public int CommunityId { get; set; }
+        public Community Community { get; set; }
     }
 }

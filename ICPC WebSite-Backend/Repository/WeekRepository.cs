@@ -24,7 +24,7 @@ public class WeekRepository : IWeekRepository
             Description = weekDto.Description,
             IsTemplate = weekDto.IsTemplate,
             CreatedAt = DateTime.Now,
-            TrainingId = weekDto.TrainingId
+            CommunityId = weekDto.CommunityId
         };
         await _applicationDbContext.Weeks.AddAsync(week);
         await _applicationDbContext.SaveChangesAsync();
@@ -100,6 +100,27 @@ public class WeekRepository : IWeekRepository
         _applicationDbContext.Weeks.Remove(week);
         await _applicationDbContext.SaveChangesAsync();
 
+        return ResponseFactory.Ok();
+    }
+    public async Task<Response> LinkSheet(int weekId, int sheetId)
+    {
+        var week = await _applicationDbContext.Weeks.FindAsync(weekId);
+        var errors = new List<Error>();
+        if (week == null)
+            errors.Add(ErrorsList.WeekNotFound);
+
+        var sheet = await _applicationDbContext.Sheets.FindAsync(weekId);
+        if (sheet == null)
+            errors.Add(ErrorsList.SheetNotFound);
+        if (errors.Count() != 0)
+            return ResponseFactory.Fail(errors);
+        var weekSheet =
+            _applicationDbContext.WeeksSheets.Where(w => w.WeekId == weekId && w.SheetId == sheetId).FirstOrDefault();
+        if (weekSheet != null)
+            return ResponseFactory.Fail(ErrorsList.DublicateSheetAtWeek);
+        weekSheet = new WeekSheet {WeekId = weekId, SheetId = sheetId};
+        await _applicationDbContext.WeeksSheets.AddAsync(weekSheet);
+        await _applicationDbContext.SaveChangesAsync();
         return ResponseFactory.Ok();
     }
 }

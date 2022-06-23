@@ -76,6 +76,16 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+        
+        [HttpPost("linksheet")]
+        public async Task<IActionResult> LinkSheet(int weekId, int sheetId)
+        {
+            var result = await _weekRepository.LinkSheet(weekId, sheetId);
+            if (!result.Succeeded) {
+                return NotFound(result.Errors);
+            }
+            return Ok(result);
+        }
 
 
 
