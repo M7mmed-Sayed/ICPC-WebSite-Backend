@@ -16,7 +16,7 @@ namespace ICPC_WebSite_Backend.Controllers
         }
         [HttpPost("addweek")]
         public async Task<IActionResult> AddWeek(WeekDto weekDto) {
-            var validate = Validate.IsValidWeek(weekDto.Name);
+            var validate = Validate.IsValidWeek(weekDto);
             if (!validate.Succeeded)
                 return BadRequest(validate);
             var result = await _weekRepository.AddWeek(weekDto);
@@ -27,12 +27,20 @@ namespace ICPC_WebSite_Backend.Controllers
         }
         [HttpPut("updateweek")]
         public async Task<IActionResult> UpdateWeek(int weekId,WeekDto weekDto) {
-            var validate = Validate.IsValidWeek(weekDto.Name);
+            var validate = Validate.IsValidWeek(weekDto);
             if (!validate.Succeeded)
                 return BadRequest(validate);
             var result = await _weekRepository.UpdateWeek(weekId,weekDto);
             if (!result.Succeeded) {
                 return Unauthorized(result.Errors);
+            }
+            return Ok(result);
+        }
+        [HttpDelete("deleteweek")]
+        public async Task<IActionResult> deleteWeek(int weekId) {
+            var result = await _weekRepository.deleteWeek(weekId);
+            if (!result.Succeeded) {
+                return NotFound(result.Errors);
             }
             return Ok(result);
         }

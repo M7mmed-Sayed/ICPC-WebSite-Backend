@@ -15,6 +15,7 @@ namespace ICPC_WebSite_Backend.Data
         public DbSet<CommunityRequest> CommunityRequests { get; set; }
         public DbSet<Week> Weeks { get; set; }
         public DbSet<Material> Materials { get; set; }
+        public DbSet<Training> Trainings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);

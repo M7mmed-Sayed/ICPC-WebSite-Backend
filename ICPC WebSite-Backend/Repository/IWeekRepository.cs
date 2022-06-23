@@ -13,5 +13,6 @@ namespace ICPC_WebSite_Backend.Repository
         Task<Response<IEnumerable<Week>>> GetAllWeeks();
         Task<Response<Week>> GetTheWeek(int weekId);
         Task<Response> CreateTemplateWeek(int weekId);
+        Task<Response> deleteWeek(int weekId);
     }
 }
