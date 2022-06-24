@@ -10,4 +10,6 @@ public interface ISheetRepository
     Task<Response> UpdateSheet(int sheetId, SheetDto SheetDto);
     Task<Response<Sheet>> GetTheSheet(int sheetId);
     Task<Response> deleteSheet(int sheetId);
+    Task<Response<IEnumerable<Sheet>>> GetSheetsByCommunity(int communityId);
+    Task<Response<IEnumerable<Sheet>>> GetSheetsByWeek(int weekId);
 }

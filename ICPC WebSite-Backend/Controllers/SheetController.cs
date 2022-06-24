@@ -37,8 +37,24 @@ public class SheetController : Controller
         return Ok(result);
     }
     [HttpGet("getsheet")]
-    public async Task<IActionResult> Getsheet(int sheetId) {
+    public async Task<IActionResult> GetSheet(int sheetId) {
         var result = await _sheetRepository.GetTheSheet(sheetId);
+        if (!result.Succeeded) {
+            return Unauthorized(result.Errors);
+        }
+        return Ok(result);
+    }
+    [HttpGet("getsheetsbycommunity")]
+    public async Task<IActionResult> GetSheetsByCommunty(int communityId) {
+        var result = await _sheetRepository.GetSheetsByCommunity(communityId);
+        if (!result.Succeeded) {
+            return Unauthorized(result.Errors);
+        }
+        return Ok(result);
+    }
+    [HttpGet("getsheetsbyweek")]
+    public async Task<IActionResult> GetSheetsByWeek(int weekId) {
+        var result = await _sheetRepository.GetSheetsByWeek(weekId);
         if (!result.Succeeded) {
             return Unauthorized(result.Errors);
         }

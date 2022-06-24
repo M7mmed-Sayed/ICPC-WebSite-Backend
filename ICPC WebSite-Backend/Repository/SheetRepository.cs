@@ -45,8 +45,21 @@ public class SheetRepository:ISheetRepository
     public async Task<Response<Sheet>> GetTheSheet(int sheetId)
     {
         var sheet = await _applicationDbContext.Sheets.FindAsync(sheetId);
+        return sheet==null? ResponseFactory.Fail<Sheet>(ErrorsList.SheetNotFound) : ResponseFactory.Ok(sheet);
+    }
+    public async Task<Response<IEnumerable<Sheet>>> GetSheetsByCommunity(int communityId)
+    {
+        var sheets = await _applicationDbContext.Sheets.Where(sh => sh.CommunityId == communityId).ToListAsync();
+        return ResponseFactory.Ok<IEnumerable<Sheet>>(sheets);
+    }
 
-           return sheet==null? ResponseFactory.Fail<Sheet>(ErrorsList.SheetNotFound) : ResponseFactory.Ok(sheet);
+    public async Task<Response<IEnumerable<Sheet>>> GetSheetsByWeek(int weekId)
+    {
+        var sheets = await _applicationDbContext.Sheets
+            .Where(a => a.WeekSheets
+                .Any(c => c.WeekId == weekId))
+            .ToListAsync();
+        return ResponseFactory.Ok<IEnumerable<Sheet>>(sheets);
     }
 
    
