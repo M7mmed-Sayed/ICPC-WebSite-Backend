@@ -71,5 +71,14 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+       [ HttpDelete("Unlinkweek")]
+        public async Task<IActionResult> UnLinkWeek(int trainingId, int weekId)
+        {
+            var result = await _trainingRepository.UnLinkWeek(trainingId, weekId);
+            if (!result.Succeeded) {
+                return NotFound(result.Errors);
+            }
+            return Ok(result);
+        }
     }
 }
