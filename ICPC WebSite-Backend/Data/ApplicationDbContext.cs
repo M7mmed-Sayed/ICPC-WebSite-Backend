@@ -44,6 +44,8 @@ namespace ICPC_WebSite_Backend.Data
                 .HasOne(cm => cm.Community)
                 .WithMany(c => c.CommunityMembers)
                 .HasForeignKey(cm => cm.CommunityId);
+            
+            
 
             builder.Entity<CommunityRequest>().
                 HasKey(cm => new { cm.MemberId, cm.CommunityId });
@@ -55,6 +57,44 @@ namespace ICPC_WebSite_Backend.Data
                 .HasOne(cm => cm.Community)
                 .WithMany(c => c.CommunityRequests)
                 .HasForeignKey(cm => cm.CommunityId);
+            
+            builder.Entity<WeekSheet>().
+                HasKey(cm => new { cm.SheetId, cm.WeekId });
+            builder.Entity<WeekSheet>()
+                .HasOne(cm => cm.Sheet)
+                .WithMany(c => c.WeekSheets)
+                .HasForeignKey(cm => cm.SheetId);
+            builder.Entity<WeekSheet>()
+                .HasOne(cm => cm.Week)
+                .WithMany(c => c.WeekSheets)
+                .HasForeignKey(cm => cm.WeekId);
+            
+            builder.Entity<WeekTraining>().
+                HasKey(cm => new { cm.TrainingId, cm.WeekId });
+            builder.Entity<WeekTraining>()
+                .HasOne(cm => cm.Training)
+                .WithMany(c => c.WeekTraining)
+                .HasForeignKey(cm => cm.TrainingId);
+            builder.Entity<WeekTraining>()
+                .HasOne(cm => cm.Week)
+                .WithMany(c => c.WeekTraining)
+                .HasForeignKey(cm => cm.WeekId);
+            
+            builder.Entity<Week>()
+                .HasOne(cm => cm.Community)
+                .WithMany(c => c.Weeks)
+                .HasForeignKey(cm => cm.CommunityId);
+            
+            builder.Entity<Training>()
+                .HasOne(cm => cm.Community)
+                .WithMany(c => c.Trainings)
+                .HasForeignKey(cm => cm.CommunityId);
+            
+            
+                
+            
+            
+            
         }
     }
 }

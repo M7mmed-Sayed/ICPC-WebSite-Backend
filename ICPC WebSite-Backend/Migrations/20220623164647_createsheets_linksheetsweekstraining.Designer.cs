@@ -4,6 +4,7 @@ using ICPC_WebSite_Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ICPC_WebSite_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220623164647_createsheets_linksheetsweekstraining")]
+    partial class createsheets_linksheetsweekstraining
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,7 +56,7 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.HasAlternateKey("Name")
                         .HasName("AlternateKey_Name");
 
-                    b.ToTable("Communities", (string)null);
+                    b.ToTable("Communities");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.CommunityMember", b =>
@@ -72,7 +74,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
                     b.HasIndex("CommunityId");
 
-                    b.ToTable("CommunityMember", (string)null);
+                    b.ToTable("CommunityMember");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.CommunityRequest", b =>
@@ -91,7 +93,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
                     b.HasIndex("CommunityId");
 
-                    b.ToTable("CommunityRequests", (string)null);
+                    b.ToTable("CommunityRequests");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Material", b =>
@@ -123,7 +125,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
                     b.HasIndex("WeekId");
 
-                    b.ToTable("Materials", (string)null);
+                    b.ToTable("Materials");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Sheet", b =>
@@ -155,7 +157,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
                     b.HasIndex("CommunityId");
 
-                    b.ToTable("Sheets", (string)null);
+                    b.ToTable("Sheets");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Training", b =>
@@ -190,7 +192,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
                     b.HasIndex("CommunityId");
 
-                    b.ToTable("Trainings", (string)null);
+                    b.ToTable("Trainings");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.User", b =>
@@ -286,7 +288,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CommunityId")
+                    b.Property<int?>("CommunityId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -313,7 +315,7 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Weeks", (string)null);
+                    b.ToTable("Weeks");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.WeekSheet", b =>
@@ -328,7 +330,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
                     b.HasIndex("WeekId");
 
-                    b.ToTable("WeeksSheets", (string)null);
+                    b.ToTable("WeeksSheets");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.WeekTraining", b =>
@@ -343,7 +345,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
                     b.HasIndex("WeekId");
 
-                    b.ToTable("WeeksTrainings", (string)null);
+                    b.ToTable("WeeksTrainings");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -552,13 +554,9 @@ namespace ICPC_WebSite_Backend.Migrations
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Week", b =>
                 {
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.Community", "Community")
+                    b.HasOne("ICPC_WebSite_Backend.Data.Models.Community", null)
                         .WithMany("Weeks")
-                        .HasForeignKey("CommunityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Community");
+                        .HasForeignKey("CommunityId");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.WeekSheet", b =>
