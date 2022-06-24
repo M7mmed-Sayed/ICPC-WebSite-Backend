@@ -155,11 +155,20 @@ namespace ICPC_WebSite_Backend.Utility
             Code = "DublicateWeekAtTraining",
             Description = "training already have this week"
         };
-        
+        public static Error WeekNotAtTraining = new Error
+        {
+            Code = "WeekNotAtTraining",
+            Description = "training has no relation with week"
+        };
         public static Error DublicateSheetAtWeek = new Error
         {
             Code = "DublicateSheetAtWeek",
             Description = "week already have this sheet"
+        };
+        public static Error SheetNotAtTheWeek = new Error
+        {
+            Code = "SheetNotAtTheWeek",
+            Description = "week have no  relation with sheet"
         };
 
 
