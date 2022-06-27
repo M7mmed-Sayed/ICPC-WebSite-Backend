@@ -18,14 +18,23 @@ public class SheetRepository:ISheetRepository
 
     public async Task<Response> AddSheet(SheetDto sheetDto)
     {
+        var week = await _applicationDbContext.Weeks.FindAsync(sheetDto.WeekId);
+        if (week == null)
+            return ResponseFactory.Fail(ErrorsList.WeekNotFound);
         var sheet = new Sheet()
         {
             Name = sheetDto.Name,
             CreatedAt = DateTime.Now,
-            Url=sheetDto.Url,
-            CommunityId = sheetDto.CommunityId
+            Url=sheetDto.Url
         };
         await _applicationDbContext.Sheets.AddAsync(sheet);
+        await _applicationDbContext.SaveChangesAsync();
+        var weekSheet = new WeekSheet()
+        {
+            SheetId = sheet.Id,
+            WeekId = week.Id
+        };
+        await _applicationDbContext.WeeksSheets.AddAsync(weekSheet);
         await _applicationDbContext.SaveChangesAsync();
         return ResponseFactory.Ok();
     }

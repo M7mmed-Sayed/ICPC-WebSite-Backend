@@ -18,6 +18,9 @@ public class WeekRepository : IWeekRepository
 
     public async Task<Response> AddWeek(WeekDto weekDto)
     {
+        var training = await _applicationDbContext.Trainings.FindAsync(weekDto.TrainingId);
+        if (training == null)
+            return ResponseFactory.Fail(ErrorsList.TrainingNotFound);
         var week = new Week
         {
             Name = weekDto.Name,
@@ -27,6 +30,13 @@ public class WeekRepository : IWeekRepository
           //  CommunityId = weekDto.CommunityId
         };
         await _applicationDbContext.Weeks.AddAsync(week);
+        await _applicationDbContext.SaveChangesAsync();
+        var weekTraining = new WeekTraining()
+        {
+            TrainingId = weekDto.TrainingId,
+            WeekId = week.Id
+        };
+        await _applicationDbContext.WeeksTrainings.AddAsync(weekTraining);
         await _applicationDbContext.SaveChangesAsync();
         return ResponseFactory.Ok();
     }

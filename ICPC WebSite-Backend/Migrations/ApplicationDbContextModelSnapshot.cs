@@ -286,7 +286,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CommunityId")
+                    b.Property<int?>("CommunityId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -552,13 +552,9 @@ namespace ICPC_WebSite_Backend.Migrations
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Week", b =>
                 {
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.Community", "Community")
+                    b.HasOne("ICPC_WebSite_Backend.Data.Models.Community", null)
                         .WithMany("Weeks")
-                        .HasForeignKey("CommunityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Community");
+                        .HasForeignKey("CommunityId");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.WeekSheet", b =>

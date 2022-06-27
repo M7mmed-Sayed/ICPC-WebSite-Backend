@@ -26,17 +26,17 @@ namespace ICPC_WebSite_Backend.Utility
             { Code = "MissingConfirmPassword", Description = "Confirm Password field is required" };
 
         public static Error PasswordDonotMatch = new Error
-            { Code = "PasswordDonotMatch", Description = "Confirm Password field is required" };
+            { Code = "PasswordDonotMatch", Description = "Confirm Password is not match" };
 
 
         public static Error InvalidFirstName = new Error
-            { Code = "InvalidFirstName", Description = "Invalid email address" };
+            { Code = "InvalidFirstName", Description = "Invalid First Name" };
 
         public static Error InvalidLastName = new Error
-            { Code = "InvalidLastName", Description = "Invalid email address" };
+            { Code = "InvalidLastName", Description = "Invalid Last Name" };
 
         public static Error InvalidUsername = new Error
-            { Code = "InvalidUsername", Description = "Invalid email address" };
+            { Code = "InvalidUsername", Description = "Invalid User Name" };
 
         public static Error InvalidEmail = new Error { Code = "InvalidEmail", Description = "Invalid email address" };
 
