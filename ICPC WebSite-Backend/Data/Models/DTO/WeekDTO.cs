@@ -6,7 +6,6 @@ namespace ICPC_WebSite_Backend.Data.Models.DTO
     {
         [Required] public string Name { get; set; }
         public string Description { get; set; }
-        public bool IsTemplate { get; set; }
         public int CommunityId { get; set; }
     }
 }

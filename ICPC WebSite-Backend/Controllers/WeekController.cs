@@ -44,14 +44,7 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
-        [HttpGet("templateweeks")]
-        public async Task<IActionResult> TemplateWeeks() {
-            var result = await _weekRepository.GetAllTemplateWeeks();
-            if (!result.Succeeded) {
-                return Unauthorized(result.Errors);
-            }
-            return Ok(result);
-        }
+        
         [HttpGet("allweeksbycommunity")]
         public async Task<IActionResult> GetWeeksByCommunity(int communityId) {
             var result = await _weekRepository.GetWeeksByCommunity(communityId);
@@ -76,14 +69,7 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
-        [HttpPost("createemplateweek")]
-        public async Task<IActionResult> CreaTemplateWeek(int weekId) {
-            var result = await _weekRepository.CreateTemplateWeek(weekId);
-            if (!result.Succeeded) {
-                return Unauthorized(result.Errors);
-            }
-            return Ok(result);
-        }
+       
         [HttpPost("linksheet")]
         public async Task<IActionResult> LinkSheet(int weekId, int sheetId)
         {
