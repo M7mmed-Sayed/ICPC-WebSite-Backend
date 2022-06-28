@@ -58,12 +58,34 @@ namespace ICPC_WebSite_Backend.Controllers
         [HttpPut("")]
         public async Task<IActionResult> UpdateUserData([FromQuery] string userId, [FromBody] UserDto userDto) {
             var result = await _accountRepository.UpdateUserData(userId, userDto);
-
             if (!result.Succeeded) {
                 return Unauthorized(result);
             }
-
             return Ok(result);
         }
+        [HttpGet("forgetpassword")]
+        public async Task<IActionResult> ForgetPassword([FromBody] string userEmail) {
+            var result = await _accountRepository.ForgetPassword(userEmail);
+            if (!result.Succeeded) 
+                return Unauthorized(result);
+            return Ok(result);
+        }
+        [HttpPut("resetpassword")]
+        public async Task<IActionResult> ResetPassword([FromQuery] string id, [FromQuery] string token,[FromBody]ResetPassword resetPassword) {
+            var result = await _accountRepository.ResetPassword(id,token,resetPassword);
+            if (!result.Succeeded) 
+                return Unauthorized(result);
+            return Ok(result);
+            return Ok();
+        }
+        [HttpPut("changepassword")]
+        public async Task<IActionResult> ChangePassword([FromBody]ChangePassword changePassword) {
+            var result = await _accountRepository.ChangePassword(changePassword);
+            if (!result.Succeeded) 
+                return Unauthorized(result);
+            return Ok(result);
+            return Ok();
+        }
+        
     }
 }

@@ -16,4 +16,7 @@ public interface IAccountRepository
     Task<Response> AddRoleAsync(UserRole userRole);
     Task<Response<UserDto>> GetUserData(string userId);
     Task<Response> UpdateUserData(string userId, UserDto userDto);
+    Task<Response> ForgetPassword(string email);
+    Task<Response> ResetPassword(string id, string token, ResetPassword resetPassword);
+    Task<Response> ChangePassword(ChangePassword changePassword);
 }
