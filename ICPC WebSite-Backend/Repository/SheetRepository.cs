@@ -54,11 +54,12 @@ public class SheetRepository:ISheetRepository
     public async Task<Response<Sheet>> GetTheSheet(int sheetId)
     {
         var sheet = await _applicationDbContext.Sheets.FindAsync(sheetId);
-        return sheet==null? ResponseFactory.Fail<Sheet>(ErrorsList.SheetNotFound) : ResponseFactory.Ok(sheet);
+        if (sheet == null) return ResponseFactory.Fail<Sheet>(ErrorsList.SheetNotFound);
+        return ResponseFactory.Ok(sheet);
     }
     public async Task<Response<IEnumerable<Sheet>>> GetSheetsByCommunity(int communityId)
     {
-        var sheets = await _applicationDbContext.Sheets.Where(sh => sh.CommunityId == communityId).ToListAsync();
+        var sheets = await _applicationDbContext.Sheets.ToListAsync();
         return ResponseFactory.Ok<IEnumerable<Sheet>>(sheets);
     }
 

@@ -1,4 +1,7 @@
-﻿namespace ICPC_WebSite_Backend.Data.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ICPC_WebSite_Backend.Data.Models
 {
     public class Week
     {
@@ -11,7 +14,6 @@
         public List<Material> Materials { get; set; }
         public ICollection<WeekTraining> WeekTraining { get; set; }
         public ICollection<WeekSheet> WeekSheets { get; set; }
-        public int CommunityId { get; set; }
-        public Community Community { get; set; }
+        
     }
 }

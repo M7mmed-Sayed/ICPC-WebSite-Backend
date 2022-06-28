@@ -80,18 +80,12 @@ namespace ICPC_WebSite_Backend.Data
                 .WithMany(c => c.WeekTraining)
                 .HasForeignKey(cm => cm.WeekId);
             
-            builder.Entity<Week>()
-                .HasOne(cm => cm.Community)
-                .WithMany(c => c.Weeks)
-                .HasForeignKey(cm => cm.CommunityId);
-            
             builder.Entity<Training>()
                 .HasOne(cm => cm.Community)
                 .WithMany(c => c.Trainings)
                 .HasForeignKey(cm => cm.CommunityId);
+           
             
-            
-                
             
             
             

@@ -8,6 +8,5 @@ public class Sheet
     public DateTime UpdatedAt { get; set; }
     public DateTime CreatedAt { get; set; }
     public ICollection<WeekSheet> WeekSheets { get; set; }
-    public int CommunityId { get; set; }
-    public Community Community { get; set; }
+    
 }
