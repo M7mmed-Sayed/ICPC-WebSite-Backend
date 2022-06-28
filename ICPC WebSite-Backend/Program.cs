@@ -1,5 +1,6 @@
 using ICPC_WebSite_Backend.Configurations;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.ConfigureDatabase();
 builder.Services.RegisterRepos();
 builder.Services.RegisterAuth();
+builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
+    o.TokenLifespan = TimeSpan.FromHours(1));
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope()) {
