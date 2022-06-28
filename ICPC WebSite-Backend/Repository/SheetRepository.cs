@@ -33,13 +33,13 @@ public class SheetRepository : ISheetRepository
         return ResponseFactory.Ok();
     }
 
-    public async Task<Response> UpdateSheet(int sheetId, SheetDto SheetDto)
+    public async Task<Response> UpdateSheet(int sheetId, SheetDto sheetDto)
     {
         var sheet = await _applicationDbContext.Sheets.FindAsync(sheetId);
 
         if (sheet == null) return ResponseFactory.Fail(ErrorsList.SheetNotFound);
-        sheet.Url       = sheet.Url;
-        sheet.Name      = SheetDto.Name;
+        sheet.Url       = sheetDto.Url;
+        sheet.Name      = sheetDto.Name;
         sheet.UpdatedAt = DateTime.Now;
         await _applicationDbContext.SaveChangesAsync();
         return ResponseFactory.Ok();
@@ -53,7 +53,7 @@ public class SheetRepository : ISheetRepository
 
     public async Task<Response<IEnumerable<Sheet>>> GetSheetsByCommunity(int communityId)
     {
-        var sheets = await _applicationDbContext.Sheets.ToListAsync();
+        var sheets = await _applicationDbContext.Sheets.Where(s=>s.CommunityId==communityId).ToListAsync();
         return ResponseFactory.Ok<IEnumerable<Sheet>>(sheets);
     }
 
@@ -65,13 +65,11 @@ public class SheetRepository : ISheetRepository
                                                 .ToListAsync();
         return ResponseFactory.Ok<IEnumerable<Sheet>>(sheets);
     }
-
-
+    
     public async Task<Response> deleteSheet(int sheetId)
     {
         var sheet = await _applicationDbContext.Sheets.FindAsync(sheetId);
         if (sheet == null) return ResponseFactory.Fail(ErrorsList.SheetNotFound);
-
         _applicationDbContext.Sheets.Remove(sheet);
         await _applicationDbContext.SaveChangesAsync();
 
