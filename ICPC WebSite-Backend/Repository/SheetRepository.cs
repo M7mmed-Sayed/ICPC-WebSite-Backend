@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ICPC_WebSite_Backend.Repository;
 
-public class SheetRepository:ISheetRepository
+public class SheetRepository : ISheetRepository
 {
     private readonly ApplicationDbContext _applicationDbContext;
 
@@ -18,23 +18,17 @@ public class SheetRepository:ISheetRepository
 
     public async Task<Response> AddSheet(SheetDto sheetDto)
     {
-        var week = await _applicationDbContext.Weeks.FindAsync(sheetDto.WeekId);
-        if (week == null)
-            return ResponseFactory.Fail(ErrorsList.WeekNotFound);
+        var community = await _applicationDbContext.Communities.FindAsync(sheetDto.CommunityId);
+        if (community == null)
+            return ResponseFactory.Fail(ErrorsList.CommunityNotFound);
         var sheet = new Sheet()
-        {
-            Name = sheetDto.Name,
-            CreatedAt = DateTime.Now,
-            Url=sheetDto.Url
-        };
+                    {
+                        Name        = sheetDto.Name,
+                        CreatedAt   = DateTime.Now,
+                        Url         = sheetDto.Url,
+                        CommunityId = sheetDto.CommunityId
+                    };
         await _applicationDbContext.Sheets.AddAsync(sheet);
-        await _applicationDbContext.SaveChangesAsync();
-        var weekSheet = new WeekSheet()
-        {
-            SheetId = sheet.Id,
-            WeekId = week.Id
-        };
-        await _applicationDbContext.WeeksSheets.AddAsync(weekSheet);
         await _applicationDbContext.SaveChangesAsync();
         return ResponseFactory.Ok();
     }
@@ -44,19 +38,19 @@ public class SheetRepository:ISheetRepository
         var sheet = await _applicationDbContext.Sheets.FindAsync(sheetId);
 
         if (sheet == null) return ResponseFactory.Fail(ErrorsList.SheetNotFound);
-        sheet.Url =sheet.Url;
-        sheet.Name = SheetDto.Name;
+        sheet.Url       = sheet.Url;
+        sheet.Name      = SheetDto.Name;
         sheet.UpdatedAt = DateTime.Now;
         await _applicationDbContext.SaveChangesAsync();
         return ResponseFactory.Ok();
     }
-    
+
     public async Task<Response<Sheet>> GetTheSheet(int sheetId)
     {
         var sheet = await _applicationDbContext.Sheets.FindAsync(sheetId);
-        if (sheet == null) return ResponseFactory.Fail<Sheet>(ErrorsList.SheetNotFound);
-        return ResponseFactory.Ok(sheet);
+        return sheet == null ? ResponseFactory.Fail<Sheet>(ErrorsList.SheetNotFound) : ResponseFactory.Ok(sheet);
     }
+
     public async Task<Response<IEnumerable<Sheet>>> GetSheetsByCommunity(int communityId)
     {
         var sheets = await _applicationDbContext.Sheets.ToListAsync();
@@ -66,13 +60,13 @@ public class SheetRepository:ISheetRepository
     public async Task<Response<IEnumerable<Sheet>>> GetSheetsByWeek(int weekId)
     {
         var sheets = await _applicationDbContext.Sheets
-            .Where(a => a.WeekSheets
-                .Any(c => c.WeekId == weekId))
-            .ToListAsync();
+                                                .Where(a => a.WeekSheets
+                                                             .Any(c => c.WeekId == weekId))
+                                                .ToListAsync();
         return ResponseFactory.Ok<IEnumerable<Sheet>>(sheets);
     }
 
-   
+
     public async Task<Response> deleteSheet(int sheetId)
     {
         var sheet = await _applicationDbContext.Sheets.FindAsync(sheetId);
@@ -83,5 +77,4 @@ public class SheetRepository:ISheetRepository
 
         return ResponseFactory.Ok();
     }
-    
 }

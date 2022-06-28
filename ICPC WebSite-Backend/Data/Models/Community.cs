@@ -14,5 +14,8 @@ namespace ICPC_WebSite_Backend.Data.Models
         public ICollection<CommunityMember> CommunityMembers { get; set; }
         public ICollection<CommunityRequest> CommunityRequests { get; set; }
         public ICollection<Training> Trainings { get; set; }
+        public ICollection<Week> Weeks { get; set; }
+        public ICollection<Sheet> Sheets { get; set; }
+        
     }
 }
