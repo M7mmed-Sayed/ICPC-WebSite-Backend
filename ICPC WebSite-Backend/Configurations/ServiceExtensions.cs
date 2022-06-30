@@ -60,6 +60,10 @@ namespace ICPC_WebSite_Backend.Configurations
                 option.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters() {
                     ValidateIssuer = true,
                     ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ClockSkew = TimeSpan.FromSeconds(5),
+                    RequireExpirationTime=true,
+                    RequireSignedTokens = true,
                     ValidAudience = Config.JwtValidAudience,
                     ValidIssuer = Config.JwtValidIssuer,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config.JwtSecret))
