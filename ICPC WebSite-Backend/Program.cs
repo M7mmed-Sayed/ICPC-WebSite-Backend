@@ -16,6 +16,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.ConfigureDatabase();
 builder.Services.RegisterRepos();
 builder.Services.RegisterAuth();
+builder.Services.RegisterAuthorization();
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope()) {
