@@ -11,7 +11,7 @@ public class SheetController : Controller
         _sheetRepository = sheetRepository;
     }
     [HttpPost("addsheet")]
-    public async Task<IActionResult> addtraining(SheetDto sheetDto) {
+    public async Task<IActionResult> AddSheet(SheetDto sheetDto) {
         
         var result = await _sheetRepository.AddSheet(sheetDto);
         if (!result.Succeeded) {
