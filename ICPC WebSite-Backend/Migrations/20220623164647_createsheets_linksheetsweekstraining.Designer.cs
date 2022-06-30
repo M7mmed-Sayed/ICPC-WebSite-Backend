@@ -4,6 +4,7 @@ using ICPC_WebSite_Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ICPC_WebSite_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220623164647_createsheets_linksheetsweekstraining")]
+    partial class createsheets_linksheetsweekstraining
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -286,7 +288,7 @@ namespace ICPC_WebSite_Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CommunityId")
+                    b.Property<int?>("CommunityId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -531,9 +533,9 @@ namespace ICPC_WebSite_Backend.Migrations
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Sheet", b =>
                 {
                     b.HasOne("ICPC_WebSite_Backend.Data.Models.Community", "Community")
-                        .WithMany("Sheets")
+                        .WithMany()
                         .HasForeignKey("CommunityId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Community");
@@ -552,13 +554,9 @@ namespace ICPC_WebSite_Backend.Migrations
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Week", b =>
                 {
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.Community", "Community")
+                    b.HasOne("ICPC_WebSite_Backend.Data.Models.Community", null)
                         .WithMany("Weeks")
-                        .HasForeignKey("CommunityId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.Navigation("Community");
+                        .HasForeignKey("CommunityId");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.WeekSheet", b =>
@@ -655,8 +653,6 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.Navigation("CommunityMembers");
 
                     b.Navigation("CommunityRequests");
-
-                    b.Navigation("Sheets");
 
                     b.Navigation("Trainings");
 

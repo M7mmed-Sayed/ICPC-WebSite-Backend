@@ -11,5 +11,7 @@ namespace ICPC_WebSite_Backend.Repository
         Task<Response<IEnumerable<Training>>> GetAllTrainings();
         Task<Response<Training>> GetTraining(int trainingId);
         Task<Response> UpdateTraining(int trainingId, TrainingDTO trainingDTO);
+        Task<Response> LinkWeek(int trainingId, int weekId);
+        Task<Response> UnLinkWeek(int trainingId, int weekId);
     }
 }

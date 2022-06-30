@@ -71,6 +71,7 @@ public static class Validate
         {
             if (email.EndsWith(".")) return false;
             var addr = new MailAddress(email);
+            //Console.WriteLine($"my email address is : {addr.Address}");
             return addr.Address == email;
         }
         catch

@@ -44,17 +44,18 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
-        [HttpGet("templateweeks")]
-        public async Task<IActionResult> TemplateWeeks() {
-            var result = await _weekRepository.GetAllTemplateWeeks();
+        
+        [HttpGet("allweeksbycommunity")]
+        public async Task<IActionResult> GetWeeksByCommunity(int communityId) {
+            var result = await _weekRepository.GetWeeksByCommunity(communityId);
             if (!result.Succeeded) {
                 return Unauthorized(result.Errors);
             }
             return Ok(result);
         }
-        [HttpGet("allweeks")]
-        public async Task<IActionResult> GetAllWeeks() {
-            var result = await _weekRepository.GetAllWeeks();
+        [HttpGet("allweeksbytraining")]
+        public async Task<IActionResult> GetWeeksByTraining(int trainingId) {
+            var result = await _weekRepository.GetWeeksByTraining(trainingId);
             if (!result.Succeeded) {
                 return Unauthorized(result.Errors);
             }
@@ -68,14 +69,26 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
-        [HttpPost("createemplateweek")]
-        public async Task<IActionResult> CreaTemplateWeek(int weekId) {
-            var result = await _weekRepository.CreateTemplateWeek(weekId);
+       
+        [HttpPost("linksheet")]
+        public async Task<IActionResult> LinkSheet(int weekId, int sheetId)
+        {
+            var result = await _weekRepository.LinkSheet(weekId, sheetId);
             if (!result.Succeeded) {
-                return Unauthorized(result.Errors);
+                return NotFound(result.Errors);
             }
             return Ok(result);
         }
+        [HttpDelete("unlinksheet")]
+        public async Task<IActionResult> UnLinkSheet(int weekId, int sheetId)
+        {
+            var result = await _weekRepository.UnLinkSheet(weekId, sheetId);
+            if (!result.Succeeded) {
+                return NotFound(result.Errors);
+            }
+            return Ok(result);
+        }
+        
 
 
 

@@ -45,6 +45,7 @@ namespace ICPC_WebSite_Backend.Configurations
             services.AddTransient<ICodeforcesRepository, CodeforcesRepository>();
             services.AddTransient<ITrainingRepository, TrainingRepository>();
             services.AddTransient<IWeekRepository, WeekRepository>();
+            services.AddTransient<ISheetRepository, SheetRepository>();
             services.AddTransient<IMaterialRepository, MaterialRepository>();
             services.AddTransient(op => new CodeforcesHelper(Config.CodeforcesBaseUrl, Config.CodeforcesApiKey, Config.CodeforcesApiSecret));
         }

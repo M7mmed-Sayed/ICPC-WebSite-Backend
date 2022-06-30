@@ -10,8 +10,7 @@
         public bool IsPublic { get; set; }
         public int CommunityId { get; set; }
         public Community Community { get; set; }
-        public ICollection<Week> Weeks { get; set; }
-
+        public ICollection<WeekTraining> WeekTraining { get; set; }
 
     }
 }
