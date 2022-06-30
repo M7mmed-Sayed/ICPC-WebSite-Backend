@@ -8,6 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ICPC_WebSite_Backend.Data.Models;
 using CodeforcesLibrary;
+using ICPC_WebSite_Backend.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 
 namespace ICPC_WebSite_Backend.Configurations
@@ -69,6 +71,14 @@ namespace ICPC_WebSite_Backend.Configurations
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config.JwtSecret))
                 };
             });
+        }
+        public static void RegisterAuthorization(this IServiceCollection services)
+        {
+            services.AddAuthorization(options => options.AddPolicy("EditAccess", policy =>
+            {
+                policy.Requirements.Add(new AuthorizationRequirement());
+            }));
+            services.AddSingleton<IAuthorizationHandler, AuthorizationHandler>();
         }
         public static void ConfigureDatabase(this IServiceCollection services) {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Config.DefaultConnectionString));

@@ -1,4 +1,5 @@
-﻿using ICPC_WebSite_Backend.Data;
+﻿using System.Security.Claims;
+using ICPC_WebSite_Backend.Data;
 using ICPC_WebSite_Backend.Data.Models;
 using ICPC_WebSite_Backend.Data.Models.DTO;
 using ICPC_WebSite_Backend.Data.Response;
@@ -281,8 +282,15 @@ public class CommunityRepository : ICommunityRepository
                 .SingleOrDefaultAsync();
 
             if (request == null) return ResponseFactory.Fail(ErrorsList.JoinRequestNotFound);
+            var user = await _userManager.FindByIdAsync(request.MemberId);
+            if (user == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
 
-            if (accept) request.Status = ConstVariable.AcceptedStatus;
+            if (accept)
+            {
+                request.Status = ConstVariable.AcceptedStatus;
+                var claimsResult = await _userManager.AddClaimAsync(user, new Claim("CommunityId", communityId.ToString()));
+                if (!claimsResult.Succeeded) return claimsResult.ToApplicationResponse<Response>();
+            }
             else request.Status = ConstVariable.RejectedStatus;
 
             await _applicationDbContext.SaveChangesAsync();
