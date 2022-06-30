@@ -96,7 +96,7 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
-        [Authorize(Roles = RolesList.Administrator)]
+        [Authorize(Roles = RolesList.CommunityLeader)]
         [HttpPost("Requests/{communityId}")]
         public async Task<IActionResult> GetRequest(int communityId) {
             var result = await _communityRepository.GetRequest(communityId);

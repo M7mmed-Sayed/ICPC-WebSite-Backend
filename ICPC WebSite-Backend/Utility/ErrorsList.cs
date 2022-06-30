@@ -93,6 +93,9 @@ namespace ICPC_WebSite_Backend.Utility
         public static Error CommunityNotFound = new Error
             { Code = "CommunityNotFound", Description = "Community is not Found" };
 
+        public static Error ThereIsAPreviousRequestForThisUser = new Error
+            { Code = nameof(ThereIsAPreviousRequestForThisUser), Description = "There is a previous request for this user" };
+        
         public static Error JoinRequestNotFound = new Error
             { Code = "JoinRequestNotFound", Description = "there is no join request from this user to the community" };
 
