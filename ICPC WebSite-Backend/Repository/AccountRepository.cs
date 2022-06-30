@@ -212,4 +212,46 @@ public class AccountRepository : IAccountRepository
             return ResponseFactory.FailFromException(ex);
         }
     }
+
+    public async Task<Response> ForgetPassword(string email)
+    {
+        var appUser = await _userManager.FindByEmailAsync(email);
+        if (appUser == null) return ResponseFactory.Fail(ErrorsList.InvalidEmail);
+        var token = await _userManager.GeneratePasswordResetTokenAsync(appUser);
+        token = HttpUtility.UrlEncode(token);
+        var message = $"Hello {appUser.FirstName}<br>";
+        const string domain = "";
+        message +=
+            $"You recently requested to reset your password for your Competitive Programing  account." +
+            $"Click the button below to reset it. " +
+            $"This password reset is only valid for the next 60 minutes." +
+            $"<a href=\"{domain}/api/Account/resetpassword?id={appUser.Id}&token={token}\">Link</a>";
+        const string subject = "Competitive Programing ResetPassword";
+        return _emailSender.SendEmail(appUser.Email, subject, message);
+    }
+
+    public async Task<Response> ResetPassword(string id, string token,ResetPassword resetPassword)
+    {
+        if (string.CompareOrdinal(resetPassword.Password, resetPassword.ConfirmPassword) != 0)
+            return ResponseFactory.Fail(ErrorsList.PasswordDonotMatch);
+        var appUser = await _userManager.FindByIdAsync(id);
+        if (appUser == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
+        var result = await _userManager.ResetPasswordAsync(appUser, token, resetPassword.Password);
+        if (result.Succeeded) return ResponseFactory.Ok();
+        var errors = result.Errors.Select(err => new Error() { Code = err.Code, Description = err.Description }).ToList();
+        return  ResponseFactory.Fail(errors);
+    }
+
+    public async Task<Response> ChangePassword(ChangePassword changePassword)
+    {
+        if (string.CompareOrdinal(changePassword.NewPassword, changePassword.ConfirmPassword) != 0)
+            return ResponseFactory.Fail(ErrorsList.PasswordDonotMatch);
+        var appUser=await _userManager.FindByEmailAsync(changePassword.Email);
+        var result = await _userManager.ChangePasswordAsync(appUser, changePassword.CurrentPassword,
+            changePassword.CurrentPassword);
+        if (result.Succeeded) return ResponseFactory.Ok();
+        var errors = result.Errors.Select(err => new Error() { Code = err.Code, Description = err.Description }).ToList();
+        return  ResponseFactory.Fail(errors);
+    }
+    
 }
