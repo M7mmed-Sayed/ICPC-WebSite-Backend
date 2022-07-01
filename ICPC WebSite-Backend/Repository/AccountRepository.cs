@@ -134,7 +134,7 @@ public class AccountRepository : IAccountRepository
         if (!await _roleManager.RoleExistsAsync(userRole.Role)) return ResponseFactory.Fail(ErrorsList.InvalidRoleName);
 
         if (await _userManager.IsInRoleAsync(user, userRole.Role))
-            return ResponseFactory.Fail(ErrorsList.DuplicateRoleName);
+            return ResponseFactory.Fail(ErrorsList.UserHaveSameRole);
 
         var result = await _userManager.AddToRoleAsync(user, userRole.Role);
         return result.ToApplicationResponse();

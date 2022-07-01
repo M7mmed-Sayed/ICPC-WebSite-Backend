@@ -52,7 +52,7 @@ namespace ICPC_WebSite_Backend.Repository
 
         public async Task<Response<IEnumerable<Training>>> GetAllTrainings()
         {
-            var trainings = _applicationDbContext.Trainings.ToList();
+            var trainings =await _applicationDbContext.Trainings.ToListAsync();
             return ResponseFactory.Ok<IEnumerable<Training>>(trainings);
         }
 
