@@ -4,6 +4,7 @@ using ICPC_WebSite_Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ICPC_WebSite_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220701135052_AddTraingingRequests")]
+    partial class AddTraingingRequests
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -191,25 +193,6 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.HasIndex("CommunityId");
 
                     b.ToTable("Trainings");
-                });
-
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.TrainingRequest", b =>
-                {
-                    b.Property<string>("MemberId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("TrainingId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("MemberId", "TrainingId");
-
-                    b.HasIndex("TrainingId");
-
-                    b.ToTable("TrainingRequests");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.User", b =>
@@ -566,25 +549,6 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.Navigation("Community");
                 });
 
-            modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.TrainingRequest", b =>
-                {
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.User", "Member")
-                        .WithMany("TrainingRequests")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ICPC_WebSite_Backend.Data.Models.Training", "Training")
-                        .WithMany("TrainingRequests")
-                        .HasForeignKey("TrainingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Member");
-
-                    b.Navigation("Training");
-                });
-
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Week", b =>
                 {
                     b.HasOne("ICPC_WebSite_Backend.Data.Models.Community", "Community")
@@ -705,8 +669,6 @@ namespace ICPC_WebSite_Backend.Migrations
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Training", b =>
                 {
-                    b.Navigation("TrainingRequests");
-
                     b.Navigation("WeekTraining");
                 });
 
@@ -715,8 +677,6 @@ namespace ICPC_WebSite_Backend.Migrations
                     b.Navigation("CommunityRequests");
 
                     b.Navigation("CommunityRoles");
-
-                    b.Navigation("TrainingRequests");
                 });
 
             modelBuilder.Entity("ICPC_WebSite_Backend.Data.Models.Week", b =>

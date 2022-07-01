@@ -11,6 +11,8 @@
         public int CommunityId { get; set; }
         public Community Community { get; set; }
         public ICollection<WeekTraining> WeekTraining { get; set; }
+        public ICollection<TrainingRequest> TrainingRequests{ get; set; }
+
 
     }
 }
