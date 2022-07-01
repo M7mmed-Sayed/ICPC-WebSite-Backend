@@ -80,5 +80,37 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+        [HttpPost("Join/{trainingId}")]
+        public async Task<IActionResult> JoinTraining([FromQuery] string userId, int trainingId) {
+            var result = await _trainingRepository.JoinTraining(userId, trainingId);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
+        [HttpPost("Requests/{trainingId}")]
+        public async Task<IActionResult> GetTrainingRequest(int trainingId) {
+            var result = await _trainingRepository.GetTrainingRequest(trainingId);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
+        [HttpPost("RequestRespond/{trainingId}")]
+        public async Task<IActionResult> ApproveJoinTrainingRequest([FromQuery] string userId, int trainingId, [FromQuery] bool approve) {
+            var result = await _trainingRepository.ResponseToTrainingRequest(userId, trainingId, approve);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
+        [HttpGet("Members/{trainingId}")]
+        public async Task<IActionResult> GetTrainingMembers(int trainingId) {
+            var result = await _trainingRepository.GetTrainingMembers(trainingId);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
     }
 }
