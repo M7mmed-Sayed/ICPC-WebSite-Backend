@@ -6,7 +6,7 @@ namespace ICPC_WebSite_Backend.Repository;
 
 public interface ICommunityRepository
 {
-    Task<Response> RegisterCommunityAsync(CommunityDto communityDto);
+    Task<Response<Community>> RegisterCommunityAsync(CommunityDto communityDto);
     Task<Response<IEnumerable<Community>>> GetAllCommunities();
     Task<Response<Community>> GetCommunity(int id);
     Task<Response> AssignRole(string userId, int communityId, string roleName);

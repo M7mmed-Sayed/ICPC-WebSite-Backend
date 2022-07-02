@@ -38,41 +38,44 @@ public class CommunityRepository : ICommunityRepository
             : ResponseFactory.Ok(data);
     }
 
-    public async Task<Response> RegisterCommunityAsync(CommunityDto communityDto)
+    public async Task<Response<Community>> RegisterCommunityAsync(CommunityDto communityDto)
     {
         try
         {
             var user = await _userManager.FindByEmailAsync(communityDto.RequesterEmail);
+            if (user == null) return ResponseFactory.Fail<Community>(ErrorsList.CannotFindUser);
 
-            if (user == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
-            if (!await _roleManager.RoleExistsAsync(RolesList.CommunityLeader))
-                return ResponseFactory.Fail(ErrorsList.InvalidRoleName);
             if (await _userManager.IsInRoleAsync(user, RolesList.CommunityLeader))
-                return ResponseFactory.Fail(ErrorsList.UserHaveSameRole);
-            var result = await _userManager.AddToRoleAsync(user, RolesList.CommunityLeader);
-            if (result.Succeeded == false) return result.ToApplicationResponse();
+                return ResponseFactory.Fail<Community>(ErrorsList.UserIsInAnotherCommunity);
+
             var community = new Community
             {
                 Name = communityDto.Name,
                 About = communityDto.About,
                 OfficialMail = communityDto.OfficialMail,
-                RequesterEmail = communityDto.RequesterEmail,
-                IsApproved = true
+                RequesterEmail = communityDto.RequesterEmail
             };
+          
             await _applicationDbContext.Communities.AddAsync(community);
             await _applicationDbContext.SaveChangesAsync();
+            var result = await _userManager.AddToRoleAsync(user, RolesList.CommunityLeader);
+            if (result.Succeeded == false) return result.ToApplicationResponse<Community>();
+
+            var addClaimResult=await AddClaimsToUserAsync(user, ClaimsNames.CommunityIdClaimName, community.Id.ToString());
+            if (!addClaimResult.Succeeded) return ResponseFactory.Fail<Community>( addClaimResult.Errors!);
             var message = $"congratulations {user.FirstName} <br>";
             message += $"Your request for Creating {community.Name} Community was Accepted" +
-                       $" <br> Welcome again for you and for {community.Name} community mempers's  <br>" +
+                       $" <br> Welcome again for you and for {community.Name} community members's  <br>" +
                        $"We assigned you to be {community.Name} Leader "
                 ;
-            var subject = "Competitive Programing Registeration Community";
+            var subject = "Competitive Programing Registration Community";
             var emailSendResult = _emailSender.SendEmail(user.Email, subject, message);
-            return emailSendResult.Succeeded ? ResponseFactory.Ok(community.Id) : emailSendResult;
+
+            return emailSendResult.Succeeded ? ResponseFactory.Ok(community) : ResponseFactory.Fail(emailSendResult.Errors!, community);
         }
         catch (Exception ex)
         {
-            return ResponseFactory.FailFromException(ex);
+            return ResponseFactory.FailFromException<Community>(ex);
         }
     }
 

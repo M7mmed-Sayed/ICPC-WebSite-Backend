@@ -10,7 +10,6 @@ namespace ICPC_WebSite_Backend.Data.Models
         [EmailAddress]
         public string OfficialMail { get; set; }
         public string RequesterEmail { get; set; }
-        public bool IsApproved { get; set; } = false;
         public ICollection<User> Members { get; set; }
         public ICollection<CommunityRequest> CommunityRequests { get; set; }
         public ICollection<Training> Trainings { get; set; }
