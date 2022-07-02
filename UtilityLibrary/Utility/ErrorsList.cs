@@ -103,6 +103,8 @@ namespace UtilityLibrary.Utility
             Code = "RequestNotAcceptOrNotFound",
             Description = "there user should join the community before assigning role to him"
         };
+        public static Error UserIsInAnotherCommunity = new Error
+            { Code = nameof(UserIsInAnotherCommunity), Description = "User is in another community,Please ask him to leave first" };
 
         //Roles
         public static Error InvalidRoleName = new Error
