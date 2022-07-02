@@ -1,4 +1,6 @@
 ﻿using CodeforcesLibrary;
+using UtilityLibrary.Response;
+using UtilityLibrary.ModelsDTO;
 
 namespace ICPC_WebSite_Backend.Repository
 {
@@ -14,9 +16,8 @@ namespace ICPC_WebSite_Backend.Repository
         {
             var result= await _codeforcesHelper.GetContestSubmissionsAsync(contestId, userCodeforcesHandle); ;
             return result;
-
         }
-        public async Task<ContestStandings> GetContestStanding(string contestId)
+        public async Task<Response<ContestStandings>> GetContestStanding(string contestId)
         {
             var result = await _codeforcesHelper.GetContestStandingAsync(contestId); ;
             return result;

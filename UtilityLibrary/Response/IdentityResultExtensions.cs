@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace ICPC_WebSite_Backend.Data.Response;
+namespace UtilityLibrary.Response;
 
 public static class IdentityResultExtensions
 {

@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace ICPC_WebSite_Backend.Data.Models
+﻿namespace ICPC_WebSite_Backend.Data.Models
 {
     public class Week
     {

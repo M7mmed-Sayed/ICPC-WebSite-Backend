@@ -1,12 +1,12 @@
 ﻿using System.Net.Mail;
-using ICPC_WebSite_Backend.Data.Models.DTO;
-using ICPC_WebSite_Backend.Data.Response;
+using UtilityLibrary.ModelsDTO;
+using UtilityLibrary.Response;
 
-namespace ICPC_WebSite_Backend.Utility;
+namespace UtilityLibrary.Utility;
 
 public static class Validate
 {
-    public static Response IsValidSignUp(SignUp? signUp)
+    public static Response.Response IsValidSignUp(SignUp? signUp)
     {
         if (signUp == null)
             return ResponseFactory.Fail(ErrorsList.MissingSignUpObject);
@@ -50,7 +50,7 @@ public static class Validate
         return ResponseFactory.ResponseFromErrors(errorList);
     }
 
-    public static Response IsValidCommunity(CommunityDto community)
+    public static Response.Response IsValidCommunity(CommunityDto community)
     {
         var errorList = new List<Error>();
 
@@ -80,7 +80,7 @@ public static class Validate
         }
     }
 
-    private static Response IsStrongPassword(string password, string confirmPassword = "")
+    private static Response.Response IsStrongPassword(string password, string confirmPassword = "")
     {
         var errorList = new List<Error>();
         if (!RegexPattrens.HasNumber.IsMatch(password)) errorList.Add(ErrorsList.PasswordHasNoNumber);
@@ -98,11 +98,11 @@ public static class Validate
         return ResponseFactory.ResponseFromErrors(errorList);
     }
 
-    public static Response IsValidMaterial(string material) => !RegexPattrens.Username.IsMatch(material)
+    public static Response.Response IsValidMaterial(string material) => !RegexPattrens.Username.IsMatch(material)
         ? ResponseFactory.Fail(ErrorsList.InvalidMaterialName)
         : ResponseFactory.Ok();
 
-    public static Response IsValidWeek(WeekDto weekDTO)
+    public static Response.Response IsValidWeek(WeekDto weekDTO)
     {
         if (String.IsNullOrEmpty(weekDTO.Name))
         {
@@ -112,7 +112,7 @@ public static class Validate
         return ResponseFactory.Ok();
     }
 
-    public static Response IsValidTraining(TrainingDTO trainingDTO)
+    public static Response.Response IsValidTraining(TrainingDTO trainingDTO)
     {
         if (String.IsNullOrEmpty(trainingDTO.Title))
         {

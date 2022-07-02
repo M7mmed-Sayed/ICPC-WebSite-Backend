@@ -1,10 +1,11 @@
 ﻿using CodeforcesLibrary;
+using UtilityLibrary.Response;
 
 namespace ICPC_WebSite_Backend.Repository
 {
     public interface ICodeforcesRepository
     {
         Task<List<ContestSubmissionsResponse>> GetContestSubmissions(string contestId,string userCodeforcesHandle);
-        Task<ContestStandings> GetContestStanding(string contestId);
+        Task<Response<ContestStandings>> GetContestStanding(string contestId);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using ICPC_WebSite_Backend.Data;
 using ICPC_WebSite_Backend.Repository;
-using ICPC_WebSite_Backend.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +10,7 @@ using CodeforcesLibrary;
 using ICPC_WebSite_Backend.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
+using UtilityLibrary.Utility;
 
 namespace ICPC_WebSite_Backend.Configurations
 {
