@@ -40,6 +40,28 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+        [Authorize]
+        [HttpPost("editCommunity")]
+        public async Task<IActionResult> EditCommunity(int communityId,[FromBody] CommunityDto community) {
+            var validate = Validate.IsValidCommunity(community);
+            if (!validate.Succeeded)
+                return BadRequest(validate);
+
+            var result = await _communityRepository.EditCommunity(communityId,community);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
+        [Authorize]
+        [HttpPost("deleteCommunity")]
+        public async Task<IActionResult> DeleteCommunity(int communityId) {
+            var result = await _communityRepository.DeleteCommunity(communityId);
+            if (!result.Succeeded) {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
         [HttpGet("")]
         public async Task<IActionResult> GetAllCommunities() {
             var result = await _communityRepository.GetAllCommunities();
@@ -51,24 +73,6 @@ namespace ICPC_WebSite_Backend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCommunities(int id) {
             var result = await _communityRepository.GetCommunity(id);
-            if (!result.Succeeded) {
-                return Unauthorized(result);
-            }
-            return Ok(result);
-        }
-        [Authorize(Roles = RolesList.Administrator)]
-        [HttpPut("Approve")]
-        public async Task<IActionResult> ApproveCommunity([FromQuery] int id) {
-            var result = await _communityRepository.AcceptCommunity(id);
-            if (!result.Succeeded) {
-                return Unauthorized(result);
-            }
-            return Ok(result);
-        }
-        [Authorize(Roles = RolesList.Administrator)]
-        [HttpDelete("Reject")]
-        public async Task<IActionResult> RejectCommunity([FromQuery] int id) {
-            var result = await _communityRepository.RejectCommunity(id);
             if (!result.Succeeded) {
                 return Unauthorized(result);
             }
@@ -132,5 +136,6 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+
     }
 }

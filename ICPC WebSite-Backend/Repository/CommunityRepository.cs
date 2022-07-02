@@ -41,54 +41,33 @@ public class CommunityRepository : ICommunityRepository
     {
         try
         {
+            var user = await _userManager.FindByIdAsync(communityDto.RequesterId);
+
+            if (user == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
+            if (!await _roleManager.RoleExistsAsync(RolesList.CommunityLeader))
+                return ResponseFactory.Fail(ErrorsList.InvalidRoleName);
+            if (await _userManager.IsInRoleAsync(user, RolesList.CommunityLeader))
+                return ResponseFactory.Fail(ErrorsList.UserHaveSameRole);
+            var result = await _userManager.AddToRoleAsync(user, RolesList.CommunityLeader);
+            if (result.Succeeded == false) return result.ToApplicationResponse();
             var community = new Community
             {
                 Name = communityDto.Name,
                 About = communityDto.About,
                 OfficialMail = communityDto.OfficialMail,
-                RequesterId = communityDto.RequesterId
+                RequesterId = communityDto.RequesterId,
+                IsApproved = true
             };
             await _applicationDbContext.Communities.AddAsync(community);
-            var result = await _applicationDbContext.SaveChangesAsync();
-            return result != 0 ? ResponseFactory.Ok() : ResponseFactory.Fail();
-        }
-        catch (Exception ex)
-        {
-            return ResponseFactory.FailFromException(ex);
-        }
-    }
-
-    public async Task<Response> AcceptCommunity(int communityId)
-    {
-        try
-        {
-            var community = await _applicationDbContext.Communities.FindAsync(communityId);
-
-            if (community == null) return ResponseFactory.Fail(ErrorsList.CommunityNotFound);
-
-            var user = await _userManager.FindByIdAsync(community.RequesterId);
-
-            if (user == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
-
-            var result = await _userManager.AddToRoleAsync(user, RolesList.CommunityLeader);
-
-            if (result.Succeeded == false) return result.ToApplicationResponse();
-            var addClaimResult=await AddClaimsToUserAsync(user, ClaimsNames.CommunityIdClaimName, community.Id.ToString());
-            //if (!addClaimResult.Succeeded) return ResponseFactory.Fail( addClaimResult.Errors!);
-            user.CommunityId = community.Id;
-            
-            community.IsApproved = true;
             await _applicationDbContext.SaveChangesAsync();
-            //Accepted Mail
             var message = $"congratulations {user.FirstName} <br>";
             message += $"Your request for Creating {community.Name} Community was Accepted" +
                        $" <br> Welcome again for you and for {community.Name} community mempers's  <br>" +
                        $"We assigned you to be {community.Name} Leader "
                 ;
-            var subject = "Competitve Programing Registeration Community";
+            var subject = "Competitive Programing Registeration Community";
             var emailSendResult = _emailSender.SendEmail(user.Email, subject, message);
-
-            return emailSendResult;
+            return emailSendResult.Succeeded ? ResponseFactory.Ok(community.Id) : emailSendResult;
         }
         catch (Exception ex)
         {
@@ -96,37 +75,41 @@ public class CommunityRepository : ICommunityRepository
         }
     }
 
-    public async Task<Response> RejectCommunity(int communityId)
+    public async Task<Response> EditCommunity(int communityId, CommunityDto communityDto)
     {
         try
         {
             var community = await _applicationDbContext.Communities.FindAsync(communityId);
-
-            if (community == null) return ResponseFactory.Fail(ErrorsList.CommunityNotFound);
-
-            var user = await _userManager.FindByIdAsync(community.RequesterId);
-
-            if (user == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
-
-            //Reject Mail
-            var message = $"Dear  {user.FirstName} <br>";
-            message += $"I’d like to thank about your request to create {community.Name}" +
-                       " <br>Unfortunately, after careful consideration We decided to Rejec your request try again after 2 Weeks <br>" +
-                       "Again, thank you for your interest in creating a Community " +
-                       "for more inf send XYZ@gmail.com"
-                ;
-            var subject = "Competitve Programing Registeration Community";
-            _applicationDbContext.Communities.Remove(community);
+            if (community == null)
+                return ResponseFactory.Fail(ErrorsList.CommunityNotFound);
+            community.About = communityDto.About;
+            community.Name = communityDto.Name;
             await _applicationDbContext.SaveChangesAsync();
-            var emailSendResult = _emailSender.SendEmail(user.Email, subject, message);
-
-            return emailSendResult;
+            return ResponseFactory.Ok(community.Id);
         }
         catch (Exception ex)
         {
             return ResponseFactory.FailFromException(ex);
         }
     }
+    public async Task<Response> DeleteCommunity(int communityId)
+    {
+        try
+        {
+            var community = await _applicationDbContext.Communities.FindAsync(communityId);
+            if (community == null)
+                return ResponseFactory.Fail(ErrorsList.CommunityNotFound);
+          
+            _applicationDbContext.Remove(community);
+            await _applicationDbContext.SaveChangesAsync();
+            return ResponseFactory.Ok();
+        }
+        catch (Exception ex)
+        {
+            return ResponseFactory.FailFromException(ex);
+        }
+    }
+
 
     public async Task<Response> AssignRole(string userId, int communityId, string roleName)
     {

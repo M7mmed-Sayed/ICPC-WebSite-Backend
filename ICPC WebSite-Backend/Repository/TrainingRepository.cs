@@ -50,19 +50,28 @@ namespace ICPC_WebSite_Backend.Repository
             return ResponseFactory.Ok();
         }
 
-        public async Task<Response<IEnumerable<Training>>> GetAllTrainings()
+        public async Task<Response<IEnumerable<Training>>> GetAllTrainings(int communityId)
         {
-            var trainings = _applicationDbContext.Trainings.ToList();
-            return ResponseFactory.Ok<IEnumerable<Training>>(trainings);
+            try
+            {
+                if (communityId == 0) return ResponseFactory.Ok<IEnumerable<Training>>(await _applicationDbContext.Trainings.ToListAsync());
+                var community = await _applicationDbContext.Communities.FindAsync(communityId);
+                if (community == null)
+                    return ResponseFactory.Fail<IEnumerable<Training>>(ErrorsList.CommunityNotFound);
+                var data = await _applicationDbContext.Trainings.Where(t => t.CommunityId == communityId).ToListAsync();
+                return ResponseFactory.Ok<IEnumerable<Training>>(data);
+
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.FailFromException<IEnumerable<Training>>(ex);
+            }
         }
 
         public async Task<Response<Training>> GetTraining(int trainingId)
         {
             var training = await _applicationDbContext.Trainings.FindAsync(trainingId);
-            if (training == null)
-                return ResponseFactory.Fail<Training>(ErrorsList.TrainingNotFound);
-
-            return ResponseFactory.Ok(training);
+            return training == null ? ResponseFactory.Fail<Training>(ErrorsList.TrainingNotFound) : ResponseFactory.Ok(training);
         }
 
         public async Task<Response> DeleteTraining(int trainingId)
@@ -84,7 +93,7 @@ namespace ICPC_WebSite_Backend.Repository
             var week = await _applicationDbContext.Weeks.FindAsync(weekId);
             if (week == null)
                 errors.Add(ErrorsList.WeekNotFound);
-            if (errors.Count() != 0)
+            if (errors.Count != 0)
                 return ResponseFactory.Fail(errors);
             var weekTraining =
                 _applicationDbContext.WeeksTrainings.FirstOrDefault(w =>
