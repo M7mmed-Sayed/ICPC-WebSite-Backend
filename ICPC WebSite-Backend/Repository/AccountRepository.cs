@@ -254,4 +254,24 @@ public class AccountRepository : IAccountRepository
         return  ResponseFactory.Fail(errors);
     }
     
+    public async Task<Response> AddAdmin(string userEmail)
+    {
+        var user = await _userManager.FindByEmailAsync(userEmail);
+        if (user == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
+        if (!await _roleManager.RoleExistsAsync(RolesList.Administrator)) return ResponseFactory.Fail(ErrorsList.InvalidRoleName);
+        if (await _userManager.IsInRoleAsync(user,RolesList.Administrator))
+            return ResponseFactory.Fail(ErrorsList.UserHaveSameRole);
+        var result = await _userManager.AddToRoleAsync(user, RolesList.Administrator);
+        return result.ToApplicationResponse();
+    }
+    public async Task<Response> RemoveAdmin(string userEmail)
+    {
+        var user = await _userManager.FindByEmailAsync(userEmail);
+        if (user == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
+        if (!await _userManager.IsInRoleAsync(user,RolesList.Administrator))
+            return ResponseFactory.Fail(ErrorsList.UserHasNotThisRole);
+        var result = await _userManager.RemoveFromRoleAsync(user, RolesList.Administrator);
+        return result.ToApplicationResponse();
+    }
+    
 }
