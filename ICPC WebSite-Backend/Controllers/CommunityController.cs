@@ -136,13 +136,6 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
-        [HttpGet("trainings/{communityId}")]
-        public async Task<IActionResult> GetTrainingByCommunity(int communityId) {
-            var result = await _communityRepository.GetTrainingsAtCommunity(communityId);
-            if (!result.Succeeded) {
-                return Unauthorized(result);
-            }
-            return Ok(result);
-        }
+
     }
 }

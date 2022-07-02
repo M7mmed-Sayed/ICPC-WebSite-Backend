@@ -39,8 +39,8 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
         [HttpGet("alltrainings")]
-        public async Task<IActionResult> getAlltrainings() {
-            var result = await _trainingRepository.GetAllTrainings();
+        public async Task<IActionResult> getAlltrainings([FromQuery] int communityId) {
+            var result = await _trainingRepository.GetAllTrainings(communityId);
             if (!result.Succeeded) {
                 return Unauthorized(result.Errors);
             }

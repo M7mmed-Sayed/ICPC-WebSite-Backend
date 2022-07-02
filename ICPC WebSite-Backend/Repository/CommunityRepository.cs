@@ -110,21 +110,6 @@ public class CommunityRepository : ICommunityRepository
         }
     }
 
-    public async Task<Response<IEnumerable<Training>>> GetTrainingsAtCommunity(int communityId)
-    {
-        try
-        {
-            var community = await _applicationDbContext.Communities.FindAsync(communityId);
-            if (community == null)
-                return ResponseFactory.Fail<IEnumerable<Training>>(ErrorsList.CommunityNotFound);
-            var data = await _applicationDbContext.Trainings.Where(t=>t.CommunityId==communityId).ToListAsync();
-            return ResponseFactory.Ok<IEnumerable<Training>>(data);
-        }
-        catch (Exception ex)
-        {
-            return ResponseFactory.FailFromException<IEnumerable<Training>>(ex);
-        }
-    }
 
     public async Task<Response> AssignRole(string userId, int communityId, string roleName)
     {
