@@ -11,11 +11,10 @@ namespace ICPC_WebSite_Backend.Data.Models
         public string OfficialMail { get; set; }
         public string RequesterId { get; set; }
         public bool IsApproved { get; set; } = false;
-        public ICollection<CommunityMember> CommunityMembers { get; set; }
+        public ICollection<User> Members { get; set; }
         public ICollection<CommunityRequest> CommunityRequests { get; set; }
         public ICollection<Training> Trainings { get; set; }
         public ICollection<Week> Weeks { get; set; }
         public ICollection<Sheet> Sheets { get; set; }
-        
     }
 }

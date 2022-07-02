@@ -1,4 +1,5 @@
-﻿using ICPC_WebSite_Backend.Data;
+﻿using System.Security.Claims;
+using ICPC_WebSite_Backend.Data;
 using ICPC_WebSite_Backend.Data.Models;
 using ICPC_WebSite_Backend.Data.Models.DTO;
 using ICPC_WebSite_Backend.Data.Response;
@@ -72,7 +73,10 @@ public class CommunityRepository : ICommunityRepository
             var result = await _userManager.AddToRoleAsync(user, RolesList.CommunityLeader);
 
             if (result.Succeeded == false) return result.ToApplicationResponse();
-
+            var addClaimResult=await AddClaimsToUserAsync(user, ClaimsNames.CommunityIdClaimName, community.Id.ToString());
+            //if (!addClaimResult.Succeeded) return ResponseFactory.Fail( addClaimResult.Errors!);
+            user.CommunityId = community.Id;
+            
             community.IsApproved = true;
             await _applicationDbContext.SaveChangesAsync();
             //Accepted Mail
@@ -154,14 +158,9 @@ public class CommunityRepository : ICommunityRepository
                 var res = await _userManager.AddToRoleAsync(user, roleName);
 
                 if (!res.Succeeded) return res.ToApplicationResponse();
+                var addClaimResult=await AddClaimsToUserAsync(user, ClaimsNames.CommunityIdClaimName, community.Id.ToString());
+                if (!addClaimResult.Succeeded) return ResponseFactory.Fail( addClaimResult.Errors!);
             }
-
-            await _applicationDbContext.CommunityMember.AddAsync(new CommunityMember
-            {
-                MemberId = userId,
-                CommunityId = communityId,
-                Role = roleName
-            });
             await _applicationDbContext.SaveChangesAsync();
 
             return ResponseFactory.Ok();
@@ -176,24 +175,20 @@ public class CommunityRepository : ICommunityRepository
     {
         try
         {
-            var community = await _applicationDbContext.Communities.Include(x => x.CommunityMembers)
-                .ThenInclude(m => m.Member).Where(x => x.Id == communityId).SingleOrDefaultAsync();
+            var community = await _applicationDbContext.Communities.FindAsync(communityId);
 
             if (community == null)
                 return ResponseFactory.Fail<IEnumerable<CommunityMemberDto>>(ErrorsList.CommunityNotFound);
 
-            var data = community.CommunityMembers.GroupBy(
-                x => new {x.MemberId, x.Member.FirstName, x.Member.LastName, x.Member.Email, x.Member.UserName},
-                (key, val) => new CommunityMemberDto
+            var data = community.Members.Select(member=>new  CommunityMemberDto
                 {
-                    Id = key.MemberId,
-                    FirstName = key.FirstName,
-                    LastName = key.LastName,
-                    Email = key.Email,
-                    UserName = key.UserName,
-                    Roles = val.Select(x => x.Role).ToList()
-                });
-            return ResponseFactory.Ok(data);
+                    Id = member.Id,
+                    FirstName = member.FirstName,
+                    LastName = member.LastName,
+                    Email = member.Email,
+                    UserName = member.UserName,
+                }).ToList();
+            return ResponseFactory.Ok<IEnumerable<CommunityMemberDto>>(data);
         }
         catch (Exception ex)
         {
@@ -205,12 +200,11 @@ public class CommunityRepository : ICommunityRepository
     {
         try
         {
-            var community = await _applicationDbContext.Communities.Include(x => x.CommunityMembers)
-                .ThenInclude(m => m.Member).Where(x => x.Id == communityId).SingleOrDefaultAsync();
+            var community = await _applicationDbContext.Communities.FindAsync(communityId);
 
             if (community == null) return ResponseFactory.Fail<int>(ErrorsList.CommunityNotFound);
 
-            var cnt = community.CommunityMembers.GroupBy(x => x.MemberId).Count();
+            var cnt = community.Members.Count;
             return ResponseFactory.Ok(cnt);
         }
         catch (Exception ex)
@@ -235,6 +229,11 @@ public class CommunityRepository : ICommunityRepository
             if (errorsList.Any())
                 return ResponseFactory.Fail(errorsList);
 
+            var previousRequest =await  _applicationDbContext.CommunityRequests.Where(x => x.MemberId == userId).FirstOrDefaultAsync();
+            if (previousRequest != null)
+            {
+                return ResponseFactory.Fail(ErrorsList.ThereIsAPreviousRequestForThisUser);
+            }
             await _applicationDbContext.CommunityRequests.AddAsync(new CommunityRequest
             {
                 MemberId = userId,
@@ -281,9 +280,23 @@ public class CommunityRepository : ICommunityRepository
                 .SingleOrDefaultAsync();
 
             if (request == null) return ResponseFactory.Fail(ErrorsList.JoinRequestNotFound);
+            var user = await _userManager.FindByIdAsync(request.MemberId);
+            if (user == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
+            var community = await _applicationDbContext.Communities.FindAsync(communityId);
+            if (community == null) return ResponseFactory.Fail(ErrorsList.CommunityNotFound);
+            if (accept)
+            {
+                request.Status = ConstVariable.AcceptedStatus;
+                var addClaimResult=await AddClaimsToUserAsync(user, ClaimsNames.CommunityIdClaimName, community.Id.ToString());
+                if (!addClaimResult.Succeeded) return ResponseFactory.Fail( addClaimResult.Errors!);
+                user.CommunityId = community.Id;
 
-            if (accept) request.Status = ConstVariable.AcceptedStatus;
-            else request.Status = ConstVariable.RejectedStatus;
+            }
+            else
+            {
+                //request.Status = ConstVariable.RejectedStatus;
+                _applicationDbContext.CommunityRequests.Remove(request);
+            }
 
             await _applicationDbContext.SaveChangesAsync();
             return ResponseFactory.Ok();
@@ -292,5 +305,14 @@ public class CommunityRepository : ICommunityRepository
         {
             return ResponseFactory.FailFromException(ex);
         }
+    }
+
+    private async Task<Response> AddClaimsToUserAsync(User user,string claimName,string claimValue)
+    {
+        var previousClaim =  (await  _userManager.GetClaimsAsync(user)).FirstOrDefault(claim => claim.Type==ClaimsNames.CommunityIdClaimName);
+        if (previousClaim!=null)await _userManager.RemoveClaimAsync(user,previousClaim);
+                
+        var claimsResult = await _userManager.AddClaimAsync(user, new Claim(claimName, claimValue));
+        return claimsResult.Succeeded ? ResponseFactory.Ok():  claimsResult.ToApplicationResponse<Response>();
     }
 }

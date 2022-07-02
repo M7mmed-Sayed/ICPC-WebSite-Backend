@@ -19,6 +19,7 @@ builder.Services.RegisterRepos();
 builder.Services.RegisterAuth();
 builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
     o.TokenLifespan = TimeSpan.FromHours(1));
+builder.Services.RegisterAuthorization();
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope()) {
