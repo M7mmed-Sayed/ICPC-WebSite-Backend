@@ -1,5 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using UtilityLibrary.Response;
+using UtilityLibrary.Utility;
 
 namespace CodeforcesLibrary
 {
@@ -15,17 +17,15 @@ namespace CodeforcesLibrary
             this._baseUrl = baseUrl;
             ApiHelper.InitializeClient();
         }
-        public async Task<ContestStandings> GetContestStandingAsync(string contestId) {
+        public async Task<Response<ContestStandings>> GetContestStandingAsync(string contestId) {
             string url = ConstructApiUrl("contest.standings", contestId);
             Console.WriteLine(url);
             using (var response = await ApiHelper.ApiClient.GetAsync(url)) {
-                if (response.IsSuccessStatusCode) {
-                    var responseContent = await response.Content.ReadAsAsync<ContestStandings>();
-                    return responseContent;
+                if (!response.IsSuccessStatusCode) {
+                    return ResponseFactory.Fail<ContestStandings>(ErrorsList.CodeforcesFetchError(response.StatusCode.ToString()));
                 }
-                else {
-                    throw new Exception($"CodeForces Failed with status code = {response.StatusCode}");
-                }
+                var responseContent = await response.Content.ReadAsAsync<ContestStandings>();
+                return ResponseFactory.Ok<ContestStandings>(responseContent);
             }
         }
         public async Task<List<ContestSubmissionsResponse>> GetContestSubmissionsAsync(string contestId, string userCodeforcesHandle) {

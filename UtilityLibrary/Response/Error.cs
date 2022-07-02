@@ -1,4 +1,4 @@
-namespace ICPC_WebSite_Backend.Data.Response;
+namespace UtilityLibrary.Response;
 
 public class Error
 {

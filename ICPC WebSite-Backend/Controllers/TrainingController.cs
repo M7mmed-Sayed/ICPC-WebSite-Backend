@@ -1,12 +1,11 @@
 ﻿using ICPC_WebSite_Backend.Data;
-using ICPC_WebSite_Backend.Data.Models.DTO;
-using ICPC_WebSite_Backend.Data.Response;
 using ICPC_WebSite_Backend.Repository;
 using ICPC_WebSite_Backend.Security;
 using ICPC_WebSite_Backend.Utility;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UtilityLibrary.ModelsDTO;
+using UtilityLibrary.Utility;
 
 namespace ICPC_WebSite_Backend.Controllers
 {

@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace ICPC_WebSite_Backend.Utility
+namespace UtilityLibrary.Utility
 {
     public class RegexPattrens
     {

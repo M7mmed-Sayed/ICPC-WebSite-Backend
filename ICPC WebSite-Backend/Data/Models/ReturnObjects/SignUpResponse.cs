@@ -1,6 +1,4 @@
-﻿using ICPC_WebSite_Backend.Data.Response;
-
-namespace ICPC_WebSite_Backend.Data.Models.ReturnObjects
+﻿namespace ICPC_WebSite_Backend.Data.Models.ReturnObjects
 {
     public class SignUpResponse
     {

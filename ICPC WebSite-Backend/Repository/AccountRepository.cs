@@ -4,12 +4,12 @@ using System.Text;
 using System.Web;
 using ICPC_WebSite_Backend.Data;
 using ICPC_WebSite_Backend.Data.Models;
-using ICPC_WebSite_Backend.Data.Models.DTO;
 using ICPC_WebSite_Backend.Data.Models.ReturnObjects;
-using ICPC_WebSite_Backend.Data.Response;
-using ICPC_WebSite_Backend.Utility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using UtilityLibrary.ModelsDTO;
+using UtilityLibrary.Response;
+using UtilityLibrary.Utility;
 
 namespace ICPC_WebSite_Backend.Repository;
 

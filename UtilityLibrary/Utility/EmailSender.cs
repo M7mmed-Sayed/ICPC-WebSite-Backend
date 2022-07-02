@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Net.Mail;
-using ICPC_WebSite_Backend.Data.Response;
+using UtilityLibrary.Response;
 
-namespace ICPC_WebSite_Backend.Utility;
+namespace UtilityLibrary.Utility;
 
 public class EmailSender : IEmailSender
 {
@@ -19,7 +19,7 @@ public class EmailSender : IEmailSender
         _mailSubmissionPort = mailSubmissionPort;
     }
 
-    public Response SendEmail(string emailTo, string mailSubject, string mailBody, bool isHtml = true)
+    public Response.Response SendEmail(string emailTo, string mailSubject, string mailBody, bool isHtml = true)
     {
         var validate = ValidConfiguration();
 
@@ -53,7 +53,7 @@ public class EmailSender : IEmailSender
         }
     }
 
-    private Response ValidConfiguration()
+    private Response.Response ValidConfiguration()
     {
         var errorsLists = new List<Error>();
         if (string.IsNullOrEmpty(_email))

@@ -1,7 +1,6 @@
-﻿using System.ComponentModel;
-using ICPC_WebSite_Backend.Data.Response;
+﻿using UtilityLibrary.Response;
 
-namespace ICPC_WebSite_Backend.Utility
+namespace UtilityLibrary.Utility
 {
     public class ErrorsList
     {
@@ -175,6 +174,11 @@ namespace ICPC_WebSite_Backend.Utility
             Description = "week have no  relation with sheet"
         };
 
-
+        public static Error CodeforcesFetchError(string responseStatusCode) =>
+            new Error
+            {
+                Code = "InvalidStatusCode",
+                Description = $"CodeForces Api Failed With Status Code = {responseStatusCode}"
+            };
     }
 }

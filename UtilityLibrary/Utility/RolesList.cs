@@ -1,4 +1,4 @@
-﻿namespace ICPC_WebSite_Backend.Utility
+﻿namespace UtilityLibrary.Utility
 {
     public class RolesList
     {

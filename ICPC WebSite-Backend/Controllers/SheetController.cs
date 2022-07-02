@@ -1,6 +1,6 @@
-﻿using ICPC_WebSite_Backend.Data.Models.DTO;
-using ICPC_WebSite_Backend.Repository;
+﻿using ICPC_WebSite_Backend.Repository;
 using Microsoft.AspNetCore.Mvc;
+using UtilityLibrary.ModelsDTO;
 
 namespace ICPC_WebSite_Backend.Controllers;
 

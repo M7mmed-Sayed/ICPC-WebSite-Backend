@@ -1,5 +1,3 @@
-using System.Security.Claims;
-using ICPC_WebSite_Backend.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ICPC_WebSite_Backend.Security;

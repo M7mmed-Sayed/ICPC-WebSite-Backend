@@ -1,6 +1,6 @@
 ﻿using ICPC_WebSite_Backend.Data.Models;
-using ICPC_WebSite_Backend.Data.Models.DTO;
-using ICPC_WebSite_Backend.Data.Response;
+using UtilityLibrary.ModelsDTO;
+using UtilityLibrary.Response;
 
 namespace ICPC_WebSite_Backend.Repository
 {
