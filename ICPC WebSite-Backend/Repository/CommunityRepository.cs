@@ -42,7 +42,7 @@ public class CommunityRepository : ICommunityRepository
     {
         try
         {
-            var user = await _userManager.FindByIdAsync(communityDto.RequesterId);
+            var user = await _userManager.FindByEmailAsync(communityDto.RequesterEmail);
 
             if (user == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
             if (!await _roleManager.RoleExistsAsync(RolesList.CommunityLeader))
@@ -56,7 +56,7 @@ public class CommunityRepository : ICommunityRepository
                 Name = communityDto.Name,
                 About = communityDto.About,
                 OfficialMail = communityDto.OfficialMail,
-                RequesterId = communityDto.RequesterId,
+                RequesterEmail = communityDto.RequesterEmail,
                 IsApproved = true
             };
             await _applicationDbContext.Communities.AddAsync(community);
