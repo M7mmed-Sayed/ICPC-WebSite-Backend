@@ -116,9 +116,11 @@ namespace ICPC_WebSite_Backend.Repository
             if (training == null) errorsList.Add(ErrorsList.TrainingNotFound);
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) errorsList.Add(ErrorsList.CannotFindUser);
+            var previousJoinRequest = await _applicationDbContext.TrainingRequests.Where(request => request.MemberId == userId && request.TrainingId == trainingId).FirstOrDefaultAsync();
+            if (previousJoinRequest != null) errorsList.Add(ErrorsList.ThereIsAPreviousRequest);
             if (errorsList.Any())
                 return ResponseFactory.Fail(errorsList);
-            var addAsync = await _applicationDbContext.TrainingRequests.AddAsync(new TrainingRequest
+            var result = await _applicationDbContext.TrainingRequests.AddAsync(new TrainingRequest
             {
                 MemberId = userId,
                 TrainingId = trainingId,
@@ -128,12 +130,15 @@ namespace ICPC_WebSite_Backend.Repository
             return ResponseFactory.Ok();
         }
 
-        public async Task<Response<IEnumerable<TrainingMemberDto>>> GetTrainingRequest(int trainingId)
+        public async Task<Response<IEnumerable<TrainingMemberDto>>> GetTrainingMembersAsync(int trainingId,string status)
         {
             try
-            {
+            {           
+                var training = await _applicationDbContext.Trainings.FindAsync(trainingId);
+                if (training == null) return ResponseFactory.Fail<IEnumerable<TrainingMemberDto>>(ErrorsList.TrainingNotFound);
+                
                 var data = await _applicationDbContext.TrainingRequests.Include(x => x.Member)
-                    .Where(x => x.TrainingId == trainingId && x.Status == ConstVariable.PendingStatus)
+                    .Where(x => x.TrainingId == trainingId && x.Status == status)
                     .Select(x => new TrainingMemberDto()
                     {
                         Id = x.MemberId,
@@ -170,30 +175,5 @@ namespace ICPC_WebSite_Backend.Repository
             }
         }
 
-        public async Task<Response<IEnumerable<TrainingMemberDto>>> GetTrainingMembers(int trainingId)
-        {
-            try
-            {
-                var training = await _applicationDbContext.Trainings.FindAsync(trainingId);
-                if (training == null)
-                    return ResponseFactory.Fail<IEnumerable<TrainingMemberDto>>(ErrorsList.TrainingNotFound);
-
-                var data = await _applicationDbContext.Users.Distinct()
-                    .Where(a => a.TrainingRequests
-                        .Any(c => c.TrainingId == trainingId)).Select(
-                        x => new TrainingMemberDto
-                        {
-                            Id = x.Id,
-                            FirstName = x.FirstName,
-                            LastName = x.LastName
-                        })
-                    .ToListAsync();
-                return ResponseFactory.Ok<IEnumerable<TrainingMemberDto>>(data);
-            }
-            catch (Exception ex)
-            {
-                return ResponseFactory.FailFromException<IEnumerable<TrainingMemberDto>>(ex);
-            }
-        }
     }
 }

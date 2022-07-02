@@ -1,4 +1,5 @@
 ﻿using ICPC_WebSite_Backend.Data.Models.DTO;
+using ICPC_WebSite_Backend.Data.Response;
 using ICPC_WebSite_Backend.Repository;
 using ICPC_WebSite_Backend.Utility;
 using Microsoft.AspNetCore.Http;
@@ -88,14 +89,6 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
-        [HttpPost("Requests/{trainingId}")]
-        public async Task<IActionResult> GetTrainingRequest(int trainingId) {
-            var result = await _trainingRepository.GetTrainingRequest(trainingId);
-            if (!result.Succeeded) {
-                return Unauthorized(result);
-            }
-            return Ok(result);
-        }
         [HttpPost("RequestRespond/{trainingId}")]
         public async Task<IActionResult> ApproveJoinTrainingRequest([FromQuery] string userId, int trainingId, [FromQuery] bool approve) {
             var result = await _trainingRepository.ResponseToTrainingRequest(userId, trainingId, approve);
@@ -105,11 +98,19 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
         [HttpGet("Members/{trainingId}")]
-        public async Task<IActionResult> GetTrainingMembers(int trainingId) {
-            var result = await _trainingRepository.GetTrainingMembers(trainingId);
-            if (!result.Succeeded) {
+        public async Task<IActionResult> GetTrainingMembers(int trainingId, [FromQuery] string status)
+        {
+            if (status == ConstVariable.PendingStatus)
+            {
+                //check for authorization here
+            }
+
+            var result = await _trainingRepository.GetTrainingMembersAsync(trainingId, status);
+            if (!result.Succeeded)
+            {
                 return Unauthorized(result);
             }
+
             return Ok(result);
         }
     }
