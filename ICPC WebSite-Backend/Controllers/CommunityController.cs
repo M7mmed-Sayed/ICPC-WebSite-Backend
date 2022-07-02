@@ -28,7 +28,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, new ClaimResource(ClaimsNames.CommunityIdClaimName, communityId), "EditAccess");
             return authorizationResult.Succeeded;
         }
-        [Authorize]
+        [Authorize(Roles = RolesList.Administrator)]
         [HttpPost("registerCommunity")]
         public async Task<IActionResult> Register([FromBody] CommunityDto community) {
             var validate = Validate.IsValidCommunity(community);
@@ -41,9 +41,10 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
-        [Authorize]
+        [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader)]
         [HttpPost("editCommunity")]
         public async Task<IActionResult> EditCommunity(int communityId,[FromBody] CommunityDto community) {
+            if (!await IsAuthorized(communityId)) return Forbid();
             var validate = Validate.IsValidCommunity(community);
             if (!validate.Succeeded)
                 return BadRequest(validate);
@@ -54,9 +55,10 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
-        [Authorize]
+        [Authorize(Roles = RolesList.Administrator)]
         [HttpPost("deleteCommunity")]
         public async Task<IActionResult> DeleteCommunity(int communityId) {
+            if (!await IsAuthorized(communityId)) return Forbid();
             var result = await _communityRepository.DeleteCommunity(communityId);
             if (!result.Succeeded) {
                 return Unauthorized(result);
@@ -80,7 +82,7 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = RolesList.CommunityLeader)]
+        [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader)]
         [HttpPost("AssignRole")]
         public async Task<IActionResult> AssignRole([FromQuery] string userId, [FromQuery] int communityId, [FromQuery] string roleName)
         {
@@ -92,7 +94,7 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
-        [Authorize]
+        [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader)]
         [HttpPost("Join/{communityId}")]
         public async Task<IActionResult> JoinRequest([FromQuery] string userId, int communityId) {
             var result = await _communityRepository.JoinRequest(userId, communityId);
@@ -101,7 +103,7 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
-        [Authorize(Roles = RolesList.CommunityLeader)]
+        [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader)]
         [HttpPost("Requests/{communityId}")]
         public async Task<IActionResult> GetRequest(int communityId) {
             var result = await _communityRepository.GetRequest(communityId);
@@ -110,7 +112,7 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
-        [Authorize(Roles = RolesList.CommunityLeader)]
+        [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader)]
         [HttpPost("RequestRespond/{communityId}")]
         public async Task<IActionResult> ApproveRequest([FromQuery] string userId, int communityId, [FromQuery] bool approve)
         {

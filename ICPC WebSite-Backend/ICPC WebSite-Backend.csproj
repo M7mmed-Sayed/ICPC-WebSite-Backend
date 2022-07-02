@@ -23,8 +23,4 @@
     <ProjectReference Include="..\CodeforcesLibrary\CodeforcesLibrary.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\Models\DTO" />
-  </ItemGroup>
-
 </Project>
