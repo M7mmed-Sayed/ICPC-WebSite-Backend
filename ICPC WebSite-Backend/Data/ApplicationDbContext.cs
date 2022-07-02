@@ -10,6 +10,7 @@ namespace ICPC_WebSite_Backend.Data
         public DbSet<Community> Communities { get; set; }
         public DbSet<CommunityMember> CommunityMember { get; set; }
         public DbSet<CommunityRequest> CommunityRequests { get; set; }
+        public DbSet<TrainingRequest> TrainingRequests { get; set; }
         public DbSet<Week> Weeks { get; set; }
         public DbSet<Material> Materials { get; set; }
         public DbSet<Training> Trainings { get; set; }
@@ -48,7 +49,17 @@ namespace ICPC_WebSite_Backend.Data
             builder.Entity<CommunityRequest>()
                    .HasOne(cm => cm.Community)
                    .WithMany(c => c.CommunityRequests)
-                   .HasForeignKey(cm => cm.CommunityId);
+                   .HasForeignKey(cm => cm.CommunityId); 
+            
+            builder.Entity<TrainingRequest>().HasKey(cm => new {cm.MemberId, cm.TrainingId});
+            builder.Entity<TrainingRequest>()
+                   .HasOne(cm => cm.Member)
+                   .WithMany(b => b.TrainingRequests)
+                   .HasForeignKey(cm => cm.MemberId);
+            builder.Entity<TrainingRequest>()
+                   .HasOne(cm => cm.Training)
+                   .WithMany(c => c.TrainingRequests)
+                   .HasForeignKey(cm => cm.TrainingId);
 
             builder.Entity<WeekSheet>().HasKey(cm => new {cm.SheetId, cm.WeekId});
             builder.Entity<WeekSheet>()

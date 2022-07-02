@@ -11,5 +11,6 @@ namespace ICPC_WebSite_Backend.Data.Models
         public string? FaceBookProfile { get; set; }
         public ICollection<CommunityMember> CommunityRoles{ get; set; }
         public ICollection<CommunityRequest> CommunityRequests{ get; set; }
+        public ICollection<TrainingRequest> TrainingRequests{ get; set; }
     }
 }

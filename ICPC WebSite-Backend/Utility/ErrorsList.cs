@@ -148,7 +148,8 @@ namespace ICPC_WebSite_Backend.Utility
 
         public static Error InvalidTrainingTitle = new Error
             { Code = "InvalidTrainingTiltle", Description = "invalid title for this Training" };
-
+        public static Error ThereIsAPreviousRequest = new Error
+            { Code = nameof(ThereIsAPreviousRequest), Description = "There is a previous request for this user in this training" };
         // week_training bridge
         public static Error DublicateWeekAtTraining = new Error
         {
