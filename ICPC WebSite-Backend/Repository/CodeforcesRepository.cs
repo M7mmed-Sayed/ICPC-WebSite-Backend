@@ -1,6 +1,5 @@
 ﻿using CodeforcesLibrary;
 using UtilityLibrary.Response;
-using UtilityLibrary.ModelsDTO;
 
 namespace ICPC_WebSite_Backend.Repository
 {
