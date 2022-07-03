@@ -22,7 +22,7 @@ namespace ICPC_WebSite_Backend.Controllers
         }
 
         [NonAction]
-        public async Task<bool> IsAuthorized(int communityId)
+        private async Task<bool> IsAuthorized(int communityId)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, new ClaimResource(ClaimsNames.CommunityIdClaimName, communityId), "EditAccess");
             return authorizationResult.Succeeded;
