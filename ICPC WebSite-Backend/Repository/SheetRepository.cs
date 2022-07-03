@@ -31,7 +31,7 @@ public class SheetRepository : ISheetRepository
                     };
         await _applicationDbContext.Sheets.AddAsync(sheet);
         await _applicationDbContext.SaveChangesAsync();
-        return ResponseFactory.Ok();
+        return ResponseFactory.Ok(sheet);
     }
 
     public async Task<Response> UpdateSheet(int sheetId, SheetDto sheetDto)
@@ -44,7 +44,7 @@ public class SheetRepository : ISheetRepository
         sheet.ContestId = sheetDto.ContestId;
         sheet.UpdatedAt = DateTime.Now;
         await _applicationDbContext.SaveChangesAsync();
-        return ResponseFactory.Ok();
+        return ResponseFactory.Ok(sheet);
     }
 
     public async Task<Response<Sheet>> GetTheSheet(int sheetId)

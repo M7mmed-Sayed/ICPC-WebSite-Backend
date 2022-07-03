@@ -32,7 +32,7 @@ public class WeekRepository : IWeekRepository
             };
             await _applicationDbContext.Weeks.AddAsync(week);
             await _applicationDbContext.SaveChangesAsync();
-            return ResponseFactory.Ok();
+            return ResponseFactory.Ok(week);
         }
         catch (Exception ex)
         {
@@ -51,7 +51,7 @@ public class WeekRepository : IWeekRepository
             week.Name = weekDto.Name;
             week.UpdatedAt = DateTime.Now;
             await _applicationDbContext.SaveChangesAsync();
-            return ResponseFactory.Ok();
+            return ResponseFactory.Ok(week);
         }
         catch (Exception ex)
         {
