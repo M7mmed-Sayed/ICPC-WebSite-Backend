@@ -99,17 +99,17 @@ public class AccountRepository : IAccountRepository
     {
         try
         {
-        var user = await _userManager.FindByEmailAsync(signInModel.Email);
+            var user = await _userManager.FindByEmailAsync(signInModel.Email);
 
-        if (user == null) return ResponseFactory.Fail<LoginResponse>(ErrorsList.CannotFindUser);
+            if (user == null) return ResponseFactory.Fail<LoginResponse>(ErrorsList.CannotFindUser);
 
-        var result = await _signInManager.PasswordSignInAsync(user, signInModel.Password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(user, signInModel.Password, false, false);
 
-        if (!result.Succeeded) return ResponseFactory.Fail<LoginResponse>(ErrorsList.IncorrectEmailOrPassword);
+            if (!result.Succeeded) return ResponseFactory.Fail<LoginResponse>(ErrorsList.IncorrectEmailOrPassword);
 
-        var userClaims = await _userManager.GetClaimsAsync(user);
-        var roles = await _userManager.GetRolesAsync(user);
-        var rolesClaims = roles.Select(role => new Claim("roles", role)).ToList();
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
+            var rolesClaims = roles.Select(role => new Claim("roles", role)).ToList();
 
         var authClaims = new List<Claim>
         {
@@ -119,24 +119,23 @@ public class AccountRepository : IAccountRepository
         }.Union(userClaims).Union(rolesClaims);
         var authSigninKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]));
 
-        var token = new JwtSecurityToken(
-            _configuration["JWT:ValidIssuer"],
-            _configuration["JWT:ValidAudience"],
-            expires: DateTime.Now.AddDays(1),
-            claims: authClaims,
-            signingCredentials: new SigningCredentials(authSigninKey, SecurityAlgorithms.HmacSha256Signature)
-        );
-        var data = new LoginResponse
-        {
-            Token = new JwtSecurityTokenHandler().WriteToken(token),
-            UserId = user.Id,
-            Email = user.Email,
-            Username = user.UserName,
-            University = user.University,
-            Faculty = user.Faculty
-        };
-        return ResponseFactory.Ok(data);
-
+            var token = new JwtSecurityToken(
+                _configuration["JWT:ValidIssuer"],
+                _configuration["JWT:ValidAudience"],
+                expires: DateTime.Now.AddDays(1),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigninKey, SecurityAlgorithms.HmacSha256Signature)
+            );
+            var data = new LoginResponse
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                UserId = user.Id,
+                Email = user.Email,
+                Username = user.UserName,
+                University = user.University,
+                Faculty = user.Faculty
+            };
+            return ResponseFactory.Ok(data);
         }
         catch (Exception ex)
         {
@@ -261,19 +260,19 @@ public class AccountRepository : IAccountRepository
         }
     }
 
-    public async Task<Response> ResetPassword(string id, string token,ResetPassword resetPassword)
+    public async Task<Response> ResetPassword(string id, string token, ResetPassword resetPassword)
     {
         try
         {
-        if (string.CompareOrdinal(resetPassword.Password, resetPassword.ConfirmPassword) != 0)
-            return ResponseFactory.Fail(ErrorsList.PasswordDonotMatch);
-        var appUser = await _userManager.FindByIdAsync(id);
-        if (appUser == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
-        var result = await _userManager.ResetPasswordAsync(appUser, token, resetPassword.Password);
-        if (result.Succeeded) return ResponseFactory.Ok();
-        var errors = result.Errors.Select(err => new Error() { Code = err.Code, Description = err.Description }).ToList();
-        return  ResponseFactory.Fail(errors);
-
+            if (string.CompareOrdinal(resetPassword.Password, resetPassword.ConfirmPassword) != 0)
+                return ResponseFactory.Fail(ErrorsList.PasswordDonotMatch);
+            var appUser = await _userManager.FindByIdAsync(id);
+            if (appUser == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
+            var result = await _userManager.ResetPasswordAsync(appUser, token, resetPassword.Password);
+            if (result.Succeeded) return ResponseFactory.Ok();
+            var errors = result.Errors.Select(err => new Error() { Code = err.Code, Description = err.Description })
+                .ToList();
+            return ResponseFactory.Fail(errors);
         }
         catch (Exception ex)
         {
@@ -300,25 +299,26 @@ public class AccountRepository : IAccountRepository
             return ResponseFactory.FailFromException(ex);
         }
     }
-    
+
     public async Task<Response> AddAdmin(string userEmail)
     {
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
-        if (!await _roleManager.RoleExistsAsync(RolesList.Administrator)) return ResponseFactory.Fail(ErrorsList.InvalidRoleName);
-        if (await _userManager.IsInRoleAsync(user,RolesList.Administrator))
+        if (!await _roleManager.RoleExistsAsync(RolesList.Administrator))
+            return ResponseFactory.Fail(ErrorsList.InvalidRoleName);
+        if (await _userManager.IsInRoleAsync(user, RolesList.Administrator))
             return ResponseFactory.Fail(ErrorsList.UserHaveSameRole);
         var result = await _userManager.AddToRoleAsync(user, RolesList.Administrator);
         return result.ToApplicationResponse();
     }
+
     public async Task<Response> RemoveAdmin(string userEmail)
     {
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
-        if (!await _userManager.IsInRoleAsync(user,RolesList.Administrator))
+        if (!await _userManager.IsInRoleAsync(user, RolesList.Administrator))
             return ResponseFactory.Fail(ErrorsList.UserHasNotThisRole);
         var result = await _userManager.RemoveFromRoleAsync(user, RolesList.Administrator);
         return result.ToApplicationResponse();
     }
-    
 }
