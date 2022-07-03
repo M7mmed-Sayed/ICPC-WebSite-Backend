@@ -23,14 +23,13 @@ namespace ICPC_WebSite_Backend.Controllers
             _authorizationService = authorizationService;
             _applicationDbContext = applicationDbContext;
         }
-        [HttpGet]
+        [NonAction]
         public async Task<int> GetCommunityId(int trainingId)
         {
             var training = await _applicationDbContext.Trainings.FindAsync(trainingId);
             return training?.CommunityId ?? 0;
         }
-        [Authorize]
-        [HttpGet("IsAuthorized")]
+        [NonAction]
         public async Task<bool> IsAuthorized(int communityId)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, new ClaimResource(ClaimsNames.CommunityIdClaimName, communityId), "EditAccess");

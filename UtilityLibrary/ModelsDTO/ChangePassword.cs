@@ -4,9 +4,8 @@ namespace UtilityLibrary.ModelsDTO;
 
 public class ChangePassword
 {
-    [DataType(DataType.EmailAddress)]
     [Required]
-    public string Email { get; set; }
+    public string userId { get; set; }
     [DataType(DataType.Password)]
     [Required]
     public string CurrentPassword { get; set; }
