@@ -149,35 +149,7 @@ public class AccountRepository : IAccountRepository
         }
     }
 
-    public async Task<Response> AddRoleAsync(UserRole userRole)
-    {
-        var user = await _userManager.FindByEmailAsync(userRole.UserEmail);
 
-        if (user == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
-
-        if (!await _roleManager.RoleExistsAsync(userRole.Role)) return ResponseFactory.Fail(ErrorsList.InvalidRoleName);
-
-        if (await _userManager.IsInRoleAsync(user, userRole.Role))
-            return ResponseFactory.Fail(ErrorsList.UserHaveSameRole);
-
-        var result = await _userManager.AddToRoleAsync(user, userRole.Role);
-        return result.ToApplicationResponse();
-    }
-
-    public async Task<Response> RemoveRoleAsync(UserRole userRole)
-    {
-        var user = await _userManager.FindByEmailAsync(userRole.UserEmail);
-
-        if (user == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
-
-        if (!await _roleManager.RoleExistsAsync(userRole.Role)) return ResponseFactory.Fail(ErrorsList.InvalidRoleName);
-
-        if (!await _userManager.IsInRoleAsync(user, userRole.Role))
-            return ResponseFactory.Fail(ErrorsList.UserHasNotThisRole);
-
-        var result = await _userManager.RemoveFromRoleAsync(user, userRole.Role);
-        return result.ToApplicationResponse();
-    }
 
     public async Task<Response<UserDto>> GetUserData(string userId)
     {

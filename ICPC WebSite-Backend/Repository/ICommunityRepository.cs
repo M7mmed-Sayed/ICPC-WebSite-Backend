@@ -17,4 +17,6 @@ public interface ICommunityRepository
     Task<Response<IEnumerable<CommunityMemberDto>>> GetRequest(int communityId);
     Task<Response> EditCommunity(int communityId, CommunityDto communityDto);
     Task<Response> DeleteCommunity(int communityId);
+    Task<Response> RemoveRole(string userId, int communityId, string roleName);
+    Task<Response> KickUser(string userId);
 }
