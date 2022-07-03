@@ -1,4 +1,5 @@
-﻿using ICPC_WebSite_Backend.Repository;
+﻿using ICPC_WebSite_Backend.Data;
+using ICPC_WebSite_Backend.Repository;
 using ICPC_WebSite_Backend.Security;
 using ICPC_WebSite_Backend.Utility;
 using Microsoft.AspNetCore.Authorization;
@@ -14,13 +15,20 @@ namespace ICPC_WebSite_Backend.Controllers
     {
         private readonly IAuthorizationService _authorizationService;
         private readonly ICommunityRepository _communityRepository;
+        private readonly ApplicationDbContext _applicationDbContext;
 
-        public CommunityController(ICommunityRepository communityRepository, IAuthorizationService authorizationService)
+        public CommunityController(ICommunityRepository communityRepository, IAuthorizationService authorizationService,ApplicationDbContext applicationDbContext)
         {
             _authorizationService = authorizationService;
             _communityRepository = communityRepository;
+            _applicationDbContext = applicationDbContext;
         }
-
+        [NonAction]
+        private async Task<int> GetCommunityId(string userId)
+        {
+            var user = await _applicationDbContext.Users.FindAsync(userId);
+            return user?.CommunityId ?? 0;
+        }
         [NonAction]
         private async Task<bool> IsAuthorized(int communityId)
         {
@@ -87,6 +95,31 @@ namespace ICPC_WebSite_Backend.Controllers
         {
             if (!await IsAuthorized(communityId)) return Forbid();
             var result = await _communityRepository.AssignRole(userId, communityId, roleName);
+            if (!result.Succeeded)
+            {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
+        [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader)]
+        [HttpDelete("removeRole")]
+        public async Task<IActionResult> RemovveRole([FromQuery] string userId, [FromQuery] int communityId, [FromQuery] string roleName)
+        {
+            if (!await IsAuthorized(communityId)) return Forbid();
+            var result = await _communityRepository.RemoveRole(userId, communityId, roleName);
+            if (!result.Succeeded)
+            {
+                return Unauthorized(result);
+            }
+            return Ok(result);
+        }
+        [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader)]
+        [HttpDelete("kickuser")]
+        public async Task<IActionResult> KickUserOut([FromQuery] string userId)
+        {
+            var communityId = await GetCommunityId(userId);
+            if (!await IsAuthorized(communityId)) return Forbid();
+            var result = await _communityRepository.KickUser(userId);
             if (!result.Succeeded)
             {
                 return Unauthorized(result);

@@ -12,8 +12,6 @@ public interface IAccountRepository
 
     Task<Response> SendEmailConfirmationTokenAsync(string userId);
     Task<Response> Confirm(string id, string token);
-    Task<Response> RemoveRoleAsync(UserRole userRole);
-    Task<Response> AddRoleAsync(UserRole userRole);
     Task<Response<UserDto>> GetUserData(string userId);
     Task<Response> UpdateUserData(string userId, UserDto userDto);
     Task<Response> ForgetPassword(string userId);
