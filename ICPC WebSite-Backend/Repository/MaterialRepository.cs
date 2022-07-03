@@ -41,7 +41,7 @@ public class MaterialRepository : IMaterialRepository
 
         if (material == null)
             return ResponseFactory.Fail(ErrorsList.MaterailNotFound);
-        _applicationDbContext.Remove(material);
+        _applicationDbContext.Materials.Remove(material);
         await _applicationDbContext.SaveChangesAsync();
         return ResponseFactory.Ok();
     }
