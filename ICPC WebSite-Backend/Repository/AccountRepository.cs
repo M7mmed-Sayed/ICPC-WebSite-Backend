@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using System.Web;
+using ICPC_WebSite_Backend.Configurations;
 using ICPC_WebSite_Backend.Data;
 using ICPC_WebSite_Backend.Data.Models;
 using ICPC_WebSite_Backend.Data.Models.ReturnObjects;
@@ -53,7 +54,7 @@ public class AccountRepository : IAccountRepository
                 UserId = appUser.Id,
                 Username = appUser.UserName
             };
-            var sendEmailResult = await SendToken(appUser);
+            var sendEmailResult = await SendEmailConfirmationTokenAsync(appUser.Id);
 
             return !sendEmailResult.Succeeded
                 ? ResponseFactory.Fail(sendEmailResult.Errors!, data)
@@ -64,18 +65,27 @@ public class AccountRepository : IAccountRepository
             return ResponseFactory.FailFromException<SignUpResponse>(ex);
         }
     }
-
-    public async Task<Response> SendToken(User appUser)
-    {
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
-        token = HttpUtility.UrlEncode(token);
-        var message = $"Hello {appUser.FirstName}<br>";
-        var domain = "";
-        message +=
-            $"This is your confirmation <a href=\"{domain}/api/Account/confirm?id={appUser.Id}&token={token}\">Link</a>";
-        var subject = "Competitve Programing Confirmaition";
-        return _emailSender.SendEmail(appUser.Email, subject, message);
+    public async Task<Response> SendEmailConfirmationTokenAsync(string userId) {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null) {
+            
+            return ResponseFactory.Fail(ErrorsList.CannotFindUser);;
+        }
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        token = System.Web.HttpUtility.UrlEncode(token);
+        var domain = Config.PathBase;
+        var confirmationLink = new UriBuilder(domain)
+        {
+            //confirmationLink.Path = _httpContext.Request.Path;
+            Path = "api/Account/Confirm",
+            Query = $"id={user.Id}&token={token}"
+        };
+        var subject = "Competitive Programing Email Confirmation";
+        var message = $"Hello {user.FirstName}<br>";
+        message += $"This is your confirmation <a href=\"{confirmationLink}\">Link</a>";
+        return _emailSender.SendEmail(user.Email, subject, message);
     }
+
 
     public async Task<Response> Confirm(string id, string token)
     {
@@ -102,6 +112,7 @@ public class AccountRepository : IAccountRepository
         var authClaims = new List<Claim>
         {
             new(ClaimTypes.Name, signInModel.Email),
+            new(ClaimTypes.NameIdentifier, user.Id),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         }.Union(userClaims).Union(rolesClaims);
         var authSigninKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]));
@@ -213,9 +224,9 @@ public class AccountRepository : IAccountRepository
         }
     }
 
-    public async Task<Response> ForgetPassword(string email)
+    public async Task<Response> ForgetPassword(string userId)
     {
-        var appUser = await _userManager.FindByEmailAsync(email);
+        var appUser = await _userManager.FindByIdAsync(userId);
         if (appUser == null) return ResponseFactory.Fail(ErrorsList.InvalidEmail);
         var token = await _userManager.GeneratePasswordResetTokenAsync(appUser);
         token = HttpUtility.UrlEncode(token);
@@ -246,7 +257,7 @@ public class AccountRepository : IAccountRepository
     {
         if (string.CompareOrdinal(changePassword.NewPassword, changePassword.ConfirmPassword) != 0)
             return ResponseFactory.Fail(ErrorsList.PasswordDonotMatch);
-        var appUser=await _userManager.FindByEmailAsync(changePassword.Email);
+        var appUser=await _userManager.FindByIdAsync(changePassword.userId);
         var result = await _userManager.ChangePasswordAsync(appUser, changePassword.CurrentPassword,
             changePassword.CurrentPassword);
         if (result.Succeeded) return ResponseFactory.Ok();

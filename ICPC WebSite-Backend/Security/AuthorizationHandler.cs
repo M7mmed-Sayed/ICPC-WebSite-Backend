@@ -20,7 +20,7 @@ public class AuthorizationHandler : AuthorizationHandler<AuthorizationRequiremen
         }
 
         var communityId = context.User.FindFirst(resource.ClaimName)?.Value;
-        if (Convert.ToInt32(communityId) == resource.ResourceId)
+        if (communityId == resource.ResourceId)
         {
             context.Succeed(requirement);
         }
