@@ -97,6 +97,8 @@ public class AccountRepository : IAccountRepository
 
     public async Task<Response<LoginResponse>> LoginAsync(SignIn signInModel)
     {
+        try
+        {
         var user = await _userManager.FindByEmailAsync(signInModel.Email);
 
         if (user == null) return ResponseFactory.Fail<LoginResponse>(ErrorsList.CannotFindUser);
@@ -134,6 +136,12 @@ public class AccountRepository : IAccountRepository
             Faculty = user.Faculty
         };
         return ResponseFactory.Ok(data);
+
+        }
+        catch (Exception ex)
+        {
+            return ResponseFactory.FailFromException<LoginResponse>(ex);
+        }
     }
 
     public async Task<Response> AddRoleAsync(UserRole userRole)
@@ -226,7 +234,9 @@ public class AccountRepository : IAccountRepository
 
     public async Task<Response> ForgetPassword(string userId)
     {
-        var appUser = await _userManager.FindByIdAsync(userId);
+        try
+        {
+            var appUser = await _userManager.FindByIdAsync(userId);
         if (appUser == null) return ResponseFactory.Fail(ErrorsList.InvalidEmail);
         var token = await _userManager.GeneratePasswordResetTokenAsync(appUser);
         token = HttpUtility.UrlEncode(token);
@@ -244,10 +254,17 @@ public class AccountRepository : IAccountRepository
             $"<a href=\"{resetPasswordLink}\">Link</a>";
         const string subject = "Competitive Programing ResetPassword";
         return _emailSender.SendEmail(appUser.Email, subject, message);
+        }
+        catch (Exception ex)
+        {
+            return ResponseFactory.FailFromException(ex);
+        }
     }
 
     public async Task<Response> ResetPassword(string id, string token,ResetPassword resetPassword)
     {
+        try
+        {
         if (string.CompareOrdinal(resetPassword.Password, resetPassword.ConfirmPassword) != 0)
             return ResponseFactory.Fail(ErrorsList.PasswordDonotMatch);
         var appUser = await _userManager.FindByIdAsync(id);
@@ -256,10 +273,18 @@ public class AccountRepository : IAccountRepository
         if (result.Succeeded) return ResponseFactory.Ok();
         var errors = result.Errors.Select(err => new Error() { Code = err.Code, Description = err.Description }).ToList();
         return  ResponseFactory.Fail(errors);
+
+        }
+        catch (Exception ex)
+        {
+            return ResponseFactory.FailFromException(ex);
+        }
     }
 
     public async Task<Response> ChangePassword(ChangePassword changePassword)
     {
+        try
+        {
         if (string.CompareOrdinal(changePassword.NewPassword, changePassword.ConfirmPassword) != 0)
             return ResponseFactory.Fail(ErrorsList.PasswordDonotMatch);
         var appUser=await _userManager.FindByIdAsync(changePassword.userId);
@@ -268,6 +293,12 @@ public class AccountRepository : IAccountRepository
         if (result.Succeeded) return ResponseFactory.Ok();
         var errors = result.Errors.Select(err => new Error() { Code = err.Code, Description = err.Description }).ToList();
         return  ResponseFactory.Fail(errors);
+
+        }
+        catch (Exception ex)
+        {
+            return ResponseFactory.FailFromException(ex);
+        }
     }
     
     public async Task<Response> AddAdmin(string userEmail)
