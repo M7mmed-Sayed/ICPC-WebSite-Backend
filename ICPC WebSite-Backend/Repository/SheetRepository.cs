@@ -26,6 +26,7 @@ public class SheetRepository : ISheetRepository
                         Name        = sheetDto.Name,
                         CreatedAt   = DateTime.Now,
                         Url         = sheetDto.Url,
+                        ContestId = sheetDto.ContestId,
                         CommunityId = sheetDto.CommunityId
                     };
         await _applicationDbContext.Sheets.AddAsync(sheet);
@@ -40,6 +41,7 @@ public class SheetRepository : ISheetRepository
         if (sheet == null) return ResponseFactory.Fail(ErrorsList.SheetNotFound);
         sheet.Url       = sheetDto.Url;
         sheet.Name      = sheetDto.Name;
+        sheet.ContestId = sheetDto.ContestId;
         sheet.UpdatedAt = DateTime.Now;
         await _applicationDbContext.SaveChangesAsync();
         return ResponseFactory.Ok();
