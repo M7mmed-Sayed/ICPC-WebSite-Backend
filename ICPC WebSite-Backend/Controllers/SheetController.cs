@@ -40,9 +40,9 @@ public class SheetController : Controller
         if (!await IsAuthorized(sheetDto.CommunityId)) return Forbid();
         var result = await _sheetRepository.AddSheet(sheetDto);
         if (!result.Succeeded) {
-            return Unauthorized(result.Errors);
+            return BadRequest(result.Errors);
         }
-        return Ok(result);
+        return Created(result.Data.Id.ToString(),result);
     }
     [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
     [HttpPut("updatesheet")]
@@ -50,7 +50,7 @@ public class SheetController : Controller
         if (!await IsAuthorized(sheetDto.CommunityId)) return Forbid();
         var result = await _sheetRepository.UpdateSheet(sheetId,sheetDto);
         if (!result.Succeeded) {
-            return Unauthorized(result.Errors);
+            return BadRequest(result.Errors);
         }
         return Ok(result);
     }
@@ -60,7 +60,7 @@ public class SheetController : Controller
         if (!await IsAuthorized(await GetCommunityId(sheetId))) return Forbid();
         var result = await _sheetRepository.deleteSheet(sheetId);
         if (!result.Succeeded) {
-            return NotFound(result.Errors);
+            return BadRequest(result.Errors);
         }
         return Ok(result);
     }
@@ -68,7 +68,7 @@ public class SheetController : Controller
     public async Task<IActionResult> GetSheet(int sheetId) {
         var result = await _sheetRepository.GetTheSheet(sheetId);
         if (!result.Succeeded) {
-            return Unauthorized(result.Errors);
+            return NotFound(result.Errors);
         }
         return Ok(result);
     }
@@ -76,7 +76,7 @@ public class SheetController : Controller
     public async Task<IActionResult> GetSheetsByCommunty(int communityId) {
         var result = await _sheetRepository.GetSheetsByCommunity(communityId);
         if (!result.Succeeded) {
-            return Unauthorized(result.Errors);
+            return BadRequest(result.Errors);
         }
         return Ok(result);
     }
@@ -84,7 +84,7 @@ public class SheetController : Controller
     public async Task<IActionResult> GetSheetsByWeek(int weekId) {
         var result = await _sheetRepository.GetSheetsByWeek(weekId);
         if (!result.Succeeded) {
-            return Unauthorized(result.Errors);
+            return BadRequest(result.Errors);
         }
         return Ok(result);
     }

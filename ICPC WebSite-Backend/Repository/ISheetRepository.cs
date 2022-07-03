@@ -6,7 +6,7 @@ namespace ICPC_WebSite_Backend.Repository;
 
 public interface ISheetRepository
 {
-    Task<Response> AddSheet(SheetDto sheetDto);
+    Task<Response<Sheet>> AddSheet(SheetDto sheetDto);
     Task<Response> UpdateSheet(int sheetId, SheetDto SheetDto);
     Task<Response<Sheet>> GetTheSheet(int sheetId);
     Task<Response> deleteSheet(int sheetId);

@@ -57,7 +57,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _materialRepository.AddMaterial(materialDto);
             if (!result.Succeeded)
             {
-                return Unauthorized(result.Errors);
+                return BadRequest(result.Errors);
             }
 
             return Ok(result);
@@ -70,7 +70,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _materialRepository.DeleteMaterial(materialId);
             if (!result.Succeeded)
             {
-                return NotFound(result.Errors);
+                return BadRequest(result.Errors);
             }
 
             return Ok(result);

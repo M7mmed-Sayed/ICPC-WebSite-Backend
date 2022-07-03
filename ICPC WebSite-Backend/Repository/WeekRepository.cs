@@ -16,13 +16,13 @@ public class WeekRepository : IWeekRepository
         _applicationDbContext = applicationDbContext;
     }
 
-    public async Task<Response> AddWeek(WeekDto weekDto)
+    public async Task<Response<Week>> AddWeek(WeekDto weekDto)
     {
         try
         {
             var community = await _applicationDbContext.Communities.FindAsync(weekDto.CommunityId);
             if (community == null)
-                return ResponseFactory.Fail(ErrorsList.CommunityNotFound);
+                return ResponseFactory.Fail<Week>(ErrorsList.CommunityNotFound);
             var week = new Week
             {
                 Name = weekDto.Name,
@@ -36,7 +36,7 @@ public class WeekRepository : IWeekRepository
         }
         catch (Exception ex)
         {
-            return ResponseFactory.FailFromException(ex);
+            return ResponseFactory.FailFromException<Week>(ex);
         }
     }
 

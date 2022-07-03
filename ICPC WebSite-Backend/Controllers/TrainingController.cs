@@ -48,10 +48,10 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _trainingRepository.AddTraining(trainingDTO);
             if (!result.Succeeded)
             {
-                return Unauthorized(result.Errors);
+                return BadRequest(result.Errors);
             }
 
-            return Ok(result);
+            return Created(result.Data.Id.ToString(),result);
         }
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
         [HttpPut("updatetraining")]
@@ -64,7 +64,7 @@ namespace ICPC_WebSite_Backend.Controllers
                 return BadRequest(validate);
             var result = await _trainingRepository.UpdateTraining(trainingId, trainingDTO);
             if (!result.Succeeded) {
-                return Unauthorized(result.Errors);
+                return BadRequest(result.Errors);
             }
             return Ok(result);
         }
@@ -72,7 +72,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> getAlltrainings([FromQuery] int communityId) {
             var result = await _trainingRepository.GetAllTrainings(communityId);
             if (!result.Succeeded) {
-                return Unauthorized(result.Errors);
+                return BadRequest(result.Errors);
             }
             return Ok(result);
         }
@@ -80,7 +80,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> getTraining(int trainingId) {
             var result = await _trainingRepository.GetTraining(trainingId);
             if (!result.Succeeded) {
-                return Unauthorized(result.Errors);
+                return NotFound(result.Errors);
             }
             return Ok(result);
         }
@@ -92,7 +92,7 @@ namespace ICPC_WebSite_Backend.Controllers
 
             var result = await _trainingRepository.DeleteTraining(trainingId);
             if (!result.Succeeded) {
-                return NotFound(result.Errors);
+                return BadRequest(result.Errors);
             }
             return Ok(result);
         }
@@ -105,7 +105,7 @@ namespace ICPC_WebSite_Backend.Controllers
 
             var result = await _trainingRepository.LinkWeek(trainingId, weekId);
             if (!result.Succeeded) {
-                return NotFound(result.Errors);
+                return BadRequest(result.Errors);
             }
             return Ok(result);
         }
@@ -117,7 +117,7 @@ namespace ICPC_WebSite_Backend.Controllers
 
             var result = await _trainingRepository.UnLinkWeek(trainingId, weekId);
             if (!result.Succeeded) {
-                return NotFound(result.Errors);
+                return BadRequest(result.Errors);
             }
             return Ok(result);
         }
@@ -126,7 +126,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> JoinTraining([FromQuery] string userId, int trainingId) {
             var result = await _trainingRepository.JoinTraining(userId, trainingId);
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -137,7 +137,7 @@ namespace ICPC_WebSite_Backend.Controllers
 
             var result = await _trainingRepository.ResponseToTrainingRequest(userId, trainingId, approve);
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -153,7 +153,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _trainingRepository.GetTrainingMembersAsync(trainingId, status);
             if (!result.Succeeded)
             {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
 
             return Ok(result);

@@ -50,10 +50,10 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _weekRepository.AddWeek(weekDto);
             if (!result.Succeeded)
             {
-                return Unauthorized(result.Errors);
+                return BadRequest(result.Errors);
             }
 
-            return Ok(result);
+            return Created(result.Data.Id.ToString(),result);
         }
 
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
@@ -67,7 +67,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _weekRepository.UpdateWeek(weekId, weekDto);
             if (!result.Succeeded)
             {
-                return Unauthorized(result.Errors);
+                return BadRequest(result.Errors);
             }
 
             return Ok(result);
@@ -81,7 +81,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _weekRepository.deleteWeek(weekId);
             if (!result.Succeeded)
             {
-                return NotFound(result.Errors);
+                return BadRequest(result.Errors);
             }
 
             return Ok(result);
@@ -93,7 +93,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _weekRepository.GetWeeksByCommunity(communityId);
             if (!result.Succeeded)
             {
-                return Unauthorized(result.Errors);
+                return BadRequest(result.Errors);
             }
 
             return Ok(result);
@@ -105,7 +105,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _weekRepository.GetWeeksByTraining(trainingId);
             if (!result.Succeeded)
             {
-                return Unauthorized(result.Errors);
+                return BadRequest(result.Errors);
             }
 
             return Ok(result);
@@ -117,7 +117,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _weekRepository.GetTheWeek(weekId);
             if (!result.Succeeded)
             {
-                return Unauthorized(result.Errors);
+                return NotFound(result.Errors);
             }
 
             return Ok(result);
@@ -132,7 +132,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _weekRepository.LinkSheet(weekId, sheetId);
             if (!result.Succeeded)
             {
-                return NotFound(result.Errors);
+                return BadRequest(result.Errors);
             }
 
             return Ok(result);
@@ -146,7 +146,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _weekRepository.UnLinkSheet(weekId, sheetId);
             if (!result.Succeeded)
             {
-                return NotFound(result.Errors);
+                return BadRequest(result.Errors);
             }
 
             return Ok(result);
