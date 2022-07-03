@@ -80,7 +80,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> getTraining(int trainingId) {
             var result = await _trainingRepository.GetTraining(trainingId);
             if (!result.Succeeded) {
-                return BadRequest(result.Errors);
+                return NotFound(result.Errors);
             }
             return Ok(result);
         }

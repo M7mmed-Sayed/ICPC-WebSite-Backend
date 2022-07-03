@@ -85,7 +85,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _accountRepository.GetUserData(userId);
 
             if (!result.Succeeded) {
-                return BadRequest(result);
+                return NotFound(result);
             }
 
             return Ok(result);

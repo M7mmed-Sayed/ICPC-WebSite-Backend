@@ -117,7 +117,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _weekRepository.GetTheWeek(weekId);
             if (!result.Succeeded)
             {
-                return BadRequest(result.Errors);
+                return NotFound(result.Errors);
             }
 
             return Ok(result);

@@ -68,7 +68,7 @@ public class SheetController : Controller
     public async Task<IActionResult> GetSheet(int sheetId) {
         var result = await _sheetRepository.GetTheSheet(sheetId);
         if (!result.Succeeded) {
-            return BadRequest(result.Errors);
+            return NotFound(result.Errors);
         }
         return Ok(result);
     }

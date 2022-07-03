@@ -76,7 +76,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> GetCommunities(int id) {
             var result = await _communityRepository.GetCommunity(id);
             if (!result.Succeeded) {
-                return BadRequest(result);
+                return NotFound(result);
             }
             return Ok(result);
         }
