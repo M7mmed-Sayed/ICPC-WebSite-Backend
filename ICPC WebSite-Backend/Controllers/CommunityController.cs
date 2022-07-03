@@ -94,7 +94,7 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
-        [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader)]
+        [Authorize]
         [HttpPost("Join/{communityId}")]
         public async Task<IActionResult> JoinRequest([FromQuery] string userId, int communityId) {
             var result = await _communityRepository.JoinRequest(userId, communityId);
@@ -106,6 +106,7 @@ namespace ICPC_WebSite_Backend.Controllers
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader)]
         [HttpPost("Requests/{communityId}")]
         public async Task<IActionResult> GetRequest(int communityId) {
+            if (!await IsAuthorized(communityId)) return Forbid();
             var result = await _communityRepository.GetRequest(communityId);
             if (!result.Succeeded) {
                 return Unauthorized(result);

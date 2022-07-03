@@ -27,7 +27,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<int> GetCommunityId(int trainingId)
         {
             var training = await _applicationDbContext.Trainings.FindAsync(trainingId);
-            return training == null ? 0 : training.Id;
+            return training?.CommunityId ?? 0;
         }
         [Authorize]
         [HttpGet("IsAuthorized")]

@@ -19,10 +19,10 @@ namespace ICPC_WebSite_Backend.Repository
             _applicationDbContext = applicationDbContext;
         }
 
-        public async Task<Response> AddTraining(TrainingDTO trainingDTO)
+        public async Task<Response<Training>> AddTraining(TrainingDTO trainingDTO)
         {
             var community = await _applicationDbContext.Communities.FindAsync(trainingDTO.Community_Id);
-            if (community == null) return ResponseFactory.Fail(ErrorsList.CommunityNotFound);
+            if (community == null) return ResponseFactory.Fail<Training>(ErrorsList.CommunityNotFound);
             var training = new Training()
             {
                 Title = trainingDTO.Title,
@@ -33,21 +33,21 @@ namespace ICPC_WebSite_Backend.Repository
             };
             await _applicationDbContext.Trainings.AddAsync(training);
             await _applicationDbContext.SaveChangesAsync();
-            return ResponseFactory.Ok(training.Id);
+            return ResponseFactory.Ok(training);
         }
 
-        public async Task<Response> UpdateTraining(int trainingId, TrainingDTO trainingDTO)
+        public async Task<Response<Training>> UpdateTraining(int trainingId, TrainingDTO trainingDTO)
         {
             var training = await _applicationDbContext.Trainings.FindAsync(trainingId);
 
-            if (training == null) return ResponseFactory.Fail(ErrorsList.TrainingNotFound);
+            if (training == null) return ResponseFactory.Fail<Training>(ErrorsList.TrainingNotFound);
             training.Title = trainingDTO.Title;
             training.Level = trainingDTO.Level;
             training.IsPublic = trainingDTO.IsPublic;
             training.CommunityId = trainingDTO.Community_Id;
             training.UpdatedAt = DateTime.Now;
             await _applicationDbContext.SaveChangesAsync();
-            return ResponseFactory.Ok();
+            return ResponseFactory.Ok(training);
         }
 
         public async Task<Response<IEnumerable<Training>>> GetAllTrainings(int communityId)

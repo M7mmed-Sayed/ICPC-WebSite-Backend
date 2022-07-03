@@ -6,11 +6,11 @@ namespace ICPC_WebSite_Backend.Repository
 {
     public interface ITrainingRepository
     {
-        Task<Response> AddTraining(TrainingDTO trainingDTO);
+        Task<Response<Training>> AddTraining(TrainingDTO trainingDTO);
         Task<Response> DeleteTraining(int trainingId);
         Task<Response<IEnumerable<Training>>> GetAllTrainings(int communityId);
         Task<Response<Training>> GetTraining(int trainingId);
-        Task<Response> UpdateTraining(int trainingId, TrainingDTO trainingDTO);
+        Task<Response<Training>> UpdateTraining(int trainingId, TrainingDTO trainingDTO);
         Task<Response> LinkWeek(int trainingId, int weekId);
         Task<Response> UnLinkWeek(int trainingId, int weekId);
         Task<Response> JoinTraining(string userId, int trainingId);
