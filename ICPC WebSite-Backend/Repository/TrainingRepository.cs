@@ -64,22 +64,24 @@ namespace ICPC_WebSite_Backend.Repository
             }
         }
 
-        public async Task<Response<IEnumerable<Training>>> GetAllTrainings(int communityId)
+        public async Task<Response<IEnumerable<TrainingResponse>>> GetAllTrainings(int communityId)
         {
             try
             {
-                if (communityId == 0)
-                    return ResponseFactory.Ok<IEnumerable<Training>>(
-                        await _applicationDbContext.Trainings.ToListAsync());
-                var community = await _applicationDbContext.Communities.FindAsync(communityId);
+                var community = await _applicationDbContext.Communities.Where(community=>community.Id==communityId).Include(x=>x.Trainings).FirstOrDefaultAsync();
                 if (community == null)
-                    return ResponseFactory.Fail<IEnumerable<Training>>(ErrorsList.CommunityNotFound);
-                var data = await _applicationDbContext.Trainings.Where(t => t.CommunityId == communityId).ToListAsync();
-                return ResponseFactory.Ok<IEnumerable<Training>>(data);
+                    return ResponseFactory.Fail<IEnumerable<TrainingResponse>>(ErrorsList.CommunityNotFound);
+                var data = community.Trainings.Select(training =>new TrainingResponse()
+                {
+                    Id=training.Id,
+                    Title = training.Title,
+                    Level = training.Level
+                } ).ToList();
+                return ResponseFactory.Ok<IEnumerable<TrainingResponse>>(data);
             }
             catch (Exception ex)
             {
-                return ResponseFactory.FailFromException<IEnumerable<Training>>(ex);
+                return ResponseFactory.FailFromException<IEnumerable<TrainingResponse>>(ex);
             }
         }
 
