@@ -70,7 +70,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _accountRepository.LoginAsync(signInModel);
 
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
 
             return Ok(result);
@@ -85,7 +85,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _accountRepository.GetUserData(userId);
 
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
 
             return Ok(result);
@@ -103,7 +103,7 @@ namespace ICPC_WebSite_Backend.Controllers
 
             var result = await _accountRepository.UpdateUserData(userId, userDto);
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -118,7 +118,7 @@ namespace ICPC_WebSite_Backend.Controllers
 
             var result = await _accountRepository.ForgetPassword(email);
             if (!result.Succeeded) 
-                return Unauthorized(result);
+                return BadRequest(result);
             return Ok(result);
         }
         /// <summary>
@@ -135,7 +135,7 @@ namespace ICPC_WebSite_Backend.Controllers
 
             var result = await _accountRepository.ResetPassword(id,token,resetPassword);
             if (!result.Succeeded) 
-                return Unauthorized(result);
+                return BadRequest(result);
             return Ok(result);
         }
         /// <summary>
@@ -149,7 +149,7 @@ namespace ICPC_WebSite_Backend.Controllers
             if (!await IsAuthorized(changePassword.userId)) return Forbid();
             var result = await _accountRepository.ChangePassword(changePassword);
             if (!result.Succeeded) 
-                return Unauthorized(result);
+                return BadRequest(result);
             return Ok(result);
         }
         /// <summary>
@@ -161,7 +161,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> AddAdmin([FromBody]string userEmail) {
             var result = await _accountRepository.AddAdmin(userEmail);
             if (!result.Succeeded) 
-                return Unauthorized(result);
+                return BadRequest(result);
             return Ok(result);
         }
         /// <summary>
@@ -173,7 +173,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> RemoveAdmin([FromBody] string userEmail) {
             var result = await _accountRepository.RemoveAdmin(userEmail);
             if (!result.Succeeded) 
-                return Unauthorized(result);
+                return BadRequest(result);
             return Ok(result);
         }
         
@@ -189,7 +189,7 @@ namespace ICPC_WebSite_Backend.Controllers
 
             var result = await _accountRepository.SendEmailConfirmationTokenAsync(userId);
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }

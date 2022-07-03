@@ -36,7 +36,7 @@ namespace ICPC_WebSite_Backend.Controllers
 
             var result = await _communityRepository.RegisterCommunityAsync(community);
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -50,7 +50,7 @@ namespace ICPC_WebSite_Backend.Controllers
 
             var result = await _communityRepository.EditCommunity(communityId,community);
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -60,7 +60,7 @@ namespace ICPC_WebSite_Backend.Controllers
             if (!await IsAuthorized(communityId)) return Forbid();
             var result = await _communityRepository.DeleteCommunity(communityId);
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -68,7 +68,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> GetAllCommunities() {
             var result = await _communityRepository.GetAllCommunities();
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -76,7 +76,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> GetCommunities(int id) {
             var result = await _communityRepository.GetCommunity(id);
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -89,7 +89,7 @@ namespace ICPC_WebSite_Backend.Controllers
             var result = await _communityRepository.AssignRole(userId, communityId, roleName);
             if (!result.Succeeded)
             {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -98,7 +98,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> JoinRequest([FromQuery] string userId, int communityId) {
             var result = await _communityRepository.JoinRequest(userId, communityId);
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -108,7 +108,7 @@ namespace ICPC_WebSite_Backend.Controllers
             if (!await IsAuthorized(communityId)) return Forbid();
             var result = await _communityRepository.GetRequest(communityId);
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -119,7 +119,7 @@ namespace ICPC_WebSite_Backend.Controllers
             if (!await IsAuthorized(communityId)) return Forbid();
             var result = await _communityRepository.ResponseToRequest(userId, communityId, approve);
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -127,7 +127,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> GetMembers(int communityId) {
             var result = await _communityRepository.GetMembers(communityId);
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -135,7 +135,7 @@ namespace ICPC_WebSite_Backend.Controllers
         public async Task<IActionResult> CountMembers(int communityId) {
             var result = await _communityRepository.CountMembers(communityId);
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }
