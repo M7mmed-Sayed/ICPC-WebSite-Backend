@@ -57,20 +57,24 @@ public class AccountRepository : IAccountRepository
             var sendEmailResult = await SendEmailConfirmationTokenAsync(appUser.Id);
 
             return !sendEmailResult.Succeeded
-                ? ResponseFactory.Fail(sendEmailResult.Errors!, data)
-                : ResponseFactory.Ok(data);
+                       ? ResponseFactory.Fail(sendEmailResult.Errors!, data)
+                       : ResponseFactory.Ok(data);
         }
         catch (Exception ex)
         {
             return ResponseFactory.FailFromException<SignUpResponse>(ex);
         }
     }
-    public async Task<Response> SendEmailConfirmationTokenAsync(string userId) {
+
+    public async Task<Response> SendEmailConfirmationTokenAsync(string userId)
+    {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user == null) {
-            
-            return ResponseFactory.Fail(ErrorsList.CannotFindUser);;
+        if (user == null)
+        {
+            return ResponseFactory.Fail(ErrorsList.CannotFindUser);
+            ;
         }
+
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         token = System.Web.HttpUtility.UrlEncode(token);
         var domain = Config.PathBase;
@@ -111,13 +115,14 @@ public class AccountRepository : IAccountRepository
             var roles = await _userManager.GetRolesAsync(user);
             var rolesClaims = roles.Select(role => new Claim("roles", role)).ToList();
 
-        var authClaims = new List<Claim>
-        {
-            new(ClaimTypes.Name, signInModel.Email),
-            new(ClaimTypes.NameIdentifier, user.Id),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        }.Union(userClaims).Union(rolesClaims);
-        var authSigninKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]));
+            var authClaims = new List<Claim>
+                {
+                    new(ClaimTypes.Name, signInModel.Email),
+                    new(ClaimTypes.NameIdentifier, user.Id),
+                    new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                }.Union(userClaims)
+               .Union(rolesClaims);
+            var authSigninKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]));
 
             var token = new JwtSecurityToken(
                 _configuration["JWT:ValidIssuer"],
@@ -231,28 +236,28 @@ public class AccountRepository : IAccountRepository
         }
     }
 
-    public async Task<Response> ForgetPassword(string userId)
+    public async Task<Response> ForgetPassword(string email)
     {
         try
         {
-            var appUser = await _userManager.FindByIdAsync(userId);
-        if (appUser == null) return ResponseFactory.Fail(ErrorsList.InvalidEmail);
-        var token = await _userManager.GeneratePasswordResetTokenAsync(appUser);
-        token = HttpUtility.UrlEncode(token);
-        var domain = Config.PathBase;
-         var resetPasswordLink = new UriBuilder(domain)
-         {
-             Path = "api/Account/resetpassword",
-             Query = $"id={userId}&token={token}"
-         };
-        var message = $"Hello {appUser.FirstName}<br>";
-        message +=
-            $"You recently requested to reset your password for your Competitive Programing  account." +
-            $"Click the button below to reset it. " +
-            $"This password reset is only valid for the next 60 minutes." +
-            $"<a href=\"{resetPasswordLink}\">Link</a>";
-        const string subject = "Competitive Programing ResetPassword";
-        return _emailSender.SendEmail(appUser.Email, subject, message);
+            var appUser = await _userManager.FindByEmailAsync(email);
+            if (appUser == null) return ResponseFactory.Fail(ErrorsList.InvalidEmail);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(appUser);
+            token = HttpUtility.UrlEncode(token);
+            var domain = Config.PathBase;
+            var resetPasswordLink = new UriBuilder(domain)
+            {
+                Path = "api/Account/resetpassword",
+                Query = $"id={appUser.Id}&token={token}"
+            };
+            var message = $"Hello {appUser.FirstName}<br>";
+            message +=
+                $"You recently requested to reset your password for your Competitive Programing  account." +
+                $"Click the button below to reset it. " +
+                $"This password reset is only valid for the next 60 minutes." +
+                $"<a href=\"{resetPasswordLink}\">Link</a>";
+            const string subject = "Competitive Programing ResetPassword";
+            return _emailSender.SendEmail(appUser.Email, subject, message);
         }
         catch (Exception ex)
         {
@@ -281,15 +286,14 @@ public class AccountRepository : IAccountRepository
     {
         try
         {
-        if (string.CompareOrdinal(changePassword.NewPassword, changePassword.ConfirmPassword) != 0)
-            return ResponseFactory.Fail(ErrorsList.PasswordDonotMatch);
-        var appUser=await _userManager.FindByIdAsync(changePassword.userId);
-        var result = await _userManager.ChangePasswordAsync(appUser, changePassword.CurrentPassword,
-            changePassword.CurrentPassword);
-        if (result.Succeeded) return ResponseFactory.Ok();
-        var errors = result.Errors.Select(err => new Error() { Code = err.Code, Description = err.Description }).ToList();
-        return  ResponseFactory.Fail(errors);
-
+            if (string.CompareOrdinal(changePassword.NewPassword, changePassword.ConfirmPassword) != 0)
+                return ResponseFactory.Fail(ErrorsList.PasswordDonotMatch);
+            var appUser = await _userManager.FindByIdAsync(changePassword.userId);
+            var result = await _userManager.ChangePasswordAsync(appUser, changePassword.CurrentPassword,
+                                                                changePassword.CurrentPassword);
+            if (result.Succeeded) return ResponseFactory.Ok();
+            var errors = result.Errors.Select(err => new Error() {Code = err.Code, Description = err.Description}).ToList();
+            return ResponseFactory.Fail(errors);
         }
         catch (Exception ex)
         {

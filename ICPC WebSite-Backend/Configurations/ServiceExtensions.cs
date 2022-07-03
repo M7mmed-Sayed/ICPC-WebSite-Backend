@@ -1,4 +1,5 @@
-﻿using ICPC_WebSite_Backend.Data;
+﻿using System.Reflection;
+using ICPC_WebSite_Backend.Data;
 using ICPC_WebSite_Backend.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -17,9 +18,11 @@ namespace ICPC_WebSite_Backend.Configurations
     public static class ServiceExtensions
     {
         public static void AddSwaggerGen(this IServiceCollection services) {
-            services.AddSwaggerGen(option => {
-                option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
-                option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
+            services.AddSwaggerGen(option =>
+            {
+                option.SwaggerDoc("v1", new OpenApiInfo {Title = "ICPC Website API", Version = "v1"});
+                option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
                     In = ParameterLocation.Header,
                     Description = "Please enter a valid token",
                     Name = "Authorization",
@@ -27,17 +30,23 @@ namespace ICPC_WebSite_Backend.Configurations
                     BearerFormat = "JWT",
                     Scheme = "Bearer"
                 });
-                option.AddSecurityRequirement(new OpenApiSecurityRequirement{{
-                    new OpenApiSecurityScheme
+                option.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
                     {
-                        Reference = new OpenApiReference
+                        new OpenApiSecurityScheme
                         {
-                            Type=ReferenceType.SecurityScheme,
-                            Id="Bearer"
-                        }
-                    },
-                    new string[]{}
-                 }});
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
+                });
+                var fileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var filePath = Path.Combine(AppContext.BaseDirectory, fileName);
+                option.IncludeXmlComments(filePath);
             });
         }
         public static void RegisterRepos(this IServiceCollection services) {
