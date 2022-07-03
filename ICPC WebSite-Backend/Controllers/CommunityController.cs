@@ -38,7 +38,7 @@ namespace ICPC_WebSite_Backend.Controllers
             if (!result.Succeeded) {
                 return BadRequest(result);
             }
-            return Ok(result);
+            return Created(result.Data.Id.ToString(),result);
         }
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader)]
         [HttpPut("editCommunity")]

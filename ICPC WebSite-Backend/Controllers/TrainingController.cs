@@ -51,7 +51,7 @@ namespace ICPC_WebSite_Backend.Controllers
                 return BadRequest(result.Errors);
             }
 
-            return Ok(result);
+            return Created(result.Data.Id.ToString(),result);
         }
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
         [HttpPut("updatetraining")]

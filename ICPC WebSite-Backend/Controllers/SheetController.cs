@@ -42,7 +42,7 @@ public class SheetController : Controller
         if (!result.Succeeded) {
             return BadRequest(result.Errors);
         }
-        return Ok(result);
+        return Created(result.Data.Id.ToString(),result);
     }
     [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
     [HttpPut("updatesheet")]

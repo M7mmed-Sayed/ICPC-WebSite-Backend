@@ -40,9 +40,9 @@ namespace ICPC_WebSite_Backend.Controllers
 
             var result = await _accountRepository.SignUpAsync(signUpModel);
             if (!result.Succeeded) {
-                return Unauthorized(result);
+                return BadRequest(result);
             }
-            return Ok(result);
+            return Created(result.Data.UserId.ToString(),result);
         }
         /// <summary>
         /// confirm the email after sending a token to the registered mail

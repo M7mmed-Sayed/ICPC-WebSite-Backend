@@ -16,11 +16,11 @@ public class SheetRepository : ISheetRepository
         _applicationDbContext = applicationDbContext;
     }
 
-    public async Task<Response> AddSheet(SheetDto sheetDto)
+    public async Task<Response<Sheet>> AddSheet(SheetDto sheetDto)
     {
         var community = await _applicationDbContext.Communities.FindAsync(sheetDto.CommunityId);
         if (community == null)
-            return ResponseFactory.Fail(ErrorsList.CommunityNotFound);
+            return ResponseFactory.Fail<Sheet>(ErrorsList.CommunityNotFound);
         var sheet = new Sheet()
                     {
                         Name        = sheetDto.Name,

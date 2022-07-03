@@ -6,7 +6,7 @@ namespace ICPC_WebSite_Backend.Repository
 {
     public interface IWeekRepository
     {
-        Task<Response> AddWeek(WeekDto weekDto);
+        Task<Response<Week>> AddWeek(WeekDto weekDto);
         Task<Response> UpdateWeek(int weekId, WeekDto weekDto);
         Task<Response<IEnumerable<WeekResponse>>> GetWeeksByCommunity(int communityId);
         Task<Response<IEnumerable<WeekResponse>>> GetWeeksByTraining(int trainingId);
