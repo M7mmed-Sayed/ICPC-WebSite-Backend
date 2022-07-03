@@ -230,13 +230,18 @@ public class AccountRepository : IAccountRepository
         if (appUser == null) return ResponseFactory.Fail(ErrorsList.InvalidEmail);
         var token = await _userManager.GeneratePasswordResetTokenAsync(appUser);
         token = HttpUtility.UrlEncode(token);
+        var domain = Config.PathBase;
+         var resetPasswordLink = new UriBuilder(domain)
+         {
+             Path = "api/Account/resetpassword",
+             Query = $"id={userId}&token={token}"
+         };
         var message = $"Hello {appUser.FirstName}<br>";
-        const string domain = "";
         message +=
             $"You recently requested to reset your password for your Competitive Programing  account." +
             $"Click the button below to reset it. " +
             $"This password reset is only valid for the next 60 minutes." +
-            $"<a href=\"{domain}/api/Account/resetpassword?id={appUser.Id}&token={token}\">Link</a>";
+            $"<a href=\"{resetPasswordLink}\">Link</a>";
         const string subject = "Competitive Programing ResetPassword";
         return _emailSender.SendEmail(appUser.Email, subject, message);
     }
