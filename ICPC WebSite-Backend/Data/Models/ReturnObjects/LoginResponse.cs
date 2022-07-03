@@ -8,5 +8,6 @@
         public string Username { get; set; }
         public string University { get; set; }
         public string Faculty { get; set; }
+        public string CodeForcesHandle { get; set; }
     }
 }

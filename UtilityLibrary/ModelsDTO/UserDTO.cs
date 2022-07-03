@@ -8,6 +8,7 @@
         public string UserName { get; set; }
         public string PhoneNumber { get; set; }
         public string FaceBookProfile { get; set; }
+        public string CodeForcesHandle { get; set; }
         public string Faculty { get; set; }
         public string University { get; set; }
         public string Email { get; set; }
