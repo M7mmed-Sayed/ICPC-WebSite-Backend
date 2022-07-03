@@ -8,8 +8,8 @@ namespace ICPC_WebSite_Backend.Repository
     {
         Task<Response> AddWeek(WeekDto weekDto);
         Task<Response> UpdateWeek(int weekId, WeekDto weekDto);
-        Task<Response<IEnumerable<Week>>> GetWeeksByCommunity(int communityId);
-        Task<Response<IEnumerable<Week>>> GetWeeksByTraining(int trainingId);
+        Task<Response<IEnumerable<WeekResponse>>> GetWeeksByCommunity(int communityId);
+        Task<Response<IEnumerable<WeekResponse>>> GetWeeksByTraining(int trainingId);
         Task<Response<Week>> GetTheWeek(int weekId);
         Task<Response> deleteWeek(int weekId);
         Task<Response> LinkSheet(int weekId, int sheetId);
