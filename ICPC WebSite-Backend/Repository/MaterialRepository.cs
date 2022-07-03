@@ -16,11 +16,11 @@ public class MaterialRepository : IMaterialRepository
         _applicationDbContext = applicationDbContext;
     }
 
-    public async Task<Response> AddMaterial(MaterialDto materialDto)
+    public async Task<Response<Material>> AddMaterial(MaterialDto materialDto)
     {
         var week = await _applicationDbContext.Weeks.FindAsync(materialDto.WeekId);
 
-        if (week == null) return ResponseFactory.Fail(ErrorsList.WeekNotFound);
+        if (week == null) return ResponseFactory.Fail<Material>(ErrorsList.WeekNotFound);
 
         await _applicationDbContext.SaveChangesAsync();
         var material = new Material
@@ -32,7 +32,7 @@ public class MaterialRepository : IMaterialRepository
         };
         await _applicationDbContext.Materials.AddAsync(material);
         await _applicationDbContext.SaveChangesAsync();
-        return ResponseFactory.Ok();
+        return ResponseFactory.Ok(material);
     }
 
     public async Task<Response> DeleteMaterial(int materialId)
