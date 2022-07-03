@@ -38,6 +38,11 @@ namespace ICPC_WebSite_Backend.Controllers
             return authorizationResult.Succeeded;
         }
 
+        /// <summary>
+        /// add a week to a community
+        /// </summary>
+        /// <param name="weekDto">contains week important data like week id and community id</param>
+        /// <returns>failed or succeeded</returns>
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
         [HttpPost("addweek")]
         public async Task<IActionResult> AddWeek(WeekDto weekDto)
@@ -56,6 +61,12 @@ namespace ICPC_WebSite_Backend.Controllers
             return Created(result.Data.Id.ToString(),result);
         }
 
+        /// <summary>
+        /// update a week with new data
+        /// </summary>
+        /// <param name="weekId">id the week</param>
+        /// <param name="weekDto">the new data</param>
+        /// <returns>failed or succeeded</returns>
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
         [HttpPut("updateweek")]
         public async Task<IActionResult> UpdateWeek(int weekId, WeekDto weekDto)
@@ -73,6 +84,11 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// delete a specific week
+        /// </summary>
+        /// <param name="weekId">id of the week</param>
+        /// <returns>succeeded or failed</returns>
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
         [HttpDelete("deleteweek")]
         public async Task<IActionResult> deleteWeek(int weekId)
@@ -87,6 +103,11 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// get all week inside a community
+        /// </summary>
+        /// <param name="communityId">id of the community</param>
+        /// <returns>if succeeded return list of week otherwise returns an error</returns>
         [HttpGet("allweeksbycommunity")]
         public async Task<IActionResult> GetWeeksByCommunity(int communityId)
         {
@@ -99,6 +120,11 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// get all week inside a training
+        /// </summary>
+        /// <param name="trainingId">id of the training</param>
+        /// <returns>if succeeded return list of week otherwise returns an error</returns>
         [HttpGet("allweeksbytraining")]
         public async Task<IActionResult> GetWeeksByTraining(int trainingId)
         {
@@ -111,6 +137,11 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// get a specific week
+        /// </summary>
+        /// <param name="weekId">id of the  week</param>
+        /// <returns>if succeeded returns week data otherwise returns an error</returns>
         [HttpGet("getweek")]
         public async Task<IActionResult> GetWeek(int weekId)
         {
@@ -123,6 +154,12 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// link a sheet to a week
+        /// </summary>
+        /// <param name="weekId">id of the week</param>
+        /// <param name="sheetId">id of the sheet</param>
+        /// <returns>succeeded or failed</returns>
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
         [HttpPost("linksheet")]
         public async Task<IActionResult> LinkSheet(int weekId, int sheetId)
@@ -138,6 +175,12 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// unlink a sheet from a week
+        /// </summary>
+        /// <param name="weekId">id of the week</param>
+        /// <param name="sheetId">id of the sheet</param>
+        /// <returns>succeeded or failed</returns>
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
         [HttpDelete("unlinksheet")]
         public async Task<IActionResult> UnLinkSheet(int weekId, int sheetId)

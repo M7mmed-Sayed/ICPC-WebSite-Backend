@@ -36,6 +36,11 @@ namespace ICPC_WebSite_Backend.Controllers
             return authorizationResult.Succeeded;
         }
 
+        /// <summary>
+        /// add a training to a community
+        /// </summary>
+        /// <param name="trainingDTO">the data of the training</param>
+        /// <returns>training if added succeeded otherwise error</returns>
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
         [HttpPost("addtraining")]
         public async Task<IActionResult> addtraining(TrainingDTO trainingDTO)
@@ -53,6 +58,12 @@ namespace ICPC_WebSite_Backend.Controllers
 
             return Created(result.Data.Id.ToString(),result);
         }
+        /// <summary>
+        /// update training data with new data
+        /// </summary>
+        /// <param name="trainingId">id of the training</param>
+        /// <param name="trainingDTO">the new data of training</param>
+        /// <returns>if succeeded return the updated training otherwise returns an error</returns>
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
         [HttpPut("updatetraining")]
         public async Task<IActionResult> updatetraining(int trainingId, TrainingDTO trainingDTO) {
@@ -68,6 +79,11 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+        /// <summary>
+        /// get all trainings in a community
+        /// </summary>
+        /// <param name="communityId">the id of the community</param>
+        /// <returns>list of all trainings</returns>
         [HttpGet("alltrainings")]
         public async Task<IActionResult> getAlltrainings([FromQuery] int communityId) {
             var result = await _trainingRepository.GetAllTrainings(communityId);
@@ -76,6 +92,11 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+        /// <summary>
+        /// get a specific training
+        /// </summary>
+        /// <param name="trainingId">the id of the training</param>
+        /// <returns>training data if succeeded if exist otherwise an error returned</returns>
         [HttpGet("gettraining")]
         public async Task<IActionResult> getTraining(int trainingId) {
             var result = await _trainingRepository.GetTraining(trainingId);
@@ -84,6 +105,11 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+        /// <summary>
+        /// delete a specific training
+        /// </summary>
+        /// <param name="trainingId">the id of the training</param>
+        /// <returns>failed or succeeded</returns>
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
 
         [HttpDelete("deletetraining")]
@@ -96,6 +122,12 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+        /// <summary>
+        /// link a week to an existing training
+        /// </summary>
+        /// <param name="trainingId">the id of the training</param>
+        /// <param name="weekId">the id of the week</param>
+        /// <returns>failed or succeeded</returns>
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
 
         [HttpPost("linkweek")]
@@ -109,6 +141,12 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+        /// <summary>
+        /// unlink a week from a training
+        /// </summary>
+        /// <param name="trainingId">the id of the training</param>
+        /// <param name="weekId">the id of the week</param>
+        /// <returns>failed or succeeded</returns>
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
         [HttpDelete("Unlinkweek")]
         public async Task<IActionResult> UnLinkWeek(int trainingId, int weekId)
@@ -121,6 +159,12 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+        /// <summary>
+        /// join user to a training
+        /// </summary>
+        /// <param name="userId">the id of the user</param>
+        /// <param name="trainingId">the id of the training</param>
+        /// <returns>failed or succeeded</returns>
         [Authorize]
         [HttpPost("Join/{trainingId}")]
         public async Task<IActionResult> JoinTraining([FromQuery] string userId, int trainingId) {
@@ -130,6 +174,13 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+        /// <summary>
+        /// accept or reject a training request
+        /// </summary>
+        /// <param name="userId">the id of the user</param>
+        /// <param name="trainingId">the id of training</param>
+        /// <param name="approve">if true then accept request otherwise reject it</param>
+        /// <returns>failed or succeeded</returns>
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
         [HttpPost("RequestRespond/{trainingId}")]
         public async Task<IActionResult> ApproveJoinTrainingRequest([FromQuery] string userId, int trainingId, [FromQuery] bool approve) {
@@ -141,6 +192,12 @@ namespace ICPC_WebSite_Backend.Controllers
             }
             return Ok(result);
         }
+        /// <summary>
+        /// get all users in this training with specific status
+        /// </summary>
+        /// <param name="trainingId">the id of the training</param>
+        /// <param name="status"></param>
+        /// <returns>list of members</returns>
         [Authorize]
         [HttpGet("Members/{trainingId}")]
         public async Task<IActionResult> GetTrainingMembers(int trainingId, [FromQuery] string status)
