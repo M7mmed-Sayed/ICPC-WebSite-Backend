@@ -269,10 +269,7 @@ public class AccountRepository : IAccountRepository
             var appUser = await _userManager.FindByIdAsync(id);
             if (appUser == null) return ResponseFactory.Fail(ErrorsList.CannotFindUser);
             var result = await _userManager.ResetPasswordAsync(appUser, token, resetPassword.Password);
-            if (result.Succeeded) return ResponseFactory.Ok();
-            var errors = result.Errors.Select(err => new Error() { Code = err.Code, Description = err.Description })
-                .ToList();
-            return ResponseFactory.Fail(errors);
+            return result.Succeeded ? ResponseFactory.Ok() : result.ToApplicationResponse();
         }
         catch (Exception ex)
         {
