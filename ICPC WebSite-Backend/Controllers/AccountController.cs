@@ -112,14 +112,14 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
         [HttpPost("addadmin")]
-        public async Task<IActionResult> AddAdamin([FromBody]string userEmail) {
+        public async Task<IActionResult> AddAdmin([FromBody]string userEmail) {
             var result = await _accountRepository.AddAdmin(userEmail);
             if (!result.Succeeded) 
                 return Unauthorized(result);
             return Ok(result);
         }
-        [HttpDelete("removeadmin")]
-        public async Task<IActionResult> Removedamin([FromBody] string userEmail) {
+        [HttpDelete("remove-admin")]
+        public async Task<IActionResult> RemoveAdmin([FromBody] string userEmail) {
             var result = await _accountRepository.RemoveAdmin(userEmail);
             if (!result.Succeeded) 
                 return Unauthorized(result);
