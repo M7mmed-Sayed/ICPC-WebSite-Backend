@@ -36,7 +36,7 @@ public class SheetController : Controller
 
     [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
     [HttpPost("addsheet")]
-    public async Task<IActionResult> AddSheet(SheetDto sheetDto) {
+    public async Task<IActionResult> AddSheet([FromBody]SheetDto sheetDto) {
         if (!await IsAuthorized(sheetDto.CommunityId)) return Forbid();
         var result = await _sheetRepository.AddSheet(sheetDto);
         if (!result.Succeeded) {
