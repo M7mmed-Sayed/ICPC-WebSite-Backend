@@ -132,6 +132,7 @@ public class AccountRepository : IAccountRepository
                 UserId = user.Id,
                 Email = user.Email,
                 Username = user.UserName,
+                CodeForcesHandle = user.CodeForcesHandle,
                 University = user.University,
                 Faculty = user.Faculty
             };
@@ -188,6 +189,7 @@ public class AccountRepository : IAccountRepository
                 UserName = user.UserName,
                 PhoneNumber = user.PhoneNumber,
                 FaceBookProfile = user.FaceBookProfile,
+                CodeForcesHandle = user.CodeForcesHandle,
                 Faculty = user.Faculty,
                 University = user.University,
                 Email = user.Email,
@@ -217,6 +219,7 @@ public class AccountRepository : IAccountRepository
             user.UserName = userDto.UserName;
             user.PhoneNumber = userDto.PhoneNumber;
             user.FaceBookProfile = userDto.FaceBookProfile;
+            user.CodeForcesHandle = userDto.CodeForcesHandle;
             user.Faculty = userDto.Faculty;
             user.University = userDto.University;
             user.Email = userDto.Email;

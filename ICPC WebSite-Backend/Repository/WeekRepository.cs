@@ -60,32 +60,47 @@ public class WeekRepository : IWeekRepository
     }
 
 
-    public async Task<Response<IEnumerable<Week>>> GetWeeksByCommunity(int communityId)
+    public async Task<Response<IEnumerable<WeekResponse>>> GetWeeksByCommunity(int communityId)
     {
         try
         {
-            var weeks = await _applicationDbContext.Weeks.Where(w => w.Id == communityId).ToListAsync();
-            return ResponseFactory.Ok<IEnumerable<Week>>(weeks);
+            var community = await _applicationDbContext.Communities.Where(community=>community.Id==communityId).Include(x=>x.Weeks).FirstOrDefaultAsync();
+            if (community == null)
+                return ResponseFactory.Fail<IEnumerable<WeekResponse>>(ErrorsList.CommunityNotFound);
+            var data = community.Weeks.Select(week =>new WeekResponse()
+            {
+                Id=week.Id,
+                Name = week.Name,
+                Description = week.Description
+            } ).ToList();
+            return ResponseFactory.Ok<IEnumerable<WeekResponse>>(data);
+
         }
         catch (Exception ex)
         {
-            return ResponseFactory.FailFromException<IEnumerable<Week>>(ex);
+            return ResponseFactory.FailFromException<IEnumerable<WeekResponse>>(ex);
         }
     }
 
-    public async Task<Response<IEnumerable<Week>>> GetWeeksByTraining(int trainingId)
+    public async Task<Response<IEnumerable<WeekResponse>>> GetWeeksByTraining(int trainingId)
     {
         try
         {
             var weeks = await _applicationDbContext.Weeks.Distinct()
                 .Where(a => a.WeekTraining
-                    .Any(c => c.TrainingId == trainingId))
+                    .Any(c => c.TrainingId == trainingId)).Select(week =>new WeekResponse()
+                    {
+                        Id=week.Id,
+                        Name = week.Name,
+                        Description = week.Description
+                    } )
                 .ToListAsync();
-            return ResponseFactory.Ok<IEnumerable<Week>>(weeks);
+            
+            return ResponseFactory.Ok<IEnumerable<WeekResponse>>(weeks);
         }
         catch (Exception ex)
         {
-            return ResponseFactory.FailFromException<IEnumerable<Week>>(ex);
+            return ResponseFactory.FailFromException<IEnumerable<WeekResponse>>(ex);
         }
     }
 
