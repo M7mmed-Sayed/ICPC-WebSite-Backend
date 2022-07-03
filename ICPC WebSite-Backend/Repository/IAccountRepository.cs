@@ -19,4 +19,6 @@ public interface IAccountRepository
     Task<Response> ForgetPassword(string email);
     Task<Response> ResetPassword(string id, string token, ResetPassword resetPassword);
     Task<Response> ChangePassword(ChangePassword changePassword);
+    Task<Response> AddAdmin(string userEmail);
+    Task<Response> RemoveAdmin(string userEmail);
 }

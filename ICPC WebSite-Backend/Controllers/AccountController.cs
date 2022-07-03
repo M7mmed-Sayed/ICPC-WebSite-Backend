@@ -76,7 +76,6 @@ namespace ICPC_WebSite_Backend.Controllers
             if (!result.Succeeded) 
                 return Unauthorized(result);
             return Ok(result);
-            return Ok();
         }
         [HttpPut("changepassword")]
         public async Task<IActionResult> ChangePassword([FromBody]ChangePassword changePassword) {
@@ -84,8 +83,22 @@ namespace ICPC_WebSite_Backend.Controllers
             if (!result.Succeeded) 
                 return Unauthorized(result);
             return Ok(result);
-            return Ok();
         }
+        [HttpPost("addadmin")]
+        public async Task<IActionResult> AddAdamin([FromBody]string userEmail) {
+            var result = await _accountRepository.AddAdmin(userEmail);
+            if (!result.Succeeded) 
+                return Unauthorized(result);
+            return Ok(result);
+        }
+        [HttpDelete("removeadmin")]
+        public async Task<IActionResult> Removedamin([FromBody] string userEmail) {
+            var result = await _accountRepository.RemoveAdmin(userEmail);
+            if (!result.Succeeded) 
+                return Unauthorized(result);
+            return Ok(result);
+        }
+        
         
     }
 }
