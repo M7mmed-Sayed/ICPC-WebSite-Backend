@@ -46,6 +46,11 @@ namespace ICPC_WebSite_Backend.Controllers
             return authorizationResult.Succeeded;
         }
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
+        /// <summary>
+        /// add a material to a week
+        /// </summary>
+        /// <param name="materialDto"> data of the material like weekId</param>
+        /// <returns>returns failed or succeeded</returns>
         [HttpPost("addMaterial")]
         public async Task<IActionResult> AddMaterial(MaterialDto materialDto)
         {
@@ -62,6 +67,11 @@ namespace ICPC_WebSite_Backend.Controllers
 
             return Created(result.Data.Id.ToString(),result);
         }
+        /// <summary>
+        /// add a material from a week
+        /// </summary>
+        /// <param name="materialId"> the id of the material</param>
+        /// <returns>returns failed or succeeded</returns>
         [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
         [HttpDelete("deleteMaterial")]
         public async Task<IActionResult> DeleteMaterial(int materialId)
@@ -76,6 +86,11 @@ namespace ICPC_WebSite_Backend.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// get all materials that exist in a week
+        /// </summary>
+        /// <param name="weekId">the id of week</param>
+        /// <returns>returns list of materials</returns>
         [HttpGet("getweekmaterials")]
         public async Task<IActionResult> GetWeekMaterials(int weekId)
         {

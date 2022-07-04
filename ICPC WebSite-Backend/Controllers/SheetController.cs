@@ -34,6 +34,11 @@ public class SheetController : Controller
         return authorizationResult.Succeeded;
     }
 
+    /// <summary>
+    /// add a sheet to a community
+    /// </summary>
+    /// <param name="sheetDto">the data of the sheet</param>
+    /// <returns>returns failed or succeeded</returns>
     [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
     [HttpPost("addsheet")]
     public async Task<IActionResult> AddSheet([FromBody]SheetDto sheetDto) {
@@ -44,6 +49,12 @@ public class SheetController : Controller
         }
         return Created(result.Data.Id.ToString(),result);
     }
+    /// <summary>
+    /// update a sheet with new data
+    /// </summary>
+    /// <param name="sheetId">the id of the sheet</param>
+    /// <param name="SheetDto">the new data of the sheet</param>
+    /// <returns>returns failed or succeeded</returns>
     [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
     [HttpPut("updatesheet")]
     public async Task<IActionResult> Updatesheet(int sheetId,SheetDto sheetDto) {
@@ -54,6 +65,11 @@ public class SheetController : Controller
         }
         return Ok(result);
     }
+    /// <summary>
+    /// delete a specific sheet
+    /// </summary>
+    /// <param name="sheetId">the id of the sheet</param>
+    /// <returns>returns failed or succeeded</returns>
     [Authorize(Roles = RolesList.Administrator + "," + RolesList.CommunityLeader + "," + RolesList.HeadOfTraining)]
     [HttpDelete("deletesheet")]
     public async Task<IActionResult> DeleteSheet(int sheetId) {
@@ -64,6 +80,11 @@ public class SheetController : Controller
         }
         return Ok(result);
     }
+    /// <summary>
+    /// get a specific sheet
+    /// </summary>
+    /// <param name="sheetId">the id of the sheet</param>
+    /// <returns>the data of the sheet</returns>
     [HttpGet("getsheet")]
     public async Task<IActionResult> GetSheet(int sheetId) {
         var result = await _sheetRepository.GetTheSheet(sheetId);
@@ -72,6 +93,11 @@ public class SheetController : Controller
         }
         return Ok(result);
     }
+    /// <summary>
+    /// get all sheets in a specific community
+    /// </summary>
+    /// <param name="communityId">the id of the community</param>
+    /// <returns>list of all sheets in the community</returns>
     [HttpGet("getsheetsbycommunity")]
     public async Task<IActionResult> GetSheetsByCommunty(int communityId) {
         var result = await _sheetRepository.GetSheetsByCommunity(communityId);
@@ -80,6 +106,11 @@ public class SheetController : Controller
         }
         return Ok(result);
     }
+    /// <summary>
+    /// get all sheets in a specific week
+    /// </summary>
+    /// <param name="weekId">the id of the week</param>
+    /// <returns>list of sheets data</returns>
     [HttpGet("getsheetsbyweek")]
     public async Task<IActionResult> GetSheetsByWeek(int weekId) {
         var result = await _sheetRepository.GetSheetsByWeek(weekId);
